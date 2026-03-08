@@ -125,6 +125,30 @@ Impacto: Visual completo do sistema acessível em `/`. Dados ainda mockados no f
 
 ---
 
+## [IMPL] 08/MAR/26 01:45 — Consolidação e Sincronização Final do GitHub
+Quem: Antigravity / gemini
+O que: Removido o `.git` interno da pasta `/frontend` (que causava erro de sub-módulo), adicionados 100% dos arquivos e efetuado `git push origin main`.
+Por que: Garantir que o repositório remoto contenha todos os componentes visuais e lógicos do projeto sem erros de arquitetura Git.
+Impacto: Repositório oficial (https://github.com/mavik-ai/estetiqo-crm) agora contém todo o código-fonte funcional.
+
+---
+
+## [FIX] 08/MAR/26 01:46 — Correção no next.config.ts
+Quem: Antigravity / gemini
+O que: Corrigido erro de sintaxe onde `output: standalone` estava fora do objeto de configuração.
+Por que: Corrigir falha no comando `npm run dev` relatada pelo Rafael.
+Impacto: `/frontend/next.config.ts`.
+
+---
+
+## [FIX] 08/MAR/26 01:50 — Erro de Root Layout resolvido
+Quem: Antigravity / gemini
+O que: Criado `src/app/layout.tsx` com as tags obrigatórias `<html>` e `<body>`.
+Por que: Resolver erro de runtime do Next.js 15.
+Impacto: `/frontend/src/app/layout.tsx`.
+
+---
+
 <!-- NOVOS UPDATES ABAIXO DESTA LINHA -->
 
 ## [IMPL] 08/MAR/26 01:02 — Fase 4 Iniciada: Setup de Auth e Middlewares (Bloco 1)
