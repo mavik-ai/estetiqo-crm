@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # SERVIÇO 1: BACKEND (FastAPI - Python)
+  # ==========================================
+  api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: estetiqo-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+      # Outras vars como chaves da Evolution API e Stripe irão aqui
+
+  # ==========================================
+  # SERVIÇO 2: FRONTEND (NextJS SSR - Node)
+  # ==========================================
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: estetiqo-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - NEXT_PUBLIC_API_URL=http://api:8000 # Comunicação interna Docker
+    depends_on:
+      - api # Garante que o Front só sob após o Back estar de pé
