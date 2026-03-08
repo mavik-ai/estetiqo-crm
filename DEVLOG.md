@@ -83,6 +83,48 @@ Impacto: `/frontend/src/components/layout/`, `/frontend/src/components/dashboard
 
 ---
 
+## [IMPL] 08/MAR/26 01:42 — Git Inicializado e Commit Realizado
+Quem: Antigravity / gemini
+O que: `git init` executado, arquivos adicionados e commit inicial efetuado.
+Por que: Preparar para versionamento e deploy.
+Impacto: Repositório local inicializado.
+
+---
+
+## [IMPL] 08/MAR/26 01:41 — Resumo Executivo: Estado Atual Estetiqo
+Quem: Antigravity / gemini
+O que: Consolidação do que foi feito e pendências.
+Done:
+- [x] Documentação (PRD, GEMINI, Roadmap)
+- [x] Backend (FastAPI base)
+- [x] Frontend (Next.js + Design V8)
+- [x] DB (Supabase Migrations OK)
+- [x] Infra (Docker Compose Ready)
+Pending:
+- [/] Push GitHub (CLI indisponível, aguardando URL)
+- [ ] Integração real Front-Back
+- [ ] Módulos operacionais (Agenda, Clientes)
+
+---
+
+## [IMPL] 08/MAR/26 01:43 — Repositório Remoto Criado e Push Efetuado
+Quem: Antigravity / gemini
+O que: Criação do repositório `mavik-ai/estetiqo-crm` via GitHub CLI (`gh`) e `git push` da branch `main`.
+Por que: Finalizar o setup profissional de versionamento e backup.
+Impacto: Repositório oficial: https://github.com/mavik-ai/estetiqo-crm
+URL SSH: `git@github.com:mavik-ai/estetiqo-crm.git`
+URL HTTPS: `https://github.com/mavik-ai/estetiqo-crm.git`
+
+---
+
+## [IMPL] 08/MAR/26 01:50 — Dashboard V8 Totalmente Montado (Pronto para Teste Visual)
+Quem: Antigravity / gemini
+O que: Integração final de todos os componentes (Metrics, AppointmentTable, RecentActivity, PopularServices) na página raiz `app/(dashboard)/page.tsx`.
+Por que: Bloco 2.1 — Entregar o Dashboard funcional visualmente para validação do Rafael.
+Impacto: Visual completo do sistema acessível em `/`. Dados ainda mockados no frontend.
+
+---
+
 <!-- NOVOS UPDATES ABAIXO DESTA LINHA -->
 
 ## [IMPL] 08/MAR/26 01:02 — Fase 4 Iniciada: Setup de Auth e Middlewares (Bloco 1)

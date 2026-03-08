@@ -1,0 +1,131 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-urbanist), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: var(--font-playfair), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: #F6F2EA;
+  --foreground: #2D2319;
+  --card: #FFFFFF;
+  --card-foreground: #2D2319;
+  --popover: #FFFFFF;
+  --popover-foreground: #2D2319;
+  --primary: #B8960C;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EDE5D3;
+  --secondary-foreground: #2D2319;
+  --muted: #FEFCF7;
+  --muted-foreground: #A69060;
+  --accent: #EDE5D3;
+  --accent-foreground: #2D2319;
+  --destructive: #D94444;
+  --destructive-foreground: #FFFFFF;
+  --border: #EDE5D3;
+  --input: #EDE5D3;
+  --ring: #B8960C;
+  --chart-1: oklch(0.809 0.105 251.813);
+  --chart-2: oklch(0.623 0.214 259.815);
+  --chart-3: oklch(0.546 0.245 262.881);
+  --chart-4: oklch(0.488 0.243 264.376);
+  --chart-5: oklch(0.424 0.199 265.638);
+  --radius: 0.625rem;
+  --sidebar: #FEFCF7;
+  --sidebar-foreground: #2D2319;
+  --sidebar-primary: #B8960C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EDE5D3;
+  --sidebar-accent-foreground: #2D2319;
+  --sidebar-border: #EDE5D3;
+  --sidebar-ring: #B8960C;
+}
+
+.dark {
+  --background: #161412;
+  --foreground: #FFFFFF;
+  --card: #252219;
+  --card-foreground: #FFFFFF;
+  --popover: #252219;
+  --popover-foreground: #FFFFFF;
+  --primary: #D4B86A;
+  --primary-foreground: #161412;
+  --secondary: #33301F;
+  --secondary-foreground: #FFFFFF;
+  --muted: #1C1A17;
+  --muted-foreground: #D4C9A8;
+  --accent: #2A2518;
+  --accent-foreground: #FFFFFF;
+  --destructive: #F07070;
+  --destructive-foreground: #FFFFFF;
+  --border: #33301F;
+  --input: #33301F;
+  --ring: #D4B86A;
+  --chart-1: oklch(0.809 0.105 251.813);
+  --chart-2: oklch(0.623 0.214 259.815);
+  --chart-3: oklch(0.546 0.245 262.881);
+  --chart-4: oklch(0.488 0.243 264.376);
+  --chart-5: oklch(0.424 0.199 265.638);
+  --sidebar: #1C1A17;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #D4B86A;
+  --sidebar-primary-foreground: #161412;
+  --sidebar-accent: #2A2518;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #33301F;
+  --sidebar-ring: #D4B86A;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
