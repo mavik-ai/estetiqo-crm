@@ -1,0 +1,50 @@
+# ============================================================
+# CREDENCIAIS E AMBIENTE — NUNCA COMMITAR
+# ============================================================
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+*.env
+**/.env
+**/.env.local
+**/.env.*.local
+**/.env.production
+
+# ============================================================
+# FRONTEND (Next.js)
+# ============================================================
+frontend/.next/
+frontend/out/
+frontend/node_modules/
+frontend/.vercel
+frontend/coverage/
+
+# ============================================================
+# BACKEND (Python / FastAPI)
+# ============================================================
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/**/*.pyo
+backend/.venv/
+backend/venv/
+backend/.pytest_cache/
+backend/dist/
+backend/build/
+backend/*.egg-info/
+
+# ============================================================
+# SISTEMA
+# ============================================================
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# ============================================================
+# DOCKER
+# ============================================================
+.docker/
+docker-compose.override.yml

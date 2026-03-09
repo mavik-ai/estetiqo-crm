@@ -278,3 +278,17 @@ Por que: Setup inicial seguindo protocolo MAVIK
 Impacto: Estrutura de documentação criada na raiz do projeto
 
 ---
+
+## [IMPL] 09/MAR/26 — Ondas 2-5: Sistema Admin completo (CRUD de todas as seções)
+Quem: Claude Code / claude-sonnet-4-6
+O que: Criadas 11 páginas funcionais cobrindo os módulos:
+  - Clientes: lista com busca, cadastro com ficha de saúde (16 perguntas), perfil completo com histórico
+  - Serviços: CRUD com modal, toggle ativo/inativo, exclusão com confirmação
+  - Protocolos: lista com filtro de status + progresso visual, detalhe com tabela de sessões
+  - Agenda: calendário dia/semana com fetch real, Novo Agendamento com cálculo de hora-fim automático
+  - Config: index de configurações, CRUD de salas
+  - Sidebar: usuário dinâmico (nome/iniciais/role do banco), link Configurações ativo
+Por que: Ondas 2-5 concluídas — admin pode navegar e usar todos os módulos core.
+Impacto: /clientes, /clientes/novo, /clientes/[id], /servicos, /protocolos, /protocolos/[id], /agenda, /agenda/novo, /config, /config/salas, Sidebar.tsx, layout.tsx.
+
+---
