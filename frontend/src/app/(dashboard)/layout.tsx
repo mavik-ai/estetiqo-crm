@@ -25,11 +25,24 @@ export default async function DashboardLayout({ children }: { children: React.Re
     const initials    = (profile?.avatar_initials) ?? (nameInitials || '??');
     const roleLabel   = profile?.role === 'superadmin' ? 'Superadmin' : profile?.role === 'admin' ? 'Admin' : 'Operadora';
 
+    const { data: tenantRow } = await supabase
+        .from('users')
+        .select('tenant_id')
+        .eq('id', user.id)
+        .single();
+
+    const { count: pendingRsvp } = await supabase
+        .from('appointments')
+        .select('id', { count: 'exact', head: true })
+        .eq('tenant_id', tenantRow!.tenant_id)
+        .eq('rsvp_status', 'pending')
+        .gte('starts_at', new Date().toISOString());
+
     return (
         <div className="min-h-screen flex" style={{ fontFamily: "var(--font-urbanist), sans-serif", background: "#F6F2EA" }}>
             <Sidebar userName={profile?.name ?? firstName} userInitials={initials} userRole={roleLabel} />
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
-                <Topbar userName={firstName} />
+                <Topbar userName={firstName} notificationCount={pendingRsvp ?? 0} />
                 <div className="flex-1 overflow-auto">
                     {children}
                 </div>

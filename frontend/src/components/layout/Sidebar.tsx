@@ -39,14 +39,16 @@ export function Sidebar({ userName = "Michele Oliveira", userInitials = "MO", us
         <div className="flex flex-col justify-between flex-shrink-0 h-screen overflow-y-auto" style={{ width: "220px", background: "#FEFCF7", borderRight: "1px solid #EDE5D3" }}>
             <div>
                 <div className="px-5 pt-6 pb-5">
-                    <Image
-                        src="/logo.png"
-                        alt="Estetiqo"
-                        width={160}
-                        height={44}
-                        priority
-                        className="h-8 w-auto"
-                    />
+                    <Link href="/" aria-label="Ir para o Dashboard">
+                        <Image
+                            src="/logo.png"
+                            alt="Estetiqo"
+                            width={160}
+                            height={44}
+                            priority
+                            className="h-8 w-auto"
+                        />
+                    </Link>
                 </div>
                 <div className="px-3">
                     <div style={{ color: "#BBA870", fontSize: "9px", fontWeight: 700, letterSpacing: "0.15em", padding: "0 10px", marginBottom: "6px" }}>MENU</div>

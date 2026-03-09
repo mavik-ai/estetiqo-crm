@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { CheckCircle2, Circle, ArrowRight, Building2, Layers, Users, CalendarPlus, Sparkles } from "lucide-react";
+import { CheckCircle2, ArrowRight, Building2, Layers, Users, CalendarPlus, Sparkles, Zap } from "lucide-react";
+import { criarServicoDemonstracao, criarSalaDemonstracao } from "./actions";
 
 interface Step {
   id: number;
@@ -10,6 +11,7 @@ interface Step {
   cta: string;
   href: string;
   done: boolean;
+  quickAction?: React.ReactNode;
 }
 
 export default async function BemVindoPage() {
@@ -47,6 +49,31 @@ export default async function BemVindoPage() {
       cta: "Gerenciar Salas",
       href: "/config/salas",
       done: hasRooms,
+      quickAction: !hasRooms ? (
+        <form action={criarSalaDemonstracao}>
+          <button
+            type="submit"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "5px",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "11px",
+              fontWeight: 600,
+              color: "#A69060",
+              fontFamily: "inherit",
+              padding: 0,
+              textDecoration: "underline",
+              textDecorationStyle: "dotted",
+            }}
+          >
+            <Zap size={11} strokeWidth={2} />
+            Criar &ldquo;Sala Principal&rdquo; automaticamente
+          </button>
+        </form>
+      ) : undefined,
     },
     {
       id: 2,
@@ -56,6 +83,31 @@ export default async function BemVindoPage() {
       cta: "Cadastrar Serviços",
       href: "/servicos",
       done: hasServices,
+      quickAction: !hasServices ? (
+        <form action={criarServicoDemonstracao}>
+          <button
+            type="submit"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "5px",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "11px",
+              fontWeight: 600,
+              color: "#A69060",
+              fontFamily: "inherit",
+              padding: 0,
+              textDecoration: "underline",
+              textDecorationStyle: "dotted",
+            }}
+          >
+            <Zap size={11} strokeWidth={2} />
+            Criar &ldquo;Modelagem Corporal&rdquo; automaticamente
+          </button>
+        </form>
+      ) : undefined,
     },
     {
       id: 3,
@@ -259,27 +311,30 @@ export default async function BemVindoPage() {
                   </p>
 
                   {!step.done && (
-                    <Link
-                      href={step.href}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        background: isNext
-                          ? "linear-gradient(135deg, #D4B86A, #B8960C)"
-                          : "transparent",
-                        color: isNext ? "#161412" : "#A69060",
-                        border: isNext ? "none" : "1px solid #EDE5D3",
-                        fontSize: "12px",
-                        fontWeight: 700,
-                        padding: "7px 14px",
-                        borderRadius: "8px",
-                        textDecoration: "none",
-                      }}
-                    >
-                      {step.cta}
-                      <ArrowRight size={12} strokeWidth={2.5} />
-                    </Link>
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <Link
+                        href={step.href}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          background: isNext
+                            ? "linear-gradient(135deg, #D4B86A, #B8960C)"
+                            : "transparent",
+                          color: isNext ? "#161412" : "#A69060",
+                          border: isNext ? "none" : "1px solid #EDE5D3",
+                          fontSize: "12px",
+                          fontWeight: 700,
+                          padding: "7px 14px",
+                          borderRadius: "8px",
+                          textDecoration: "none",
+                        }}
+                      >
+                        {step.cta}
+                        <ArrowRight size={12} strokeWidth={2.5} />
+                      </Link>
+                      {step.quickAction}
+                    </div>
                   )}
                 </div>
 
