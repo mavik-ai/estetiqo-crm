@@ -129,3 +129,10 @@
     @apply font-sans;
   }
 }
+
+/* Input com foco dourado — usado nas páginas de auth (server components) */
+.input-estetiqo:focus {
+  outline: none;
+  border-color: #B8960C !important;
+  box-shadow: 0 0 0 3px rgba(184, 150, 12, 0.12);
+}

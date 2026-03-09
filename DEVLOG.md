@@ -151,6 +151,46 @@ Impacto: `/frontend/src/app/layout.tsx`.
 
 <!-- NOVOS UPDATES ABAIXO DESTA LINHA -->
 
+## [IMPL] 08/MAR/26 — Onda 0 / M0.1: Arquivos de ambiente configurados
+Quem: Claude Code / claude-sonnet-4-6
+O que: Criados `/frontend/.env.local` e `/backend/.env` com credenciais reais do Supabase Cloud.
+Por que: Onda 0 — pré-requisito para autenticação e conexão com banco de dados.
+Impacto: Frontend conectado ao Supabase (URL + anon key). Backend com service_role key + DATABASE_URL + SECRET_KEY.
+
+---
+
+## [IMPL] 08/MAR/26 — Onda 0 / M0.2: Página de login criada
+Quem: Claude Code / claude-sonnet-4-6
+O que: Criados `/frontend/src/app/(auth)/layout.tsx` e `/frontend/src/app/(auth)/login/page.tsx` com form visual completo seguindo o Design System (Playfair Display + Urbanist, dourado #B8960C, fundo #F6F2EA). Exibe mensagem de erro quando login falha. Chama server action `login()`.
+Por que: Onda 0 — sem página de login o sistema era inacessível.
+Impacto: Rota `/login` funcional com campos email/senha, feedback de erro visual e botão com gradiente dourado.
+
+---
+
+## [IMPL] 08/MAR/26 — Onda 0 / M0.3: Auth guard ativado no dashboard
+Quem: Claude Code / claude-sonnet-4-6
+O que: Ativado guard de autenticação em `/frontend/src/app/(dashboard)/layout.tsx`. Build validado (7 rotas, 0 erros). Backend carregando sem erros.
+Por que: Onda 0 — dashboard estava acessível sem login (guard estava comentado).
+Impacto: Rotas protegidas: `/`, `/agenda`, `/clientes`, `/protocolos`, `/rsvp`, `/servicos`, `/relatorios`. Redirecionam para `/login` sem sessão ativa.
+
+---
+
+## [IMPL] 09/MAR/26 — Onda 0 / Superuser: Usuário Rafael criado e fluxo de primeiro acesso implementado
+Quem: Claude Code / claude-sonnet-4-6
+O que: Superuser `registro@mavikai.com.br` confirmado no Supabase Auth (senha: admin2026). Coluna `must_change_password` adicionada à `public.users`. Usuário marcado como `must_change_password = TRUE`. Criadas páginas `/primeiro-acesso` (form de nova senha) e server action que atualiza senha no Supabase Auth + reseta a flag. Login action atualizado para redirecionar para `/primeiro-acesso` quando a flag está ativa. Dashboard layout protegido para redirecionar usuários com flag ativa.
+Por que: Segurança — superuser não deve usar a senha temporária de onboarding em produção.
+Impacto: `/frontend/src/app/(auth)/primeiro-acesso/page.tsx`, `/frontend/src/app/(auth)/primeiro-acesso/actions.ts`, `(auth)/login/actions.ts`, `(dashboard)/layout.tsx`, migration `add_must_change_password_to_users`.
+
+---
+
+## [IMPL] 09/MAR/26 — Onda 0 / Resend: Integração de email configurada
+Quem: Claude Code / claude-sonnet-4-6
+O que: Pacote `resend` instalado. Criado `/frontend/src/lib/email.ts` com função `sendEmail()`. RESEND_API_KEY adicionado ao `.env.local` (aguardando preenchimento). Função com fallback seguro — loga aviso e não quebra se key não estiver configurada.
+Por que: Base para envio transacional de emails (confirmações, alertas, RSVP backup).
+Impacto: `/frontend/src/lib/email.ts`, `frontend/.env.local`.
+
+---
+
 ## [IMPL] 08/MAR/26 01:02 — Fase 4 Iniciada: Setup de Auth e Middlewares (Bloco 1)
 Quem: Antigravity / gemini
 O que: Início do Bloco Funcional 1 da Fase 4 após plano aprovado `implementation_plan.md` com objetivo de integrar NextJS + FastAPI + Supabase Auth.

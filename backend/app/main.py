@@ -17,6 +17,10 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
+@app.get("/", tags=["system"])
+def root():
+    return {"name": "Estetiqo CRM API", "version": "1.0.0", "docs": "/docs"}
+
 @app.get("/health-check", tags=["system"])
 def health_check():
     return {"status": "ok", "message": "Estetiqo API is running."}

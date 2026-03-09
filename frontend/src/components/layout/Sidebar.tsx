@@ -2,6 +2,7 @@
 
 import { Home, Calendar, Users, FileText, MessageSquare, Monitor, Settings, LogOut, BarChart3 } from "lucide-react";
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 
@@ -29,12 +30,14 @@ export function Sidebar() {
         <div className="flex flex-col justify-between flex-shrink-0 h-screen overflow-y-auto" style={{ width: "220px", background: "#FEFCF7", borderRight: "1px solid #EDE5D3" }}>
             <div>
                 <div className="px-5 pt-6 pb-5">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg, #D4B86A, #B8960C)", boxShadow: "0 3px 10px rgba(184,150,12,0.25)" }}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFDF7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg>
-                        </div>
-                        <div className="font-bold" style={{ color: "#2D2319", fontSize: "17px", letterSpacing: "-0.02em", fontFamily: "'Playfair Display', serif" }}>Estetiqo</div>
-                    </div>
+                    <Image
+                        src="/logo.png"
+                        alt="Estetiqo"
+                        width={160}
+                        height={44}
+                        priority
+                        className="h-8 w-auto"
+                    />
                 </div>
                 <div className="px-3">
                     <div style={{ color: "#BBA870", fontSize: "9px", fontWeight: 700, letterSpacing: "0.15em", padding: "0 10px", marginBottom: "6px" }}>MENU</div>

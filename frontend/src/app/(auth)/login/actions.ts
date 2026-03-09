@@ -28,16 +28,20 @@ export async function login(formData: FormData) {
     if (user) {
         const { data: profile } = await supabase
             .from('users')
-            .select('role')
+            .select('role, must_change_password')
             .eq('id', user.id)
             .single()
 
-        if (profile && profile.role === 'superadmin') {
+        // Primeiro acesso — força troca de senha antes de qualquer coisa
+        if (profile?.must_change_password) {
+            return redirect('/primeiro-acesso')
+        }
+
+        if (profile?.role === 'superadmin') {
             return redirect('/admin')
         }
     }
 
-    // Se for admin, operator ou qualquer outro role comum de tenant, 
-    // será redirecionado pro root '/' (painel da clínica)
+    // Admin ou operator — painel da clínica
     return redirect('/')
 }
