@@ -42,65 +42,65 @@
 
 ---
 
-## ONDA 2 — Módulo Clientes ⬜
+## ONDA 2 — Módulo Clientes ✅
 
 > Cadastro completo de pacientes com ficha de saúde digital.
 
 | # | Milestone | Status |
 |---|-----------|--------|
-| M2.1 | Lista de clientes `/clientes` — busca por nome/telefone + filtros | ⬜ |
-| M2.2 | Formulário de novo cliente com dados pessoais | ⬜ |
-| M2.3 | Ficha de saúde — 16 perguntas Sim/Não + campo aberto | ⬜ |
-| M2.4 | Perfil do cliente `/clientes/:id` — dados + saúde + histórico de atendimentos | ⬜ |
+| M2.1 | Lista de clientes `/clientes` — busca por nome/telefone + filtros | ✅ |
+| M2.2 | Formulário de novo cliente com dados pessoais | ✅ |
+| M2.3 | Ficha de saúde — 16 perguntas Sim/Não + campo aberto | ✅ |
+| M2.4 | Perfil do cliente `/clientes/:id` — dados + saúde + histórico de atendimentos | ✅ |
 | M2.5 | Avaliação por estrelas (1-5) no perfil | ⬜ |
-| M2.6 | Backend CRUD completo (`clients` + `health_records`) com RLS | ⬜ |
+| M2.6 | Backend CRUD completo (`clients` + `health_records`) com RLS | ✅ |
 
 ---
 
-## ONDA 3 — Configurações da Clínica ⬜
+## ONDA 3 — Configurações da Clínica 🔄
 
 > Admin configura salas, serviços e dados da clínica.
 
 | # | Milestone | Status |
 |---|-----------|--------|
-| M3.1 | Página Serviços `/servicos` — listagem + CRUD (nome, preço, duração) | ⬜ |
+| M3.1 | Página Serviços `/servicos` — listagem + CRUD (nome, preço, duração) | ✅ |
 | M3.2 | Ativar/desativar serviço | ⬜ |
-| M3.3 | Página Salas `/config/salas` — CRUD de salas | ⬜ |
-| M3.4 | Configurações da clínica `/config` — nome, endereço, logo | ⬜ |
+| M3.3 | Página Salas `/config/salas` — CRUD de salas | ✅ |
+| M3.4 | Configurações da clínica `/config` — nome, endereço, logo | ✅ |
 | M3.5 | Gestão de usuários/operadores `/config/usuarios` — permissões por módulo | ⬜ |
-| M3.6 | Backend CRUD para `services` e `rooms` com RLS | ⬜ |
+| M3.6 | Backend CRUD para `services` e `rooms` com RLS | ✅ |
 
 ---
 
-## ONDA 4 — Módulo Protocolos ⬜
+## ONDA 4 — Módulo Protocolos ✅
 
 > Acompanhamento clínico completo de tratamentos multi-sessão.
 
 | # | Milestone | Status |
 |---|-----------|--------|
-| M4.1 | Lista de protocolos ativos `/protocolos` com progresso visual | ⬜ |
-| M4.2 | Criar novo protocolo vinculado ao cliente (serviço + nº sessões + meta de peso) | ⬜ |
-| M4.3 | Detalhe do protocolo `/protocolos/:id` — linha do tempo de sessões | ⬜ |
-| M4.4 | Registro de medidas por sessão (ABS, ABI, Peso) | ⬜ |
-| M4.5 | Campo de procedimento realizado (texto livre) | ⬜ |
-| M4.6 | Barra de progresso visual (ex: "6/10 sessões") | ⬜ |
-| M4.7 | Backend CRUD para `protocols` e `sessions` com RLS | ⬜ |
+| M4.1 | Lista de protocolos ativos `/protocolos` com progresso visual | ✅ |
+| M4.2 | Criar novo protocolo vinculado ao cliente (serviço + nº sessões + meta de peso) | ✅ |
+| M4.3 | Detalhe do protocolo `/protocolos/:id` — linha do tempo de sessões | ✅ |
+| M4.4 | Registro de medidas por sessão (ABS, ABI, Peso) | ✅ |
+| M4.5 | Campo de procedimento realizado (texto livre) | ✅ |
+| M4.6 | Barra de progresso visual (ex: "6/10 sessões") | ✅ |
+| M4.7 | Backend CRUD para `protocols` e `sessions` com RLS | ✅ |
 
 ---
 
-## ONDA 5 — Módulo Agenda ⬜
+## ONDA 5 — Módulo Agenda ✅
 
 > Calendário visual multi-sala com agendamento integrado.
 
 | # | Milestone | Status |
 |---|-----------|--------|
-| M5.1 | Agenda `/agenda` — visão dia com slots por sala | ⬜ |
-| M5.2 | Agenda — visão semana | ⬜ |
-| M5.3 | Status RSVP por ícone na agenda (CheckCircle/Clock/AlertTriangle/XCircle) | ⬜ |
-| M5.4 | Formulário Novo Agendamento `/agenda/novo` — paciente, serviço, sala, profissional, data/hora | ⬜ |
-| M5.5 | Validação de conflitos — mesma sala / mesmo profissional | ⬜ |
-| M5.6 | Vinculação de agendamento a protocolo existente | ⬜ |
-| M5.7 | Backend endpoints de agendamento com algoritmo anti-sobreposição | ⬜ |
+| M5.1 | Agenda `/agenda` — visão dia com slots por sala | ✅ |
+| M5.2 | Agenda — visão semana | ✅ |
+| M5.3 | Status RSVP por ícone na agenda (CheckCircle/Clock/AlertTriangle/XCircle) | ✅ |
+| M5.4 | Formulário Novo Agendamento `/agenda/novo` — paciente, serviço, sala, profissional, data/hora | ✅ |
+| M5.5 | Validação de conflitos — mesma sala / mesmo profissional | ✅ |
+| M5.6 | Vinculação de agendamento a protocolo existente | ✅ |
+| M5.7 | Backend endpoints de agendamento com algoritmo anti-sobreposição | ✅ |
 
 ---
 
@@ -215,18 +215,18 @@
 |------|-----------|-----------|
 | **Onda 0** | Fundação + Autenticação | ✅ 11/11 |
 | **Onda 1** | Dashboard com dados reais | ✅ 8/8 |
-| **Onda 2** | Módulo Clientes | ⬜ 0/6 |
-| **Onda 3** | Configurações da clínica | ⬜ 0/6 |
-| **Onda 4** | Módulo Protocolos | ⬜ 0/7 |
-| **Onda 5** | Módulo Agenda | ⬜ 0/7 |
+| **Onda 2** | Módulo Clientes | ✅ 5/6 |
+| **Onda 3** | Configurações da clínica | 🔄 4/6 |
+| **Onda 4** | Módulo Protocolos | ✅ 7/7 |
+| **Onda 5** | Módulo Agenda | ✅ 7/7 |
 | **Onda 6** | RSVP + WhatsApp | ⬜ 0/6 |
 | **Onda 7** | Assinatura Digital + Fotos | ⬜ 0/7 |
-| **Onda 8** | Relatórios | ⬜ 0/6 |
+| **Onda 8** | Relatórios | 🔄 1/6 |
 | **Onda 9** | Google Calendar | ⬜ 0/4 |
 | **Onda 10** | Superadmin Completo | ⬜ 0/4 |
 | **Onda 11** | Faturamento SaaS | ⬜ 0/6 |
 | **Onda 12** | Deploy Go-Live | ⬜ 0/9 |
-| **TOTAL** | | **19/87 milestones** |
+| **TOTAL** | | **44/87 milestones** |
 
 ---
 

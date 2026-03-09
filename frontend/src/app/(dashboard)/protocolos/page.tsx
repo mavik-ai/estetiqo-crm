@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { Activity, Calendar, Target } from "lucide-react";
+import { Activity, Calendar, Target, Plus } from "lucide-react";
 
 interface Protocol {
   id: string;
@@ -153,6 +153,28 @@ export default async function ProtocolosPage({
               ? "cancelados"
               : "no total"}
           </p>
+        </div>
+
+        {/* Ações + Filtros */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <Link
+            href="/protocolos/novo"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              background: "linear-gradient(135deg, #D4B86A, #B8960C)",
+              color: "#161412",
+              fontSize: "13px",
+              fontWeight: 700,
+              padding: "8px 16px",
+              borderRadius: "10px",
+              textDecoration: "none",
+            }}
+          >
+            <Plus size={14} strokeWidth={2.5} />
+            Novo Protocolo
+          </Link>
         </div>
 
         {/* Filtros de status */}

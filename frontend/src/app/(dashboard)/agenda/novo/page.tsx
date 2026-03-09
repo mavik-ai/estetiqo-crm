@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useTransition } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Search, Clock } from "lucide-react";
+import { criarAgendamento } from "./actions";
 
 interface Client {
   id: string;
@@ -66,8 +66,8 @@ function addMinutes(timeStr: string, minutes: number): string {
 }
 
 export default function NovoAgendamentoPage() {
-  const router = useRouter();
   const supabase = createClient();
+  const [isPending, startTransition] = useTransition();
 
   // Form state
   const [clientSearch, setClientSearch] = useState("");
@@ -92,7 +92,6 @@ export default function NovoAgendamentoPage() {
   const [endTime, setEndTime] = useState("10:00");
   const [notes, setNotes] = useState("");
 
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Load services, rooms, professionals on mount
@@ -158,40 +157,30 @@ export default function NovoAgendamentoPage() {
     }
   }, [selectedServiceId, startTime, services]);
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedClient || !selectedServiceId || !selectedRoomId || !date || !startTime || !endTime) {
       setError("Preencha todos os campos obrigatórios.");
       return;
     }
 
-    setLoading(true);
     setError(null);
+    const formData = new FormData();
+    formData.set('client_id',       selectedClient.id);
+    formData.set('service_id',      selectedServiceId);
+    formData.set('room_id',         selectedRoomId);
+    formData.set('starts_at',       `${date}T${startTime}:00`);
+    formData.set('ends_at',         `${date}T${endTime}:00`);
+    formData.set('protocol_id',     selectedProtocolId);
+    formData.set('professional_id', selectedProfessionalId);
+    formData.set('notes',           notes);
 
-    const startsAt = `${date}T${startTime}:00`;
-    const endsAt = `${date}T${endTime}:00`;
-
-    const { error: insertError } = await supabase.from("appointments").insert({
-      client_id: selectedClient.id,
-      service_id: selectedServiceId,
-      protocol_id: selectedProtocolId || null,
-      room_id: selectedRoomId,
-      professional_id: selectedProfessionalId || null,
-      starts_at: startsAt,
-      ends_at: endsAt,
-      notes: notes || null,
-      rsvp_status: "pending",
-      is_block: false,
-      no_show: false,
+    startTransition(async () => {
+      const result = await criarAgendamento(formData);
+      if (result?.error) {
+        setError(result.error);
+      }
     });
-
-    if (insertError) {
-      setError("Erro ao criar agendamento. Tente novamente.");
-      setLoading(false);
-      return;
-    }
-
-    router.push("/agenda");
   }
 
   const selectedService = services.find((s) => s.id === selectedServiceId);
@@ -469,21 +458,21 @@ export default function NovoAgendamentoPage() {
           <div className="flex justify-end pt-2">
             <button
               type="submit"
-              disabled={loading}
+              disabled={isPending}
               style={{
-                background: loading ? "#EDE5D3" : "linear-gradient(135deg, #D4B86A, #B8960C)",
+                background: isPending ? "#EDE5D3" : "linear-gradient(135deg, #D4B86A, #B8960C)",
                 color: "#161412",
                 fontSize: "14px",
                 fontWeight: 700,
                 padding: "11px 28px",
                 borderRadius: "10px",
                 border: "none",
-                cursor: loading ? "not-allowed" : "pointer",
+                cursor: isPending ? "not-allowed" : "pointer",
                 fontFamily: "inherit",
                 transition: "opacity 0.15s",
               }}
             >
-              {loading ? "Agendando..." : "Agendar"}
+              {isPending ? "Agendando..." : "Agendar"}
             </button>
           </div>
         </form>
