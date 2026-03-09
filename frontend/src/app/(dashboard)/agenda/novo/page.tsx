@@ -258,7 +258,7 @@ export default function NovoAgendamentoPage() {
                 style={{ ...inputStyle, paddingLeft: "38px" }}
               />
             </div>
-            {showClientDropdown && clientResults.length > 0 && (
+            {showClientDropdown && clientSearch.length >= 2 && (
               <div
                 style={{
                   position: "absolute",
@@ -274,31 +274,56 @@ export default function NovoAgendamentoPage() {
                   marginTop: "4px",
                 }}
               >
-                {clientResults.map((client) => (
-                  <button
-                    key={client.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedClient(client);
-                      setClientSearch(client.name);
-                      setShowClientDropdown(false);
-                    }}
-                    style={{
-                      width: "100%",
-                      textAlign: "left",
-                      padding: "10px 14px",
-                      fontSize: "14px",
-                      color: "#2D2319",
-                      background: "transparent",
-                      border: "none",
-                      cursor: "pointer",
-                      borderBottom: "1px solid #F0EBE0",
-                      fontFamily: "inherit",
-                    }}
-                  >
-                    {client.name}
-                  </button>
-                ))}
+                {clientResults.length === 0 ? (
+                  <div style={{ padding: "10px 14px", fontSize: "13px", color: "#A69060" }}>
+                    Nenhum paciente encontrado.
+                  </div>
+                ) : (
+                  clientResults.map((client) => (
+                    <button
+                      key={client.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedClient(client);
+                        setClientSearch(client.name);
+                        setShowClientDropdown(false);
+                      }}
+                      style={{
+                        width: "100%",
+                        textAlign: "left",
+                        padding: "10px 14px",
+                        fontSize: "14px",
+                        color: "#2D2319",
+                        background: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                        borderBottom: "1px solid #F0EBE0",
+                        fontFamily: "inherit",
+                      }}
+                    >
+                      {client.name}
+                    </button>
+                  ))
+                )}
+                {/* Sempre exibe link para cadastrar */}
+                <a
+                  href={`/clientes/novo?nome=${encodeURIComponent(clientSearch)}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "10px 14px",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    color: "#B8960C",
+                    background: "#FBF5EA",
+                    textDecoration: "none",
+                    borderTop: clientResults.length > 0 ? "1px solid #EDE5D3" : "none",
+                  }}
+                >
+                  <span style={{ fontSize: "16px", lineHeight: 1 }}>+</span>
+                  Cadastrar &ldquo;{clientSearch}&rdquo; como novo paciente
+                </a>
               </div>
             )}
           </div>

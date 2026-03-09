@@ -59,7 +59,14 @@ const sectionTitle: React.CSSProperties = {
     marginBottom: "4px",
 };
 
-export default function NovaClientePage() {
+export default async function NovaClientePage({
+    searchParams,
+}: {
+    searchParams: Promise<{ nome?: string }>;
+}) {
+    const sp = await searchParams;
+    const nomeInicial = sp.nome ?? "";
+
     return (
         <div
             style={{
@@ -124,6 +131,7 @@ export default function NovaClientePage() {
                                 type="text"
                                 name="name"
                                 required
+                                defaultValue={nomeInicial}
                                 placeholder="Nome da cliente"
                                 style={inputStyle}
                             />

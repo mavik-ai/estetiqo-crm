@@ -1,6 +1,6 @@
 'use client'
 
-import { Home, Calendar, Users, FileText, MessageSquare, Monitor, Settings, LogOut, BarChart3 } from "lucide-react";
+import { Home, Calendar, Users, FileText, MessageSquare, Monitor, Settings, LogOut, BarChart3, Sparkles } from "lucide-react";
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -73,6 +73,20 @@ export function Sidebar({ userName = "Michele Oliveira", userInitials = "MO", us
             </div>
 
             <div className="px-3 pb-4">
+                {/* Primeiros Passos */}
+                <Link
+                    href="/bem-vindo"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg mb-2 outline-none transition-all"
+                    style={{
+                        background: isActive('/bem-vindo') ? "linear-gradient(135deg, #FBF5EA, #F8F0E0)" : "rgba(184,150,12,0.06)",
+                        border: isActive('/bem-vindo') ? "1px solid #EDE5D3" : "1px solid rgba(184,150,12,0.15)",
+                        color: "#B8960C",
+                    }}
+                >
+                    <Sparkles size={15} strokeWidth={1.5} />
+                    <span style={{ fontSize: "12px", fontWeight: 700 }}>Primeiros Passos</span>
+                </Link>
+
                 <div className="mb-2" style={{ borderTop: "1px solid #F5EDE0" }} />
                 <Link
                     href="/config"
