@@ -80,7 +80,7 @@ Após construirmos os blocos, realizaremos uma rodada focada pura em robustez si
 
 ## FASE 6 — DEPLOY E INTEGRAÇÃO GO-LIVE (COOLIFY / HOSTINGER)
 
-**O Ritual de Lançamento na KVM 8:**
+**O Ritual de Lançamento na KVM4:**
 1. Variáveis de Produção: Transportar o env limpo (`.env.production`) para as configurações do Coolify.
 2. Migrações e DB Limpo: Confirmar se os Schemas Cloud do projeto Host estão zerados para começar a receber as clínicas.
 3. Build Automático: Fazer o script NPM CI (FastAPI Uvicorn Binding) girar de forma autônoma na imagem Docker providenciada.

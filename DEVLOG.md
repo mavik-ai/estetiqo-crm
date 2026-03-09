@@ -151,6 +151,38 @@ Impacto: `/frontend/src/app/layout.tsx`.
 
 <!-- NOVOS UPDATES ABAIXO DESTA LINHA -->
 
+## [IMPL] 09/MAR/26 — Onda 1 / M1.1: RLS policies aplicadas no Supabase
+Quem: Claude Code / claude-sonnet-4-6
+O que: Criada função helper `get_user_tenant_id()` e policies de isolamento por tenant nas tabelas: clients, appointments, protocols, services, rooms, sessions, session_photos, digital_signatures, activity_log.
+Por que: Segurança multi-tenant — cada clínica só acessa seus próprios dados.
+Impacto: Migration `rls_tenant_isolation_policies` aplicada. Todas as tabelas de negócio protegidas por RLS.
+
+---
+
+## [IMPL] 09/MAR/26 — Onda 1 / M1.2: Seed de dados de teste inserido
+Quem: Claude Code / claude-sonnet-4-6
+O que: Inseridos: 6 serviços, 2 salas, 8 pacientes, 6 protocolos ativos e 7 agendamentos para hoje com status RSVP variados (confirmed/pending/noresponse) para a Clínica Estética Michele.
+Por que: Dashboard precisa de dados reais para ser validado visualmente.
+Impacto: tenant_id `a1b2c3d4-0000-0000-0000-000000000001` populado. `user@estetiqo.com` já vê dados reais.
+
+---
+
+## [IMPL] 09/MAR/26 — Onda 1 / M1.3+M1.4: Endpoints FastAPI criados
+Quem: Claude Code / claude-sonnet-4-6
+O que: `GET /api/v1/dashboard/metrics` e `GET /api/v1/appointments/upcoming` implementados com verificação JWT Supabase e isolamento por tenant.
+Por que: Backend preparado para consumo futuro por clientes externos.
+Impacto: `/backend/app/api/v1/endpoints/dashboard.py`, `router.py`, `main.py`.
+
+---
+
+## [IMPL] 09/MAR/26 — Onda 1 / M1.5–M1.8: Dashboard com dados reais, saudação dinâmica, filtros e banner
+Quem: Claude Code / claude-sonnet-4-6
+O que: `page.tsx` virou Server Component com busca paralela real do Supabase. Métricas, agendamentos, serviços populares e banner de RSVP pendentes com dados reais. Topbar exibe nome real do usuário logado.
+Por que: Onda 1 concluída — dashboard deixou de ser mockado.
+Impacto: `page.tsx`, `DashboardMetrics.tsx`, `AppointmentTable.tsx`, `PopularServices.tsx`, `Topbar.tsx`, `(dashboard)/layout.tsx`.
+
+---
+
 ## [IMPL] 08/MAR/26 — Onda 0 / M0.1: Arquivos de ambiente configurados
 Quem: Claude Code / claude-sonnet-4-6
 O que: Criados `/frontend/.env.local` e `/backend/.env` com credenciais reais do Supabase Cloud.

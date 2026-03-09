@@ -10,21 +10,23 @@ export default async function DashboardLayout({ children }: { children: React.Re
         redirect('/login');
     }
 
-    // Bloqueia acesso ao dashboard até o usuário definir sua senha pessoal
     const { data: profile } = await supabase
         .from('users')
-        .select('must_change_password')
+        .select('must_change_password, name')
         .eq('id', user.id)
         .single();
+
     if (profile?.must_change_password) {
         redirect('/primeiro-acesso');
     }
+
+    const firstName = (profile?.name ?? '').split(' ')[0] || 'Bem-vinda';
 
     return (
         <div className="min-h-screen flex" style={{ fontFamily: "var(--font-urbanist), sans-serif", background: "#F6F2EA" }}>
             <Sidebar />
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
-                <Topbar />
+                <Topbar userName={firstName} />
                 <div className="flex-1 overflow-auto">
                     {children}
                 </div>
