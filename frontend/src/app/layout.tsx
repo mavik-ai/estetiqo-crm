@@ -17,6 +17,10 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
     title: "Estetiqo CRM",
     description: "Gestão premium para clínicas de estética",
+    icons: {
+        icon: "/favicon.png",
+        apple: "/favicon.png",
+    },
 };
 
 export default function RootLayout({

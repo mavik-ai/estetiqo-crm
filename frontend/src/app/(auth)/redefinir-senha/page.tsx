@@ -1,9 +1,9 @@
-import { changePassword } from './actions'
-import { AlertCircle, ShieldCheck } from 'lucide-react'
+import { redefinePassword } from './actions'
+import { AlertCircle, KeyRound } from 'lucide-react'
 import Image from 'next/image'
 import { PasswordInput } from '@/components/ui/PasswordInput'
 
-export default async function PrimeiroAcessoPage({
+export default async function RedefinirSenhaPage({
     searchParams,
 }: {
     searchParams: Promise<{ error?: string }>
@@ -13,30 +13,20 @@ export default async function PrimeiroAcessoPage({
 
     return (
         <div className="w-full max-w-sm px-4">
-            {/* Logo */}
             <div className="flex items-center justify-center mb-8">
-                <Image
-                    src="/logo-dark.png"
-                    alt="Estetiqo"
-                    width={200}
-                    height={56}
-                    priority
-                    className="h-12 w-auto"
-                />
+                <Image src="/logo-dark.png" alt="Estetiqo" width={200} height={56} priority className="h-12 w-auto" />
             </div>
 
-            {/* Card */}
             <div
                 className="rounded-2xl p-8"
                 style={{ background: "#1C1A17", border: "1px solid #33301F", boxShadow: "0 8px 40px rgba(0,0,0,0.4)" }}
             >
-                {/* Ícone de segurança */}
                 <div className="flex items-center justify-center mb-5">
                     <div
                         className="w-12 h-12 rounded-2xl flex items-center justify-center"
                         style={{ background: "rgba(212,184,106,0.15)", color: "#D4B86A" }}
                     >
-                        <ShieldCheck size={22} />
+                        <KeyRound size={22} />
                     </div>
                 </div>
 
@@ -45,14 +35,13 @@ export default async function PrimeiroAcessoPage({
                         className="text-xl font-semibold mb-2"
                         style={{ fontFamily: "'Playfair Display', serif", color: "#FFFFFF" }}
                     >
-                        Defina sua nova senha
+                        Nova senha
                     </h1>
-                    <p className="text-sm leading-relaxed" style={{ color: "#9A8E70" }}>
-                        Por segurança, é necessário criar uma senha pessoal antes de continuar.
+                    <p className="text-sm" style={{ color: "#9A8E70" }}>
+                        Escolha uma senha segura com no mínimo 8 caracteres.
                     </p>
                 </div>
 
-                {/* Mensagem de erro */}
                 {errorMessage && (
                     <div
                         className="flex items-center gap-2.5 rounded-lg px-3.5 py-3 mb-5 text-sm"
@@ -63,48 +52,22 @@ export default async function PrimeiroAcessoPage({
                     </div>
                 )}
 
-                <form action={changePassword} className="flex flex-col gap-4">
+                <form action={redefinePassword} className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1.5">
-                        <label
-                            htmlFor="password"
-                            className="text-xs font-semibold uppercase tracking-wider"
-                            style={{ color: "#9A8E70" }}
-                        >
+                        <label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#9A8E70" }}>
                             Nova senha
                         </label>
-                        <PasswordInput
-                            id="password"
-                            name="password"
-                            autoComplete="new-password"
-                            minLength={8}
-                            placeholder="Mínimo 8 caracteres"
-                            required
-                            dark
-                        />
+                        <PasswordInput id="password" name="password" autoComplete="new-password" minLength={8} placeholder="Mínimo 8 caracteres" required dark />
                     </div>
-
                     <div className="flex flex-col gap-1.5">
-                        <label
-                            htmlFor="confirm_password"
-                            className="text-xs font-semibold uppercase tracking-wider"
-                            style={{ color: "#9A8E70" }}
-                        >
-                            Confirmar nova senha
+                        <label htmlFor="confirm_password" className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#9A8E70" }}>
+                            Confirmar senha
                         </label>
-                        <PasswordInput
-                            id="confirm_password"
-                            name="confirm_password"
-                            autoComplete="new-password"
-                            minLength={8}
-                            placeholder="Repita a nova senha"
-                            required
-                            dark
-                        />
+                        <PasswordInput id="confirm_password" name="confirm_password" autoComplete="new-password" minLength={8} placeholder="Repita a nova senha" required dark />
                     </div>
-
                     <button
                         type="submit"
-                        className="w-full rounded-xl py-3 text-sm font-bold mt-2 transition-all active:scale-[0.98]"
+                        className="w-full rounded-xl py-3 text-sm font-bold mt-1 transition-all active:scale-[0.98]"
                         style={{
                             background: "linear-gradient(135deg, #D4B86A, #B8960C)",
                             color: "#161412",
@@ -112,7 +75,7 @@ export default async function PrimeiroAcessoPage({
                             minHeight: "44px",
                         }}
                     >
-                        Salvar e continuar
+                        Salvar nova senha
                     </button>
                 </form>
             </div>

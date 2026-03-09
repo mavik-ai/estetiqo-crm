@@ -191,6 +191,14 @@ Impacto: `/frontend/src/lib/email.ts`, `frontend/.env.local`.
 
 ---
 
+## [IMPL] 09/MAR/26 — Auth: Fluxo completo + dark theme + logos reais + favicon
+Quem: Claude Code / claude-sonnet-4-6
+O que: Todas as páginas de auth em dark theme com logo real. PasswordInput com toggle olho. "Lembrar de mim" + "Esqueceu a senha?" na mesma linha. Fluxo completo de reset: `/esqueceu-senha` → email Supabase → `/auth/callback` → `/redefinir-senha`. AdminSidebar com logo-dark. Favicon configurado no metadata.
+Por que: UX e identidade visual completas na camada de autenticação.
+Impacto: `/login`, `/primeiro-acesso`, `/esqueceu-senha`, `/redefinir-senha`, `/auth/callback/route.ts`, `AdminSidebar.tsx`, `Sidebar.tsx`, `layout.tsx`, `PasswordInput.tsx`, `globals.css`, `public/logo.png`, `public/logo-dark.png`, `public/favicon.png`.
+
+---
+
 ## [IMPL] 08/MAR/26 01:02 — Fase 4 Iniciada: Setup de Auth e Middlewares (Bloco 1)
 Quem: Antigravity / gemini
 O que: Início do Bloco Funcional 1 da Fase 4 após plano aprovado `implementation_plan.md` com objetivo de integrar NextJS + FastAPI + Supabase Auth.

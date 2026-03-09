@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -28,17 +29,14 @@ export default function AdminSidebar() {
 
             {/* HEADER LOGO */}
             <div className="h-16 flex items-center px-6 border-b" style={{ borderColor: '#33301F' }}>
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg"
-                        style={{ background: 'linear-gradient(135deg, #D4B86A, #B8960C)' }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#161412" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                            <path d="M2 17l10 5 10-5" />
-                            <path d="M2 12l10 5 10-5" />
-                        </svg>
-                    </div>
-                    <span className="font-bold text-lg tracking-tight" style={{ color: '#FFFFFF' }}>Estetiqo OS</span>
-                </div>
+                <Image
+                    src="/logo-dark.png"
+                    alt="Estetiqo"
+                    width={160}
+                    height={44}
+                    priority
+                    className="h-8 w-auto"
+                />
             </div>
 
             {/* NAV LINKS */}
