@@ -3,7 +3,8 @@ import { DashboardMetrics, DashboardMetricsData } from "@/components/dashboard/D
 import { AppointmentTable, Appointment } from "@/components/dashboard/AppointmentTable";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { PopularServices } from "@/components/dashboard/PopularServices";
-import { AlertCircle, ChevronRight } from "lucide-react";
+import { AlertCircle, ChevronRight, Sparkles, Scissors, DoorOpen, Layers } from "lucide-react";
+import Link from "next/link";
 
 async function getDashboardData() {
     const supabase = await createClient();
@@ -30,7 +31,7 @@ async function getDashboardData() {
     const tomorrowStr   = tomorrow.toISOString();
     const monthStartStr = monthStart.toISOString();
 
-    const [apptToday, noshowsRes, fatRes, apptUpcoming] = await Promise.all([
+    const [apptToday, noshowsRes, fatRes, apptUpcoming, svcsCount, roomsCount] = await Promise.all([
         supabase
             .from('appointments')
             .select('id', { count: 'exact', head: true })
@@ -70,6 +71,17 @@ async function getDashboardData() {
             .gte('starts_at', todayStr)
             .lt('starts_at', tomorrowStr)
             .order('starts_at'),
+
+        supabase
+            .from('services')
+            .select('id', { count: 'exact', head: true })
+            .eq('tenant_id', tenantId)
+            .eq('active', true),
+
+        supabase
+            .from('rooms')
+            .select('id', { count: 'exact', head: true })
+            .eq('tenant_id', tenantId),
     ]);
 
     const atendimentosHoje = apptToday.count ?? 0;
@@ -130,23 +142,98 @@ async function getDashboardData() {
         faturamento_mes:   faturamentoMes,
     };
 
-    return { metrics, appointments, rsvpPendentes, popularServices };
+    const needsSetup = (svcsCount.count ?? 0) === 0 || (roomsCount.count ?? 0) === 0;
+    const setupChecklist = {
+      hasServices: (svcsCount.count ?? 0) > 0,
+      hasRooms:    (roomsCount.count ?? 0) > 0,
+    };
+
+    return { metrics, appointments, rsvpPendentes, popularServices, needsSetup, setupChecklist };
 }
 
 export default async function DashboardPage() {
     const data = await getDashboardData();
 
-    const metrics   = data?.metrics        ?? { atendimentos_hoje: 0, restantes_hoje: 0, noshows_mes: 0, faturamento_mes: 0 };
-    const appts     = data?.appointments   ?? [];
-    const pendentes = data?.rsvpPendentes  ?? 0;
-    const services  = data?.popularServices ?? [];
+    const metrics       = data?.metrics        ?? { atendimentos_hoje: 0, restantes_hoje: 0, noshows_mes: 0, faturamento_mes: 0 };
+    const appts         = data?.appointments   ?? [];
+    const pendentes     = data?.rsvpPendentes  ?? 0;
+    const services      = data?.popularServices ?? [];
+    const needsSetup    = data?.needsSetup     ?? false;
+    const setupChecklist = data?.setupChecklist ?? { hasServices: false, hasRooms: false };
 
     const card = { background: "#FFFFFF", border: "1px solid #EDE5D3", borderRadius: "14px" };
 
     return (
         <div className="px-6 py-5 bg-[#F6F2EA] min-h-full">
 
-            {pendentes > 0 && (
+            {/* Banner de Onboarding */}
+        {needsSetup && (
+          <div
+            style={{
+              background: 'linear-gradient(135deg, #FBF5EA, #F3E8CC)',
+              border: '1px solid rgba(184,150,12,0.25)',
+              borderRadius: '14px',
+              padding: '20px 24px',
+              marginBottom: '16px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <Sparkles size={20} strokeWidth={1.5} color="#B8960C" style={{ flexShrink: 0, marginTop: 2 }} />
+              <div style={{ flex: 1 }}>
+                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: '15px', fontWeight: 700, color: '#2D2319', margin: '0 0 6px' }}>
+                  Configure sua clínica antes de começar
+                </p>
+                <p style={{ fontSize: '12px', color: '#A69060', margin: '0 0 14px' }}>
+                  Complete os itens abaixo para usar o sistema com todas as funcionalidades.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {!setupChecklist.hasServices && (
+                    <Link
+                      href="/servicos"
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '6px',
+                        padding: '7px 14px', borderRadius: '8px',
+                        background: 'rgba(184,150,12,0.10)', border: '1px solid rgba(184,150,12,0.25)',
+                        fontSize: '12px', fontWeight: 700, color: '#B8960C', textDecoration: 'none',
+                      }}
+                    >
+                      <Scissors size={12} strokeWidth={2} />
+                      Cadastrar 1º serviço
+                    </Link>
+                  )}
+                  {!setupChecklist.hasRooms && (
+                    <Link
+                      href="/config/salas"
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '6px',
+                        padding: '7px 14px', borderRadius: '8px',
+                        background: 'rgba(184,150,12,0.10)', border: '1px solid rgba(184,150,12,0.25)',
+                        fontSize: '12px', fontWeight: 700, color: '#B8960C', textDecoration: 'none',
+                      }}
+                    >
+                      <DoorOpen size={12} strokeWidth={2} />
+                      Cadastrar 1ª sala
+                    </Link>
+                  )}
+                  <Link
+                    href="/protocolos/novo"
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '6px',
+                      padding: '7px 14px', borderRadius: '8px',
+                      background: 'rgba(184,150,12,0.10)', border: '1px solid rgba(184,150,12,0.25)',
+                      fontSize: '12px', fontWeight: 700, color: '#B8960C', textDecoration: 'none',
+                    }}
+                  >
+                    <Layers size={12} strokeWidth={2} />
+                    Criar 1º protocolo
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {pendentes > 0 && (
                 <div
                     className="rounded-xl px-4 py-2.5 flex items-center gap-3 mb-4 relative overflow-hidden"
                     style={{ ...card, border: "1px solid rgba(196, 136, 10, 0.2)" }}

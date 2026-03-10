@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { Calendar, TrendingUp, UserX, Star } from "lucide-react";
+import { Calendar, TrendingUp, UserX, Star, Layers, UserPlus } from "lucide-react";
 
 const card = {
   background: "#FFFFFF",
@@ -44,18 +44,35 @@ export default async function RelatoriosPage({
   const days   = Number(sp.periodo ?? 30);
   const { start, end } = getDateRange(days);
 
-  // Buscar agendamentos do período com serviço + preço
-  const { data: appointments } = await supabase
-    .from("appointments")
-    .select("id, no_show, services(name, price)")
-    .eq("tenant_id", tenantId)
-    .gte("starts_at", start)
-    .lte("starts_at", end);
+  // Buscar tudo em paralelo
+  const [appointmentsRes, sessionsRes, newClientsRes] = await Promise.all([
+    supabase
+      .from("appointments")
+      .select("id, no_show, services(name, price)")
+      .eq("tenant_id", tenantId)
+      .gte("starts_at", start)
+      .lte("starts_at", end),
 
-  const allAppointments = appointments ?? [];
+    supabase
+      .from("sessions")
+      .select("id", { count: "exact", head: true })
+      .gte("performed_at", start)
+      .lte("performed_at", end),
+
+    supabase
+      .from("clients")
+      .select("id", { count: "exact", head: true })
+      .eq("tenant_id", tenantId)
+      .gte("created_at", start)
+      .lte("created_at", end),
+  ]);
+
+  const allAppointments = appointmentsRes.data ?? [];
   const total           = allAppointments.length;
   const noShows         = allAppointments.filter((a) => a.no_show).length;
   const noShowRate      = total > 0 ? Math.round((noShows / total) * 100) : 0;
+  const sessoesCount    = sessionsRes.count ?? 0;
+  const novosClientes   = newClientsRes.count ?? 0;
 
   const faturamento = allAppointments.reduce((acc, a) => {
     const raw = Array.isArray(a.services) ? a.services[0] : a.services;
@@ -84,15 +101,27 @@ export default async function RelatoriosPage({
   const metricCards = [
     {
       icon: <Calendar size={20} strokeWidth={1.5} color="#B8960C" />,
-      label: "Atendimentos",
+      label: "Agendamentos",
       value: String(total),
       sub: `no período de ${days} dias`,
+    },
+    {
+      icon: <Layers size={20} strokeWidth={1.5} color="#3A7BD5" />,
+      label: "Sessões Realizadas",
+      value: String(sessoesCount),
+      sub: "sessões de protocolo no período",
     },
     {
       icon: <TrendingUp size={20} strokeWidth={1.5} color="#2D8C4E" />,
       label: "Faturamento",
       value: currencyFmt.format(faturamento),
-      sub: "soma dos serviços realizados",
+      sub: "soma dos serviços agendados",
+    },
+    {
+      icon: <UserPlus size={20} strokeWidth={1.5} color="#2D8C4E" />,
+      label: "Novos Clientes",
+      value: String(novosClientes),
+      sub: "cadastradas no período",
     },
     {
       icon: <UserX size={20} strokeWidth={1.5} color="#D94444" />,
@@ -156,7 +185,7 @@ export default async function RelatoriosPage({
       </div>
 
       {/* Métrica cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         {metricCards.map((m) => (
           <div key={m.label} style={{ ...card, padding: "20px" }}>
             <div className="flex items-center gap-2 mb-3">

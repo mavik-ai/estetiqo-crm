@@ -13,15 +13,26 @@ export async function salvarDadosClinica(formData: FormData) {
   const tenantId = profile?.tenant_id;
   if (!tenantId) redirect('/config/clinica');
 
+  const str = (key: string) => (formData.get(key) as string)?.trim() || null;
+
   await supabase
     .from('tenants')
     .update({
-      name:  (formData.get('name') as string)?.trim() || undefined,
-      phone: (formData.get('phone') as string) || null,
-      email: (formData.get('email') as string) || null,
-      cnpj:  (formData.get('cnpj') as string) || null,
+      name:                str('name') ?? undefined,
+      phone:               str('phone'),
+      email:               str('email'),
+      cnpj:                str('cnpj'),
+      // Endereço
+      cep:                 str('cep'),
+      logradouro:          str('logradouro'),
+      numero:              str('numero'),
+      complemento:         str('complemento'),
+      bairro:              str('bairro'),
+      cidade:              str('cidade'),
+      estado:              str('estado'),
+      // Fiscal
+      inscricao_municipal: str('inscricao_municipal'),
+      regime_tributario:   str('regime_tributario'),
     })
     .eq('id', tenantId);
-
-  redirect('/config/clinica?saved=1');
 }

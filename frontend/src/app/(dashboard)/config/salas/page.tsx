@@ -50,6 +50,7 @@ export default function SalasPage() {
 
   // Delete confirm
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   async function loadRooms(tid: string) {
     setLoading(true);
@@ -145,6 +146,24 @@ export default function SalasPage() {
 
   async function handleDelete(id: string) {
     if (!tenantId) return;
+    setDeleteError(null);
+
+    // Verificar agendamentos futuros nesta sala
+    const now = new Date().toISOString();
+    const { data: agendamentosFuturos } = await supabase
+      .from("appointments")
+      .select("id")
+      .eq("room_id", id)
+      .gte("starts_at", now)
+      .limit(1);
+
+    if (agendamentosFuturos && agendamentosFuturos.length > 0) {
+      setDeleteError("Nao e possivel excluir: esta sala possui agendamentos futuros.");
+      setDeletingId(null);
+      setTimeout(() => setDeleteError(null), 5000);
+      return;
+    }
+
     await supabase.from("rooms").delete().eq("id", id).eq("tenant_id", tenantId);
     setDeletingId(null);
     await loadRooms(tenantId);
@@ -210,6 +229,26 @@ export default function SalasPage() {
           </button>
         </div>
       </div>
+
+      {/* Mensagem de erro de exclusao */}
+      {deleteError && (
+        <div style={{
+          padding: "12px 16px",
+          borderRadius: "10px",
+          background: "rgba(217,68,68,0.08)",
+          border: "1px solid rgba(217,68,68,0.25)",
+          color: "#D94444",
+          fontSize: "13px",
+          fontWeight: 500,
+          marginBottom: "16px",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+        }}>
+          <span style={{ fontSize: "16px" }}>⚠</span>
+          {deleteError}
+        </div>
+      )}
 
       {/* Lista de salas */}
       {loading ? (

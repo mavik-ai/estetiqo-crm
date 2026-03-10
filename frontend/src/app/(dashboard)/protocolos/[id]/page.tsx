@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, User, CalendarClock, Target, Layers, Plus } from "lucide-react";
+import { PhotosCell } from "@/components/ui/PhotosCell";
 
 interface Session {
   id: string;
@@ -128,6 +129,19 @@ export default async function ProtocoloDetalhePage({
   const protocol = protocolRes.data as Protocol;
   const sessions = (sessionsRes.data ?? []) as Session[];
 
+  // Contar fotos por sessão
+  const sessionIds = sessions.map(s => s.id);
+  const photoCountMap: Record<string, number> = {};
+  if (sessionIds.length > 0) {
+    const { data: photosData } = await supabase
+      .from("session_photos")
+      .select("session_id")
+      .in("session_id", sessionIds);
+    (photosData ?? []).forEach(p => {
+      photoCountMap[p.session_id] = (photoCountMap[p.session_id] ?? 0) + 1;
+    });
+  }
+
   const clientName = protocol.clients?.name ?? "—";
   const serviceName = protocol.services?.name ?? "—";
 
@@ -245,7 +259,7 @@ export default async function ProtocoloDetalhePage({
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
                   <thead>
                     <tr style={{ borderBottom: "1px solid #EDE5D3" }}>
-                      {["Sessão #", "ABS (cm)", "ABI (cm)", "Peso antes → depois", "Procedimento", "Data"].map(
+                      {["Sessão #", "ABS (cm)", "ABI (cm)", "Peso antes → depois", "Procedimento", "Data", "Fotos"].map(
                         (col) => (
                           <th
                             key={col}
@@ -318,6 +332,13 @@ export default async function ProtocoloDetalhePage({
                           </td>
                           <td style={{ padding: "10px", color: "#A69060", whiteSpace: "nowrap" }}>
                             {dateStr}
+                          </td>
+                          <td style={{ padding: "10px" }}>
+                            <PhotosCell
+                              sessionId={session.id}
+                              sessionNumber={session.session_number}
+                              count={photoCountMap[session.id] ?? 0}
+                            />
                           </td>
                         </tr>
                       );

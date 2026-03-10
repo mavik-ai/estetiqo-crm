@@ -43,7 +43,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         .limit(5);
 
     return (
-        <div className="min-h-screen flex" style={{ fontFamily: "var(--font-urbanist), sans-serif", background: "#F6F2EA" }}>
+        <div className="min-h-screen flex bg-background" style={{ fontFamily: "var(--font-urbanist), sans-serif" }}>
             <Sidebar userName={profile?.name ?? firstName} userInitials={initials} userRole={roleLabel} userEmail={user.email ?? ''} />
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
                 <Topbar

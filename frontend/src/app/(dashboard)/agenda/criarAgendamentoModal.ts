@@ -42,6 +42,23 @@ export async function criarAgendamentoModal(
     return { error: 'Sala já ocupada neste horário. Escolha outro horário ou sala.' };
   }
 
+  // Verificar conflito de profissional
+  if (professId) {
+    const { data: profConflicts } = await supabase
+      .from('appointments')
+      .select('id')
+      .eq('professional_id', professId)
+      .eq('tenant_id', tenantId)
+      .eq('no_show', false)
+      .lt('starts_at', endsAt)
+      .gt('ends_at', startsAt)
+      .limit(1);
+
+    if (profConflicts && profConflicts.length > 0) {
+      return { error: 'Profissional já tem atendimento neste horário. Escolha outro horário ou profissional.' };
+    }
+  }
+
   const { error: insertError } = await supabase.from('appointments').insert({
     tenant_id:       tenantId,
     client_id:       clientId,

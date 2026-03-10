@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { Search, Star, UserCircle2 } from "lucide-react";
+import { ExcluirClienteButton } from "@/components/clientes/ExcluirClienteButton";
 
 interface Client {
     id: string;
@@ -204,13 +205,13 @@ export default async function ClientesPage({
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
                             <tr>
-                                {["Nome", "Telefone", "Idade", "Avaliação"].map(
+                                {["Nome", "Telefone", "Idade", "Avaliação", ""].map(
                                     (col) => (
                                         <th
                                             key={col}
                                             style={{
                                                 padding: "10px 16px",
-                                                textAlign: "left",
+                                                textAlign: col === "" ? "right" : "left",
                                                 fontSize: "9px",
                                                 fontWeight: 700,
                                                 letterSpacing: "0.08em",
@@ -277,6 +278,15 @@ export default async function ClientesPage({
                                             <Link href={href} style={{ ...cellLink, padding: "12px 16px" }}>
                                                 <StarRating rating={client.rating} />
                                             </Link>
+                                        </td>
+                                        {/* Acoes */}
+                                        <td style={{ padding: "0 12px 0 0" }}>
+                                            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                                <ExcluirClienteButton
+                                                    clientId={client.id}
+                                                    clientName={client.name}
+                                                />
+                                            </div>
                                         </td>
                                     </tr>
                                 );

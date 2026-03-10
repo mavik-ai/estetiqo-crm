@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { CheckCircle, Clock, AlertTriangle, XCircle, Send, ChevronRight } from "lucide-react";
+import { AppointmentActions } from "./AppointmentActions";
 
 export interface Appointment {
     id: string;
@@ -74,8 +75,8 @@ export function AppointmentTable({ appointments }: { appointments: Appointment[]
                 ))}
             </div>
 
-            <div className="grid items-center gap-2 pb-2" style={{ gridTemplateColumns: "30px 46px 1fr 1fr 52px 64px 56px", borderBottom: "1px solid #F5EDE0" }}>
-                {["", "Hora", "Paciente", "Serviço", "Protoc.", "Sala", "Prof."].map((h, i) => (
+            <div className="grid items-center gap-2 pb-2" style={{ gridTemplateColumns: "30px 46px 1fr 1fr 52px 64px 56px 38px", borderBottom: "1px solid #F5EDE0" }}>
+                {["", "Hora", "Paciente", "Serviço", "Protoc.", "Sala", "Prof.", ""].map((h, i) => (
                     <div key={i} className="font-bold" style={{ color: "#BBA870", fontSize: "9px", letterSpacing: "0.1em", textTransform: "uppercase" }}>{h}</div>
                 ))}
             </div>
@@ -97,7 +98,7 @@ export function AppointmentTable({ appointments }: { appointments: Appointment[]
                         onMouseLeave={() => setHoveredRow(null)}
                         className="grid items-center gap-2 relative cursor-pointer"
                         style={{
-                            gridTemplateColumns: "30px 46px 1fr 1fr 52px 64px 56px",
+                            gridTemplateColumns: "30px 46px 1fr 1fr 52px 64px 56px 38px",
                             paddingTop: "10px", paddingBottom: "10px",
                             borderBottom: i < filtered.length - 1 ? "1px solid #F9F4EA" : "none",
                             background: isH ? "#FBF5EA" : "transparent",
@@ -137,6 +138,15 @@ export function AppointmentTable({ appointments }: { appointments: Appointment[]
                         )}
                         <div style={{ color: "#A69060", fontSize: "11px" }}>{a.room}</div>
                         <div style={{ color: "#A69060", fontSize: "11px", fontWeight: 600 }}>{a.professional}</div>
+
+                        {/* Coluna de acoes */}
+                        <div style={{ display: "flex", justifyContent: "flex-end" }} onClick={(e) => e.stopPropagation()}>
+                            <AppointmentActions
+                                appointmentId={a.id}
+                                rsvpStatus={a.rsvp_status}
+                                noShow={a.no_show}
+                            />
+                        </div>
 
                         {isUnconfirmed && isH && (
                             <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10 animate-in fade-in zoom-in duration-200">
