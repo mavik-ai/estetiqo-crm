@@ -3,7 +3,7 @@
 import Link from "next/link";
 import {
   DoorOpen, Users, Building2, ChevronRight,
-  Scissors, MessageCircle, CalendarClock,
+  Sparkles, MessageCircle, CalendarClock,
 } from "lucide-react";
 
 interface ConfigCard {
@@ -23,7 +23,7 @@ const configCards: ConfigCard[] = [
     href: "/config/clinica",
   },
   {
-    icon: <Scissors size={22} strokeWidth={1.5} />,
+    icon: <Sparkles size={22} strokeWidth={1.5} />,
     title: "Serviços",
     description: "Cadastre e gerencie os serviços oferecidos",
     href: "/servicos",
@@ -39,8 +39,6 @@ const configCards: ConfigCard[] = [
     title: "Janela de Atendimento",
     description: "Configure horários e dias de funcionamento",
     href: "/config/agenda",
-    disabled: true,
-    badge: "Em breve",
   },
   {
     icon: <MessageCircle size={22} strokeWidth={1.5} />,

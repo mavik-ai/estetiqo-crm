@@ -82,7 +82,7 @@ export default async function RSVPPublicPage({ params, searchParams }: Props) {
           <>
             <div
               style={{
-                background: '#FFFFFF',
+                background: 'var(--card)',
                 borderRadius: '20px',
                 boxShadow: '0 8px 40px rgba(45,140,78,0.12)',
                 overflow: 'hidden',
@@ -117,7 +117,7 @@ export default async function RSVPPublicPage({ params, searchParams }: Props) {
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
                       <Sparkles size={14} strokeWidth={1.5} color="#B8960C" />
-                      <p style={{ fontSize: '13px', fontWeight: 700, color: '#2D2319', margin: 0 }}>
+                      <p style={{ fontSize: '13px', fontWeight: 700, color: 'var(--foreground)', margin: 0 }}>
                         Dicas para aproveitar ao máximo
                       </p>
                     </div>
@@ -147,7 +147,7 @@ export default async function RSVPPublicPage({ params, searchParams }: Props) {
           <>
             <div
               style={{
-                background: '#FFFFFF',
+                background: 'var(--card)',
                 borderRadius: '20px',
                 boxShadow: '0 8px 40px rgba(0,0,0,0.08)',
                 overflow: 'hidden',
@@ -163,7 +163,7 @@ export default async function RSVPPublicPage({ params, searchParams }: Props) {
                 </p>
               </div>
               <div style={{ padding: '24px', textAlign: 'center' }}>
-                <p style={{ fontSize: '13px', color: '#A69060', margin: 0 }}>
+                <p style={{ fontSize: '13px', color: 'var(--muted-foreground)', margin: 0 }}>
                   Se quiser reagendar, entre em contato com a clínica.
                 </p>
               </div>
@@ -200,7 +200,7 @@ export default async function RSVPPublicPage({ params, searchParams }: Props) {
             {/* Card principal */}
             <div
               style={{
-                background: '#FFFFFF',
+                background: 'var(--card)',
                 borderRadius: '20px',
                 boxShadow: '0 8px 40px rgba(184,150,12,0.12)',
                 overflow: 'hidden',
@@ -315,8 +315,8 @@ function InfoRow({ icon, label, value }: { icon: React.ReactNode; label: string;
         {icon}
       </div>
       <div>
-        <p style={{ fontSize: '11px', color: '#A69060', margin: '0 0 2px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</p>
-        <p style={{ fontSize: '14px', color: '#2D2319', margin: 0, fontWeight: 600 }}>{value}</p>
+        <p style={{ fontSize: '11px', color: 'var(--muted-foreground)', margin: '0 0 2px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</p>
+        <p style={{ fontSize: '14px', color: 'var(--foreground)', margin: 0, fontWeight: 600 }}>{value}</p>
       </div>
     </div>
   );
@@ -353,7 +353,7 @@ function ErroPage() {
     >
       <div
         style={{
-          background: '#FFFFFF',
+          background: 'var(--card)',
           borderRadius: '20px',
           padding: '48px 28px',
           textAlign: 'center',
@@ -363,10 +363,10 @@ function ErroPage() {
         }}
       >
         <Clock size={48} strokeWidth={1} color="#BBA870" style={{ marginBottom: '16px' }} />
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '20px', color: '#2D2319', margin: '0 0 10px' }}>
+        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '20px', color: 'var(--foreground)', margin: '0 0 10px' }}>
           Link não encontrado
         </h2>
-        <p style={{ fontSize: '13px', color: '#A69060', margin: 0 }}>
+        <p style={{ fontSize: '13px', color: 'var(--muted-foreground)', margin: 0 }}>
           Este link é inválido ou já expirou.<br />Entre em contato com a clínica para reagendar.
         </p>
       </div>

@@ -29,24 +29,24 @@ export function DashboardMetrics({ data }: { data: DashboardMetricsData }) {
             </div>
 
             {/* 2. Horários vagos */}
-            <div className="rounded-xl p-3.5" style={{ background: "#FFFFFF", border: "1px solid #EDE5D3" }}>
+            <div className="rounded-xl p-3.5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
                 <div className="flex items-center justify-between mb-1">
-                    <div className="uppercase" style={{ color: "#A69060", fontWeight: 700, letterSpacing: "0.1em", fontSize: "9px" }}>Horários vagos</div>
+                    <div className="uppercase" style={{ color: "var(--muted-foreground)", fontWeight: 700, letterSpacing: "0.1em", fontSize: "9px" }}>Horários vagos</div>
                     <CalendarClock size={14} style={{ color: "#C4880A", opacity: 0.5 }} />
                 </div>
-                <div className="font-extrabold" style={{ color: "#2D2319", fontSize: "26px", lineHeight: "1" }}>
+                <div className="font-extrabold" style={{ color: "var(--foreground)", fontSize: "26px", lineHeight: "1" }}>
                     {Math.max(0, 8 - data.atendimentos_hoje)}
                 </div>
                 <div className="mt-1" style={{ color: "#BBA870", fontSize: "11px", fontWeight: 500 }}>de 8 slots disponíveis</div>
             </div>
 
             {/* 3. No-shows */}
-            <div className="rounded-xl p-3.5" style={{ background: "#FFFFFF", border: "1px solid #EDE5D3" }}>
+            <div className="rounded-xl p-3.5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
                 <div className="flex items-center justify-between mb-1">
-                    <div className="uppercase" style={{ color: "#A69060", fontWeight: 700, letterSpacing: "0.1em", fontSize: "9px" }}>No-shows do mês</div>
+                    <div className="uppercase" style={{ color: "var(--muted-foreground)", fontWeight: 700, letterSpacing: "0.1em", fontSize: "9px" }}>No-shows do mês</div>
                     <CalendarOff size={14} style={{ color: "#D94444", opacity: 0.5 }} />
                 </div>
-                <div className="font-extrabold" style={{ color: "#2D2319", fontSize: "26px", lineHeight: "1" }}>{data.noshows_mes}</div>
+                <div className="font-extrabold" style={{ color: "var(--foreground)", fontSize: "26px", lineHeight: "1" }}>{data.noshows_mes}</div>
                 <div className="mt-1 flex items-center gap-1" style={{ color: data.noshows_mes === 0 ? "#2D8C4E" : "#D94444", fontSize: "11px", fontWeight: 500 }}>
                     {data.noshows_mes === 0
                         ? <><TrendingDown size={12} /> Nenhum este mês</>
@@ -56,12 +56,12 @@ export function DashboardMetrics({ data }: { data: DashboardMetricsData }) {
             </div>
 
             {/* 4. Faturamento */}
-            <div className="rounded-xl p-3.5" style={{ background: "#FFFFFF", border: "1px solid #EDE5D3" }}>
+            <div className="rounded-xl p-3.5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
                 <div className="flex items-center justify-between mb-1">
-                    <div className="uppercase" style={{ color: "#A69060", fontWeight: 700, letterSpacing: "0.1em", fontSize: "9px" }}>Faturamento do mês</div>
+                    <div className="uppercase" style={{ color: "var(--muted-foreground)", fontWeight: 700, letterSpacing: "0.1em", fontSize: "9px" }}>Faturamento do mês</div>
                     <TrendingUp size={14} style={{ color: "#2D8C4E", opacity: 0.5 }} />
                 </div>
-                <div className="font-extrabold" style={{ color: "#2D2319", fontSize: "26px", lineHeight: "1" }}>
+                <div className="font-extrabold" style={{ color: "var(--foreground)", fontSize: "26px", lineHeight: "1" }}>
                     {fmt(data.faturamento_mes)}
                 </div>
                 <div className="mt-1 flex items-center gap-1" style={{ color: "#2D8C4E", fontSize: "11px", fontWeight: 500 }}>

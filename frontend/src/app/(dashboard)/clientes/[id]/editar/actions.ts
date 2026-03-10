@@ -23,8 +23,9 @@ export async function editarDadosCliente(clientId: string, formData: FormData) {
       email:      (formData.get('email') as string) || null,
       birth_date: (formData.get('birth_date') as string) || null,
       sex:        (formData.get('sex') as string) || null,
+      cep:        (formData.get('cep') as string) || null,
       address:    (formData.get('address') as string) || null,
-      rating:     ratingRaw ? Number(ratingRaw) : null,
+      rating:     ratingRaw ? Number(ratingRaw) : Number('1'),
     })
     .eq('id', clientId)
     .eq('tenant_id', tenantId);

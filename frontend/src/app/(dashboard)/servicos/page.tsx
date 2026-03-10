@@ -23,19 +23,19 @@ interface ModalState {
 }
 
 const card: React.CSSProperties = {
-    background: "#FFFFFF",
-    border: "1px solid #EDE5D3",
+    background: "var(--card)",
+    border: "1px solid var(--border)",
     borderRadius: "14px",
 };
 
 const inputStyle: React.CSSProperties = {
     width: "100%",
     padding: "10px 12px",
-    background: "#FFFFFF",
-    border: "1px solid #EDE5D3",
+    background: "var(--card)",
+    border: "1px solid var(--border)",
     borderRadius: "8px",
     fontSize: "14px",
-    color: "#2D2319",
+    color: "var(--foreground)",
     outline: "none",
     fontFamily: "var(--font-urbanist), sans-serif",
     boxSizing: "border-box",
@@ -232,14 +232,14 @@ export default function ServicosPage() {
     }
 
     return (
-        <div style={{ padding: "24px", minHeight: "100%", background: "#F6F2EA", fontFamily: "var(--font-urbanist), sans-serif" }}>
+        <div style={{ padding: "24px", minHeight: "100%", background: "var(--background)", fontFamily: "var(--font-urbanist), sans-serif" }}>
             {/* Header */}
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
                 <div>
-                    <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 700, color: "#2D2319", margin: 0, lineHeight: 1.2 }}>
+                    <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 700, color: "var(--foreground)", margin: 0, lineHeight: 1.2 }}>
                         Serviços
                     </h1>
-                    <p style={{ color: "#A69060", fontSize: "13px", margin: "4px 0 0" }}>
+                    <p style={{ color: "var(--muted-foreground)", fontSize: "13px", margin: "4px 0 0" }}>
                         {loading ? "Carregando..." : `${services.length} serviço${services.length !== 1 ? "s" : ""} cadastrado${services.length !== 1 ? "s" : ""}`}
                     </p>
                 </div>
@@ -260,9 +260,9 @@ export default function ServicosPage() {
 
             {/* Grid de cards */}
             {loading ? (
-                <div style={{ textAlign: "center", padding: "48px", color: "#A69060", fontSize: "14px" }}>Carregando serviços...</div>
+                <div style={{ textAlign: "center", padding: "48px", color: "var(--muted-foreground)", fontSize: "14px" }}>Carregando serviços...</div>
             ) : services.length === 0 ? (
-                <div style={{ ...card, padding: "48px 24px", textAlign: "center", color: "#A69060", fontSize: "14px" }}>
+                <div style={{ ...card, padding: "48px 24px", textAlign: "center", color: "var(--muted-foreground)", fontSize: "14px" }}>
                     <Clock size={40} strokeWidth={1.2} style={{ color: "#EDE5D3", marginBottom: "10px" }} />
                     <p style={{ margin: 0 }}>Nenhum serviço cadastrado.</p>
                     <p style={{ margin: "4px 0 0", fontSize: "13px" }}>Clique em "Novo Serviço" para começar.</p>
@@ -273,7 +273,7 @@ export default function ServicosPage() {
                         <div key={service.id} style={{ ...card, overflow: "hidden" }}>
                             {/* Imagem do serviço */}
                             {service.image_url ? (
-                                <div style={{ position: "relative", width: "100%", height: "140px", background: "#F6F2EA" }}>
+                                <div style={{ position: "relative", width: "100%", height: "140px", background: "var(--background)" }}>
                                     <Image
                                         src={service.image_url}
                                         alt={service.name}
@@ -306,7 +306,7 @@ export default function ServicosPage() {
                                     {/* Acoes: Editar | Excluir | Toggle */}
                                     <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                                         <button onClick={() => openEdit(service)} title="Editar"
-                                            style={{ width: "30px", height: "30px", borderRadius: "7px", border: "1px solid #EDE5D3", background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#A69060" }}>
+                                            style={{ width: "30px", height: "30px", borderRadius: "7px", border: "1px solid var(--border)", background: "var(--card)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--muted-foreground)" }}>
                                             <Pencil size={13} strokeWidth={1.8} />
                                         </button>
                                         {confirmDeleteId === service.id ? (
@@ -317,13 +317,13 @@ export default function ServicosPage() {
                                                     {deleting === service.id ? "..." : "Sim"}
                                                 </button>
                                                 <button onClick={() => setConfirmDeleteId(null)}
-                                                    style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid #EDE5D3", background: "#FFFFFF", color: "#A69060", fontSize: "10px", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-urbanist), sans-serif" }}>
+                                                    style={{ padding: "4px 8px", borderRadius: "6px", border: "1px solid var(--border)", background: "var(--card)", color: "var(--muted-foreground)", fontSize: "10px", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-urbanist), sans-serif" }}>
                                                     Não
                                                 </button>
                                             </div>
                                         ) : (
                                             <button onClick={() => setConfirmDeleteId(service.id)} title="Excluir"
-                                                style={{ width: "30px", height: "30px", borderRadius: "7px", border: "1px solid #EDE5D3", background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#D94444" }}>
+                                                style={{ width: "30px", height: "30px", borderRadius: "7px", border: "1px solid var(--border)", background: "var(--card)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#D94444" }}>
                                                 <Trash2 size={13} strokeWidth={1.8} />
                                             </button>
                                         )}
@@ -336,13 +336,13 @@ export default function ServicosPage() {
                                 </div>
 
                                 {/* Nome */}
-                                <h3 style={{ fontSize: "15px", fontWeight: 700, color: "#2D2319", margin: "0 0 6px", lineHeight: 1.3 }}>
+                                <h3 style={{ fontSize: "15px", fontWeight: 700, color: "var(--foreground)", margin: "0 0 6px", lineHeight: 1.3 }}>
                                     {service.name}
                                 </h3>
 
                                 {/* Descrição */}
                                 {service.description && (
-                                    <p style={{ fontSize: "12px", color: "#A69060", margin: "0 0 10px", lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                                    <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: "0 0 10px", lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                                         {service.description}
                                     </p>
                                 )}
@@ -353,7 +353,7 @@ export default function ServicosPage() {
                                         {formatPrice(service.price)}
                                     </span>
                                     {service.duration_minutes && (
-                                        <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "12px", color: "#A69060" }}>
+                                        <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "12px", color: "var(--muted-foreground)" }}>
                                             <Clock size={12} strokeWidth={1.8} />
                                             {service.duration_minutes} min
                                         </span>
@@ -375,11 +375,11 @@ export default function ServicosPage() {
 
                         {/* Modal header */}
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px 0" }}>
-                            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: 700, color: "#2D2319", margin: 0 }}>
+                            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: 700, color: "var(--foreground)", margin: 0 }}>
                                 {modal.mode === "create" ? "Novo Serviço" : "Editar Serviço"}
                             </h2>
                             <button onClick={closeModal}
-                                style={{ width: "30px", height: "30px", borderRadius: "50%", border: "1px solid #EDE5D3", background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#A69060" }}>
+                                style={{ width: "30px", height: "30px", borderRadius: "50%", border: "1px solid var(--border)", background: "var(--card)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--muted-foreground)" }}>
                                 <X size={14} strokeWidth={2} />
                             </button>
                         </div>
@@ -401,7 +401,7 @@ export default function ServicosPage() {
                                     style={{ display: "none" }}
                                 />
                                 {imagePreview ? (
-                                    <div style={{ position: "relative", width: "100%", height: "160px", borderRadius: "10px", overflow: "hidden", border: "1px solid #EDE5D3" }}>
+                                    <div style={{ position: "relative", width: "100%", height: "160px", borderRadius: "10px", overflow: "hidden", border: "1px solid var(--border)" }}>
                                         <Image src={imagePreview} alt="Preview" fill style={{ objectFit: "cover" }} sizes="480px" />
                                         <button
                                             onClick={() => { setImageFile(null); setImagePreview(null); updateField("image_url", null); }}
@@ -417,7 +417,7 @@ export default function ServicosPage() {
                                 ) : (
                                     <button
                                         onClick={() => fileInputRef.current?.click()}
-                                        style={{ width: "100%", height: "100px", borderRadius: "10px", border: "2px dashed #EDE5D3", background: "#FEFCF7", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "6px", cursor: "pointer", color: "#BBA870", fontFamily: "inherit" }}>
+                                        style={{ width: "100%", height: "100px", borderRadius: "10px", border: "2px dashed #EDE5D3", background: "var(--muted)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "6px", cursor: "pointer", color: "#BBA870", fontFamily: "inherit" }}>
                                         <ImagePlus size={22} strokeWidth={1.5} />
                                         <span style={{ fontSize: "12px", fontWeight: 600 }}>Clique para adicionar foto</span>
                                         <span style={{ fontSize: "11px", color: "#D4C8A8" }}>JPG, PNG ou WebP · até 5 MB</span>
@@ -504,7 +504,7 @@ export default function ServicosPage() {
                             {/* Footer */}
                             <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", paddingTop: "4px" }}>
                                 <button onClick={closeModal} disabled={saving}
-                                    style={{ padding: "9px 20px", borderRadius: "9px", border: "1px solid #EDE5D3", background: "#FFFFFF", color: "#A69060", fontSize: "13px", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-urbanist), sans-serif" }}>
+                                    style={{ padding: "9px 20px", borderRadius: "9px", border: "1px solid var(--border)", background: "var(--card)", color: "var(--muted-foreground)", fontSize: "13px", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-urbanist), sans-serif" }}>
                                     Cancelar
                                 </button>
                                 <button onClick={() => void salvar()} disabled={saving || !modal.service?.name?.trim()}

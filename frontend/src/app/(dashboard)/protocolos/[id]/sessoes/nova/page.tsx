@@ -32,14 +32,14 @@ export default async function NovaSessaoPage({
   const nextSession = (protocol.completed_sessions ?? 0) + 1;
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
+    <div className="px-6 py-5" style={{ background: "var(--background)", minHeight: "100%" }}>
       {/* Header */}
       <div className="mb-6">
         <Link
           href={`/protocolos/${id}`}
           style={{
             display: "inline-flex", alignItems: "center", gap: "6px",
-            color: "#A69060", fontSize: "13px", textDecoration: "none", marginBottom: "12px",
+            color: "var(--muted-foreground)", fontSize: "13px", textDecoration: "none", marginBottom: "12px",
           }}
         >
           <ArrowLeft size={14} strokeWidth={1.5} />
@@ -47,11 +47,11 @@ export default async function NovaSessaoPage({
         </Link>
         <h1 style={{
           fontFamily: "'Playfair Display', serif", fontSize: "22px",
-          fontWeight: 700, color: "#2D2319", margin: 0,
+          fontWeight: 700, color: "var(--foreground)", margin: 0,
         }}>
           Registrar Sessão #{nextSession}
         </h1>
-        <p style={{ color: "#A69060", fontSize: "14px", marginTop: "2px" }}>
+        <p style={{ color: "var(--muted-foreground)", fontSize: "14px", marginTop: "2px" }}>
           {serviceName} · {protocol.completed_sessions}/{protocol.total_sessions} sessões concluídas
         </p>
       </div>

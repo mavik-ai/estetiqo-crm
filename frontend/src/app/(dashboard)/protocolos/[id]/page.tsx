@@ -33,13 +33,13 @@ const statusConfig: Record<string, { label: string; bg: string; color: string }>
 };
 
 const card = {
-  background: "#FFFFFF",
-  border: "1px solid #EDE5D3",
+  background: "var(--card)",
+  border: "1px solid var(--border)",
   borderRadius: "14px",
 };
 
 function StatusBadge({ status }: { status: string }) {
-  const cfg = statusConfig[status] ?? { label: status, bg: "rgba(166,144,96,0.10)", color: "#A69060" };
+  const cfg = statusConfig[status] ?? { label: status, bg: "rgba(166,144,96,0.10)", color: "var(--muted-foreground)" };
   return (
     <span
       style={{
@@ -61,7 +61,7 @@ function BigProgressBar({ completed, total }: { completed: number; total: number
   return (
     <div>
       <div className="flex justify-between items-end mb-2">
-        <p style={{ fontSize: "13px", color: "#A69060", margin: 0 }}>Progresso do protocolo</p>
+        <p style={{ fontSize: "13px", color: "var(--muted-foreground)", margin: 0 }}>Progresso do protocolo</p>
         <p style={{ fontSize: "28px", fontWeight: 700, color: "#B8960C", margin: 0 }}>{pct}%</p>
       </div>
       <div
@@ -82,9 +82,9 @@ function BigProgressBar({ completed, total }: { completed: number; total: number
           }}
         />
       </div>
-      <p style={{ color: "#A69060", fontSize: "13px", marginTop: "8px", margin: "8px 0 0" }}>
-        <span style={{ fontWeight: 600, color: "#2D2319" }}>{completed}</span> de{" "}
-        <span style={{ fontWeight: 600, color: "#2D2319" }}>{total}</span> sessões completadas
+      <p style={{ color: "var(--muted-foreground)", fontSize: "13px", marginTop: "8px", margin: "8px 0 0" }}>
+        <span style={{ fontWeight: 600, color: "var(--foreground)" }}>{completed}</span> de{" "}
+        <span style={{ fontWeight: 600, color: "var(--foreground)" }}>{total}</span> sessões completadas
       </p>
     </div>
   );
@@ -129,16 +129,27 @@ export default async function ProtocoloDetalhePage({
   const protocol = protocolRes.data as Protocol;
   const sessions = (sessionsRes.data ?? []) as Session[];
 
-  // Contar fotos por sessão
+  // Contar fotos e buscar assinaturas por sessão
   const sessionIds = sessions.map(s => s.id);
   const photoCountMap: Record<string, number> = {};
+  const signatureMap: Record<string, boolean> = {};
   if (sessionIds.length > 0) {
-    const { data: photosData } = await supabase
-      .from("session_photos")
-      .select("session_id")
-      .in("session_id", sessionIds);
-    (photosData ?? []).forEach(p => {
+    const [photosRes, signaturesRes] = await Promise.all([
+      supabase
+        .from("session_photos")
+        .select("session_id")
+        .in("session_id", sessionIds),
+      supabase
+        .from("digital_signatures")
+        .select("session_id")
+        .in("session_id", sessionIds)
+        .eq("type", "session"),
+    ]);
+    (photosRes.data ?? []).forEach(p => {
       photoCountMap[p.session_id] = (photoCountMap[p.session_id] ?? 0) + 1;
+    });
+    (signaturesRes.data ?? []).forEach(s => {
+      if (s.session_id) signatureMap[s.session_id] = true;
     });
   }
 
@@ -156,11 +167,11 @@ export default async function ProtocoloDetalhePage({
   const statusCfg = statusConfig[protocol.status] ?? {
     label: protocol.status,
     bg: "rgba(166,144,96,0.10)",
-    color: "#A69060",
+    color: "var(--muted-foreground)",
   };
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
+    <div className="px-6 py-5" style={{ background: "var(--background)", minHeight: "100%" }}>
       {/* Header */}
       <div className="mb-6">
         <Link
@@ -169,7 +180,7 @@ export default async function ProtocoloDetalhePage({
             display: "inline-flex",
             alignItems: "center",
             gap: "6px",
-            color: "#A69060",
+            color: "var(--muted-foreground)",
             fontSize: "13px",
             textDecoration: "none",
             marginBottom: "12px",
@@ -186,13 +197,13 @@ export default async function ProtocoloDetalhePage({
                 fontFamily: "'Playfair Display', serif",
                 fontSize: "22px",
                 fontWeight: 700,
-                color: "#2D2319",
+                color: "var(--foreground)",
                 margin: 0,
               }}
             >
               {clientName}
             </h1>
-            <p style={{ color: "#A69060", fontSize: "14px", marginTop: "2px" }}>{serviceName}</p>
+            <p style={{ color: "var(--muted-foreground)", fontSize: "14px", marginTop: "2px" }}>{serviceName}</p>
           </div>
           <StatusBadge status={protocol.status} />
         </div>
@@ -218,36 +229,38 @@ export default async function ProtocoloDetalhePage({
                   fontFamily: "'Playfair Display', serif",
                   fontSize: "16px",
                   fontWeight: 600,
-                  color: "#2D2319",
+                  color: "var(--foreground)",
                   margin: 0,
                 }}
               >
                 Histórico de Sessões
               </h2>
-              <Link
-                href={`/protocolos/${id}/sessoes/nova`}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  background: "linear-gradient(135deg, #D4B86A, #B8960C)",
-                  color: "#161412",
-                  fontSize: "12px",
-                  fontWeight: 600,
-                  padding: "7px 14px",
-                  borderRadius: "8px",
-                  textDecoration: "none",
-                }}
-              >
-                <Plus size={13} strokeWidth={2} />
-                Registrar Sessão
-              </Link>
+              {protocol.status === "active" && (
+                <Link
+                  href={`/protocolos/${id}/sessoes/nova`}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: "linear-gradient(135deg, #D4B86A, #B8960C)",
+                    color: "#161412",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    padding: "7px 14px",
+                    borderRadius: "8px",
+                    textDecoration: "none",
+                  }}
+                >
+                  <Plus size={13} strokeWidth={2} />
+                  Registrar Sessão
+                </Link>
+              )}
             </div>
 
             {sessions.length === 0 ? (
               <div
                 className="flex flex-col items-center justify-center py-12"
-                style={{ color: "#A69060" }}
+                style={{ color: "var(--muted-foreground)" }}
               >
                 <Layers size={36} strokeWidth={1} color="#BBA870" />
                 <p style={{ marginTop: "10px", fontSize: "14px" }}>
@@ -258,8 +271,8 @@ export default async function ProtocoloDetalhePage({
               <div style={{ overflowX: "auto" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
                   <thead>
-                    <tr style={{ borderBottom: "1px solid #EDE5D3" }}>
-                      {["Sessão #", "ABS (cm)", "ABI (cm)", "Peso antes → depois", "Procedimento", "Data", "Fotos"].map(
+                    <tr style={{ borderBottom: "1px solid var(--border)" }}>
+                      {["Sessão #", "ABS (cm)", "ABI (cm)", "Peso antes → depois", "Procedimento", "Data", "Fotos", "Assinatura"].map(
                         (col) => (
                           <th
                             key={col}
@@ -293,16 +306,16 @@ export default async function ProtocoloDetalhePage({
                               idx < sessions.length - 1 ? "1px solid #F0EBE0" : "none",
                           }}
                         >
-                          <td style={{ padding: "10px", fontWeight: 600, color: "#2D2319" }}>
+                          <td style={{ padding: "10px", fontWeight: 600, color: "var(--foreground)" }}>
                             {session.session_number}
                           </td>
-                          <td style={{ padding: "10px", color: "#2D2319" }}>
+                          <td style={{ padding: "10px", color: "var(--foreground)" }}>
                             {session.abs_cm ?? "—"}
                           </td>
-                          <td style={{ padding: "10px", color: "#2D2319" }}>
+                          <td style={{ padding: "10px", color: "var(--foreground)" }}>
                             {session.abi_cm ?? "—"}
                           </td>
-                          <td style={{ padding: "10px", color: "#2D2319", whiteSpace: "nowrap" }}>
+                          <td style={{ padding: "10px", color: "var(--foreground)", whiteSpace: "nowrap" }}>
                             {session.weight_before_kg != null || session.weight_after_kg != null ? (
                               <>
                                 <span>{session.weight_before_kg != null ? `${session.weight_before_kg} kg` : "—"}</span>
@@ -321,7 +334,7 @@ export default async function ProtocoloDetalhePage({
                           <td
                             style={{
                               padding: "10px",
-                              color: "#A69060",
+                              color: "var(--muted-foreground)",
                               maxWidth: "200px",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
@@ -330,7 +343,7 @@ export default async function ProtocoloDetalhePage({
                           >
                             {session.procedure_notes ?? "—"}
                           </td>
-                          <td style={{ padding: "10px", color: "#A69060", whiteSpace: "nowrap" }}>
+                          <td style={{ padding: "10px", color: "var(--muted-foreground)", whiteSpace: "nowrap" }}>
                             {dateStr}
                           </td>
                           <td style={{ padding: "10px" }}>
@@ -339,6 +352,29 @@ export default async function ProtocoloDetalhePage({
                               sessionNumber={session.session_number}
                               count={photoCountMap[session.id] ?? 0}
                             />
+                          </td>
+                          <td style={{ padding: "10px", textAlign: "center" }}>
+                            {signatureMap[session.id] ? (
+                              <span
+                                title="Assinatura registrada"
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  width: "22px",
+                                  height: "22px",
+                                  borderRadius: "50%",
+                                  background: "rgba(45,140,78,0.10)",
+                                  color: "#2D8C4E",
+                                  fontSize: "12px",
+                                  fontWeight: 700,
+                                }}
+                              >
+                                ✓
+                              </span>
+                            ) : (
+                              <span style={{ color: "#BBA870", fontSize: "13px" }}>—</span>
+                            )}
                           </td>
                         </tr>
                       );
@@ -359,7 +395,7 @@ export default async function ProtocoloDetalhePage({
                 fontFamily: "'Playfair Display', serif",
                 fontSize: "15px",
                 fontWeight: 600,
-                color: "#2D2319",
+                color: "var(--foreground)",
                 margin: "0 0 16px",
               }}
             >
@@ -370,7 +406,7 @@ export default async function ProtocoloDetalhePage({
                 <p style={{ fontSize: "11px", color: "#BBA870", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", margin: 0 }}>
                   Serviço
                 </p>
-                <p style={{ fontSize: "13px", color: "#2D2319", margin: "3px 0 0", fontWeight: 500 }}>
+                <p style={{ fontSize: "13px", color: "var(--foreground)", margin: "3px 0 0", fontWeight: 500 }}>
                   {serviceName}
                 </p>
               </div>
@@ -378,7 +414,7 @@ export default async function ProtocoloDetalhePage({
                 <p style={{ fontSize: "11px", color: "#BBA870", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", margin: 0 }}>
                   Total de Sessões
                 </p>
-                <p style={{ fontSize: "13px", color: "#2D2319", margin: "3px 0 0", fontWeight: 500 }}>
+                <p style={{ fontSize: "13px", color: "var(--foreground)", margin: "3px 0 0", fontWeight: 500 }}>
                   {protocol.total_sessions} sessões
                 </p>
               </div>
@@ -389,7 +425,7 @@ export default async function ProtocoloDetalhePage({
                   </p>
                   <div className="flex items-center gap-1.5" style={{ marginTop: "3px" }}>
                     <Target size={13} strokeWidth={1.5} color="#B8960C" />
-                    <p style={{ fontSize: "13px", color: "#2D2319", margin: 0, fontWeight: 500 }}>
+                    <p style={{ fontSize: "13px", color: "var(--foreground)", margin: 0, fontWeight: 500 }}>
                       {protocol.target_weight} kg
                     </p>
                   </div>
@@ -401,7 +437,7 @@ export default async function ProtocoloDetalhePage({
                 </p>
                 <div className="flex items-center gap-1.5" style={{ marginTop: "3px" }}>
                   <CalendarClock size={13} strokeWidth={1.5} color="#A69060" />
-                  <p style={{ fontSize: "13px", color: "#2D2319", margin: 0, fontWeight: 500 }}>
+                  <p style={{ fontSize: "13px", color: "var(--foreground)", margin: 0, fontWeight: 500 }}>
                     {endDateStr}
                   </p>
                 </div>
@@ -424,7 +460,7 @@ export default async function ProtocoloDetalhePage({
                 fontFamily: "'Playfair Display', serif",
                 fontSize: "15px",
                 fontWeight: 600,
-                color: "#2D2319",
+                color: "var(--foreground)",
                 margin: "0 0 12px",
               }}
             >
@@ -450,7 +486,7 @@ export default async function ProtocoloDetalhePage({
                   style={{
                     fontSize: "14px",
                     fontWeight: 600,
-                    color: "#2D2319",
+                    color: "var(--foreground)",
                     margin: 0,
                     overflow: "hidden",
                     textOverflow: "ellipsis",

@@ -62,7 +62,7 @@ export default async function BemVindoPage() {
               cursor: "pointer",
               fontSize: "11px",
               fontWeight: 600,
-              color: "#A69060",
+              color: "var(--muted-foreground)",
               fontFamily: "inherit",
               padding: 0,
               textDecoration: "underline",
@@ -96,7 +96,7 @@ export default async function BemVindoPage() {
               cursor: "pointer",
               fontSize: "11px",
               fontWeight: 600,
-              color: "#A69060",
+              color: "var(--muted-foreground)",
               fontFamily: "inherit",
               padding: 0,
               textDecoration: "underline",
@@ -134,7 +134,7 @@ export default async function BemVindoPage() {
   const pct            = Math.round((completedCount / steps.length) * 100);
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
+    <div className="px-6 py-5" style={{ background: "var(--background)", minHeight: "100%" }}>
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
@@ -148,13 +148,13 @@ export default async function BemVindoPage() {
             fontFamily: "'Playfair Display', serif",
             fontSize: "26px",
             fontWeight: 700,
-            color: "#2D2319",
+            color: "var(--foreground)",
             margin: "0 0 6px",
           }}
         >
           Bem-vinda, {firstName}!
         </h1>
-        <p style={{ color: "#A69060", fontSize: "14px", margin: 0 }}>
+        <p style={{ color: "var(--muted-foreground)", fontSize: "14px", margin: 0 }}>
           Configure o Estetiqo em 4 passos simples e comece a atender.
         </p>
       </div>
@@ -162,15 +162,15 @@ export default async function BemVindoPage() {
       {/* Barra de progresso geral */}
       <div
         style={{
-          background: "#FFFFFF",
-          border: "1px solid #EDE5D3",
+          background: "var(--card)",
+          border: "1px solid var(--border)",
           borderRadius: "14px",
           padding: "20px 24px",
           marginBottom: "24px",
         }}
       >
         <div className="flex items-center justify-between mb-3">
-          <span style={{ fontSize: "13px", fontWeight: 600, color: "#2D2319" }}>
+          <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--foreground)" }}>
             {allDone ? "Configuração concluída! 🎉" : `${completedCount} de ${steps.length} etapas concluídas`}
           </span>
           <span style={{ fontSize: "20px", fontWeight: 700, color: "#B8960C" }}>{pct}%</span>
@@ -219,7 +219,7 @@ export default async function BemVindoPage() {
             <div
               key={step.id}
               style={{
-                background: "#FFFFFF",
+                background: "var(--card)",
                 border: step.done
                   ? "1px solid #D4EDC4"
                   : isNext
@@ -306,7 +306,7 @@ export default async function BemVindoPage() {
                   >
                     {step.title}
                   </h3>
-                  <p style={{ fontSize: "13px", color: "#A69060", margin: "0 0 12px" }}>
+                  <p style={{ fontSize: "13px", color: "var(--muted-foreground)", margin: "0 0 12px" }}>
                     {step.description}
                   </p>
 
@@ -368,7 +368,7 @@ export default async function BemVindoPage() {
           href="/"
           style={{
             fontSize: "13px",
-            color: "#A69060",
+            color: "var(--muted-foreground)",
             textDecoration: "none",
             fontWeight: 500,
           }}

@@ -123,7 +123,7 @@ export function SessionPhotosModal({ sessionId, sessionNumber, onClose }: Props)
           <div
             onClick={e => e.stopPropagation()}
             style={{
-              background: '#FFFFFF', borderRadius: '16px', width: '100%', maxWidth: '540px',
+              background: 'var(--card)', borderRadius: '16px', width: '100%', maxWidth: '540px',
               overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.35)',
             }}
           >
@@ -131,12 +131,12 @@ export function SessionPhotosModal({ sessionId, sessionNumber, onClose }: Props)
             <div style={{ padding: '16px 20px', borderBottom: '1px solid #EDE5D3', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Camera size={16} strokeWidth={1.5} color="#B8960C" />
-                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '15px', fontWeight: 700, color: '#2D2319' }}>
+                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '15px', fontWeight: 700, color: 'var(--foreground)' }}>
                   Fotos — Sessão #{sessionNumber}
                 </span>
               </div>
               <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex' }}>
-                <X size={18} strokeWidth={2} style={{ color: '#A69060' }} />
+                <X size={18} strokeWidth={2} style={{ color: 'var(--muted-foreground)' }} />
               </button>
             </div>
 
@@ -167,11 +167,11 @@ export function SessionPhotosModal({ sessionId, sessionNumber, onClose }: Props)
             {/* Grid */}
             <div style={{ padding: '16px', minHeight: '180px' }}>
               {loading ? (
-                <p style={{ textAlign: 'center', padding: '40px', color: '#A69060', fontSize: '13px', margin: 0 }}>
+                <p style={{ textAlign: 'center', padding: '40px', color: 'var(--muted-foreground)', fontSize: '13px', margin: 0 }}>
                   Carregando fotos...
                 </p>
               ) : filtered.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#A69060' }}>
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--muted-foreground)' }}>
                   <ImageOff size={32} strokeWidth={1} style={{ color: '#EDE5D3', marginBottom: '8px' }} />
                   <p style={{ margin: 0, fontSize: '13px' }}>
                     Nenhuma foto {activeTab === 'before' ? 'antes' : 'depois'} registrada.

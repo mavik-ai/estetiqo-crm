@@ -100,8 +100,8 @@ function rsvpLabel(status: string | null): { label: string; color: string } {
 }
 
 const card: React.CSSProperties = {
-    background: "#FFFFFF",
-    border: "1px solid #EDE5D3",
+    background: "var(--card)",
+    border: "1px solid var(--border)",
     borderRadius: "14px",
     padding: "20px",
     marginBottom: "14px",
@@ -111,7 +111,7 @@ const cardTitle: React.CSSProperties = {
     fontFamily: "'Playfair Display', serif",
     fontSize: "15px",
     fontWeight: 700,
-    color: "#2D2319",
+    color: "var(--foreground)",
     marginBottom: "14px",
 };
 
@@ -126,7 +126,7 @@ const infoLabel: React.CSSProperties = {
 
 const infoValue: React.CSSProperties = {
     fontSize: "14px",
-    color: "#2D2319",
+    color: "var(--foreground)",
     fontWeight: 500,
 };
 
@@ -209,7 +209,7 @@ export default async function ClienteFichaPage({
             style={{
                 padding: "24px",
                 minHeight: "100%",
-                background: "#F6F2EA",
+                background: "var(--background)",
                 fontFamily: "var(--font-urbanist), sans-serif",
             }}
         >
@@ -226,7 +226,7 @@ export default async function ClienteFichaPage({
                         alignItems: "center",
                         gap: "4px",
                         fontSize: "13px",
-                        color: "#A69060",
+                        color: "var(--muted-foreground)",
                         textDecoration: "none",
                         marginBottom: "10px",
                     }}
@@ -261,7 +261,7 @@ export default async function ClienteFichaPage({
                                 fontFamily: "'Playfair Display', serif",
                                 fontSize: "24px",
                                 fontWeight: 700,
-                                color: "#2D2319",
+                                color: "var(--foreground)",
                                 margin: 0,
                                 lineHeight: 1.2,
                             }}
@@ -269,7 +269,7 @@ export default async function ClienteFichaPage({
                             {client.name}
                         </h1>
                         {client.phone && (
-                            <p style={{ color: "#A69060", fontSize: "13px", margin: "3px 0 0" }}>
+                            <p style={{ color: "var(--muted-foreground)", fontSize: "13px", margin: "3px 0 0" }}>
                                 {client.phone}
                             </p>
                         )}
@@ -403,7 +403,7 @@ export default async function ClienteFichaPage({
                     <div style={card}>
                         <h2 style={cardTitle}>Histórico de Atendimentos</h2>
                         {appointments.length === 0 ? (
-                            <div style={{ textAlign: "center", padding: "24px 0", color: "#A69060", fontSize: "13px" }}>
+                            <div style={{ textAlign: "center", padding: "24px 0", color: "var(--muted-foreground)", fontSize: "13px" }}>
                                 <Clock size={32} strokeWidth={1.2} style={{ color: "#EDE5D3", marginBottom: "8px" }} />
                                 <p style={{ margin: 0 }}>Nenhum atendimento registrado.</p>
                             </div>
@@ -423,7 +423,7 @@ export default async function ClienteFichaPage({
                                                         letterSpacing: "0.08em",
                                                         textTransform: "uppercase",
                                                         color: "#BBA870",
-                                                        borderBottom: "1px solid #EDE5D3",
+                                                        borderBottom: "1px solid var(--border)",
                                                         whiteSpace: "nowrap",
                                                     }}
                                                 >
@@ -454,13 +454,13 @@ export default async function ClienteFichaPage({
                                                                 : "none",
                                                     }}
                                                 >
-                                                    <td style={{ padding: "10px 12px", fontSize: "13px", color: "#2D2319", whiteSpace: "nowrap" }}>
+                                                    <td style={{ padding: "10px 12px", fontSize: "13px", color: "var(--foreground)", whiteSpace: "nowrap" }}>
                                                         {dataFormatada}{hora ? ` ${hora}` : ""}
                                                     </td>
-                                                    <td style={{ padding: "10px 12px", fontSize: "13px", color: "#2D2319" }}>
+                                                    <td style={{ padding: "10px 12px", fontSize: "13px", color: "var(--foreground)" }}>
                                                         {service?.name ?? "—"}
                                                     </td>
-                                                    <td style={{ padding: "10px 12px", fontSize: "13px", color: "#A69060" }}>
+                                                    <td style={{ padding: "10px 12px", fontSize: "13px", color: "var(--muted-foreground)" }}>
                                                         {proto
                                                             ? `${proto.completed_sessions ?? 0}/${proto.total_sessions ?? 0}`
                                                             : "—"}
@@ -495,7 +495,7 @@ export default async function ClienteFichaPage({
                         <div style={card}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
                                 <h2 style={{ ...cardTitle, marginBottom: 0 }}>Protocolos</h2>
-                                <span style={{ fontSize: "11px", color: "#A69060" }}>
+                                <span style={{ fontSize: "11px", color: "var(--muted-foreground)" }}>
                                     {protocols.filter(p => p.status === "active").length} ativo(s)
                                 </span>
                             </div>
@@ -506,7 +506,7 @@ export default async function ClienteFichaPage({
                                     const pct = proto.total_sessions > 0
                                         ? Math.round((proto.completed_sessions / proto.total_sessions) * 100)
                                         : 0;
-                                    const cfg = protocolStatusCfg[proto.status] ?? { label: proto.status, bg: "#F0EBE0", color: "#A69060" };
+                                    const cfg = protocolStatusCfg[proto.status] ?? { label: proto.status, bg: "#F0EBE0", color: "var(--muted-foreground)" };
                                     return (
                                         <Link
                                             key={proto.id}
@@ -515,13 +515,13 @@ export default async function ClienteFichaPage({
                                         >
                                             <div style={{
                                                 padding: "12px 14px", borderRadius: "10px",
-                                                border: "1px solid #EDE5D3", background: "#FEFCF7",
+                                                border: "1px solid var(--border)", background: "var(--muted)",
                                                 display: "flex", flexDirection: "column", gap: "8px",
                                             }}>
                                                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                                                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                                                         <Layers size={13} strokeWidth={1.5} style={{ color: "#B8960C", flexShrink: 0 }} />
-                                                        <span style={{ fontSize: "13px", fontWeight: 600, color: "#2D2319" }}>
+                                                        <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--foreground)" }}>
                                                             {svcName}
                                                         </span>
                                                     </div>
@@ -535,7 +535,7 @@ export default async function ClienteFichaPage({
                                                 </div>
                                                 <div>
                                                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                                                        <span style={{ fontSize: "11px", color: "#A69060" }}>
+                                                        <span style={{ fontSize: "11px", color: "var(--muted-foreground)" }}>
                                                             {proto.completed_sessions}/{proto.total_sessions} sessões
                                                         </span>
                                                         <span style={{ fontSize: "11px", fontWeight: 600, color: "#B8960C" }}>{pct}%</span>
@@ -561,7 +561,7 @@ export default async function ClienteFichaPage({
                     <div style={{ ...card, marginBottom: 0 }}>
                         <h2 style={cardTitle}>Ficha de Saúde</h2>
                         {!health ? (
-                            <p style={{ color: "#A69060", fontSize: "13px" }}>
+                            <p style={{ color: "var(--muted-foreground)", fontSize: "13px" }}>
                                 Ficha de saúde não preenchida.{" "}
                                 <Link href={`/clientes/${id}/avaliacao/nova`} style={{ color: "#B8960C" }}>
                                     Preencher agora →
@@ -618,18 +618,18 @@ export default async function ClienteFichaPage({
                                     {health.other_conditions && (
                                         <div style={{
                                             marginTop: "12px", padding: "10px 12px",
-                                            background: "#FBF5EA", border: "1px solid #EDE5D3",
+                                            background: "#FBF5EA", border: "1px solid var(--border)",
                                             borderRadius: "8px",
                                         }}>
                                             <div style={{ ...infoLabel, marginBottom: "4px" }}>Outros</div>
-                                            <p style={{ margin: 0, fontSize: "13px", color: "#2D2319", lineHeight: 1.5 }}>
+                                            <p style={{ margin: 0, fontSize: "13px", color: "var(--foreground)", lineHeight: 1.5 }}>
                                                 {health.other_conditions}
                                             </p>
                                         </div>
                                     )}
 
                                     <details style={{ marginTop: "12px" }}>
-                                        <summary style={{ fontSize: "12px", color: "#A69060", cursor: "pointer", userSelect: "none" }}>
+                                        <summary style={{ fontSize: "12px", color: "var(--muted-foreground)", cursor: "pointer", userSelect: "none" }}>
                                             Ver ficha completa
                                         </summary>
                                         <div style={{ marginTop: "10px", display: "flex", flexDirection: "column", gap: "6px" }}>

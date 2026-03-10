@@ -44,14 +44,14 @@ export default async function NovaAvaliacaoPage({ params }: Props) {
   const servicos = servicosRes.data ?? [];
 
   return (
-    <div style={{ background: '#F6F2EA', minHeight: '100%' }}>
+    <div style={{ background: 'var(--background)', minHeight: '100%' }}>
       {/* Header */}
       <div style={{ padding: '20px 24px 16px' }}>
         <Link
           href={`/clientes/${id}`}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '4px',
-            fontSize: '13px', color: '#A69060', textDecoration: 'none', marginBottom: '12px',
+            fontSize: '13px', color: 'var(--muted-foreground)', textDecoration: 'none', marginBottom: '12px',
           }}
         >
           <ChevronLeft size={14} strokeWidth={2} />
@@ -60,11 +60,11 @@ export default async function NovaAvaliacaoPage({ params }: Props) {
 
         <h1 style={{
           fontFamily: "'Playfair Display', serif",
-          fontSize: '22px', fontWeight: 700, color: '#2D2319', margin: '0 0 4px',
+          fontSize: '22px', fontWeight: 700, color: 'var(--foreground)', margin: '0 0 4px',
         }}>
           Nova Avaliação
         </h1>
-        <p style={{ fontSize: '13px', color: '#A69060', margin: 0 }}>
+        <p style={{ fontSize: '13px', color: 'var(--muted-foreground)', margin: 0 }}>
           Ficha de anamnese e procedimento · {client.name}
         </p>
       </div>

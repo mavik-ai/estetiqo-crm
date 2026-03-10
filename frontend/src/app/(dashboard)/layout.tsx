@@ -62,7 +62,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                         fontFamily: "var(--font-urbanist), sans-serif",
                         fontSize: "14px",
                         borderRadius: "12px",
-                        border: "1px solid #EDE5D3",
+                        border: "1px solid var(--border)",
                     },
                     classNames: {
                         success: "bg-white text-[#2D2319]",

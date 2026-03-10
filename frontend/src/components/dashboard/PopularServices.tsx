@@ -22,8 +22,8 @@ const gradients = [
 export function PopularServices({ services }: { services?: ServiceStat[] }) {
     const list = services && services.length > 0 ? services : FALLBACK;
 
-    const card   = { background: "#FFFFFF", border: "1px solid #EDE5D3", borderRadius: "14px" };
-    const sTitle = { color: "#A69060", fontWeight: 700, letterSpacing: "0.12em", fontSize: "10px", textTransform: "uppercase" as const };
+    const card   = { background: "var(--card)", border: "1px solid var(--border)", borderRadius: "14px" };
+    const sTitle = { color: "var(--muted-foreground)", fontWeight: 700, letterSpacing: "0.12em", fontSize: "10px", textTransform: "uppercase" as const };
 
     return (
         <div className="p-3.5 flex-1" style={card}>
@@ -31,7 +31,7 @@ export function PopularServices({ services }: { services?: ServiceStat[] }) {
             {list.map((s, i) => (
                 <div key={i} className="mb-2 last:mb-0">
                     <div className="flex justify-between items-baseline mb-1">
-                        <span style={{ color: "#2D2319", fontWeight: 600, fontSize: "11px" }}>{s.name}</span>
+                        <span style={{ color: "var(--foreground)", fontWeight: 600, fontSize: "11px" }}>{s.name}</span>
                         <span className="font-bold" style={{ color: "#B8960C", fontSize: "11px" }}>{s.pct}%</span>
                     </div>
                     <div className="rounded-full overflow-hidden" style={{ height: "4px", background: "#F5EDE0" }}>

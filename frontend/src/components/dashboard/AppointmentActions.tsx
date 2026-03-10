@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useTransition } from "react";
+import { Send } from "lucide-react";
 import { marcarNoShow, cancelarAgendamento, confirmarRSVPAdmin } from "@/app/(dashboard)/agenda/agendaActions";
 
 interface AppointmentActionsProps {
@@ -106,6 +107,19 @@ export function AppointmentActions({ appointmentId, rsvpStatus, noShow }: Appoin
                     overflow: "hidden",
                     padding: "4px",
                 }}>
+                    {/* Reenviar RSVP — só para pendentes */}
+                    {!isConfirmed && !isCancelled && (
+                        <button
+                            onClick={() => { setOpen(false); setFeedback("RSVP reenviado!"); setTimeout(() => setFeedback(null), 3000); }}
+                            style={{ width: "100%", padding: "8px 12px", background: "none", border: "none", borderRadius: "7px", cursor: "pointer", fontSize: "12px", fontWeight: 600, color: "#3A7BD5", textAlign: "left", display: "flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-urbanist), sans-serif" }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#EEF4FE"; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "none"; }}
+                        >
+                            <Send size={13} strokeWidth={1.8} />
+                            Reenviar RSVP
+                        </button>
+                    )}
+
                     {/* Confirmar — so aparece se nao estiver confirmado e nao cancelado */}
                     {!isConfirmed && !isCancelled && (
                         <button
@@ -113,22 +127,7 @@ export function AppointmentActions({ appointmentId, rsvpStatus, noShow }: Appoin
                                 () => confirmarRSVPAdmin(appointmentId),
                                 "Agendamento confirmado!"
                             )}
-                            style={{
-                                width: "100%",
-                                padding: "8px 12px",
-                                background: "none",
-                                border: "none",
-                                borderRadius: "7px",
-                                cursor: "pointer",
-                                fontSize: "12px",
-                                fontWeight: 600,
-                                color: "#2D8C4E",
-                                textAlign: "left",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                                fontFamily: "var(--font-urbanist), sans-serif",
-                            }}
+                            style={{ width: "100%", padding: "8px 12px", background: "none", border: "none", borderRadius: "7px", cursor: "pointer", fontSize: "12px", fontWeight: 600, color: "#2D8C4E", textAlign: "left", display: "flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-urbanist), sans-serif" }}
                             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#F0FBF4"; }}
                             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "none"; }}
                         >

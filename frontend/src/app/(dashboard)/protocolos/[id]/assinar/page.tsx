@@ -31,13 +31,13 @@ export default async function AssinarProtocoloPage({
   const serviceName = (serviceRaw as { name: string } | null)?.name ?? "—";
 
   return (
-    <div style={{ background: "#F6F2EA", minHeight: "100%", padding: "24px" }}>
+    <div style={{ background: "var(--background)", minHeight: "100%", padding: "24px" }}>
       <div style={{ maxWidth: "540px", margin: "0 auto" }}>
         <Link
           href={`/protocolos/${id}`}
           style={{
             display: "inline-flex", alignItems: "center", gap: "6px",
-            color: "#A69060", fontSize: "13px", textDecoration: "none", marginBottom: "16px",
+            color: "var(--muted-foreground)", fontSize: "13px", textDecoration: "none", marginBottom: "16px",
           }}
         >
           <ArrowLeft size={14} strokeWidth={1.5} />
@@ -46,11 +46,11 @@ export default async function AssinarProtocoloPage({
 
         <h1 style={{
           fontFamily: "'Playfair Display', serif", fontSize: "22px",
-          fontWeight: 700, color: "#2D2319", margin: "0 0 4px",
+          fontWeight: 700, color: "var(--foreground)", margin: "0 0 4px",
         }}>
           Autorização de Início
         </h1>
-        <p style={{ color: "#A69060", fontSize: "14px", margin: "0 0 24px" }}>
+        <p style={{ color: "var(--muted-foreground)", fontSize: "14px", margin: "0 0 24px" }}>
           {clientName} · {serviceName} · {protocol.total_sessions} sessões
         </p>
 

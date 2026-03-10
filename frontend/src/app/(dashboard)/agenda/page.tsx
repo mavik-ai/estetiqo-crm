@@ -44,24 +44,21 @@ interface CreateSlot {
 type ViewMode = "day" | "week";
 
 const RSVP_ICONS: Record<string, { icon: React.ReactNode; bg: string; border: string }> = {
-  confirmed:  { icon: <CheckCircle size={13} strokeWidth={1.5} />, bg: "rgba(45,140,78,0.10)",   border: "rgba(45,140,78,0.25)"   },
-  pending:    { icon: <Clock size={13} strokeWidth={1.5} />,        bg: "rgba(58,123,213,0.10)",  border: "rgba(58,123,213,0.25)"  },
-  noresponse: { icon: <AlertCircle size={13} strokeWidth={1.5} />,  bg: "rgba(196,136,10,0.10)",  border: "rgba(196,136,10,0.25)"  },
-  cancelled:  { icon: <XCircle size={13} strokeWidth={1.5} />,      bg: "rgba(217,68,68,0.10)",   border: "rgba(217,68,68,0.25)"   },
+  confirmed: { icon: <CheckCircle size={13} strokeWidth={1.5} />, bg: "rgba(45,140,78,0.10)",  border: "rgba(45,140,78,0.25)"  },
+  pending:   { icon: <Clock size={13} strokeWidth={1.5} />,       bg: "rgba(58,123,213,0.10)", border: "rgba(58,123,213,0.25)" },
+  cancelled: { icon: <XCircle size={13} strokeWidth={1.5} />,     bg: "rgba(217,68,68,0.10)",  border: "rgba(217,68,68,0.25)"  },
 };
 
 const RSVP_COLORS: Record<string, { color: string }> = {
-  confirmed:  { color: "#2D8C4E" },
-  pending:    { color: "#3A7BD5" },
-  noresponse: { color: "#C4880A" },
-  cancelled:  { color: "#D94444" },
+  confirmed: { color: "#2D8C4E" },
+  pending:   { color: "#3A7BD5" },
+  cancelled: { color: "#D94444" },
 };
 
 const RSVP_LABELS: Record<string, string> = {
-  confirmed:  "Confirmado",
-  pending:    "Pendente",
-  noresponse: "Sem resposta",
-  cancelled:  "Cancelado",
+  confirmed: "Confirmado",
+  pending:   "Pendente",
+  cancelled: "Cancelado",
 };
 
 function formatDateBR(date: Date): string {
@@ -104,9 +101,9 @@ function getSlotKey(startsAt: string): string {
 // Painel de detalhe do agendamento
 function AppointmentDetail({ appt, onClose }: { appt: Appointment; onClose: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
-  const rsvp = appt.rsvp_status ?? "noresponse";
-  const rsvpCfg = RSVP_ICONS[rsvp] ?? RSVP_ICONS["noresponse"];
-  const rsvpColor = RSVP_COLORS[rsvp] ?? RSVP_COLORS["noresponse"];
+  const rsvp = appt.rsvp_status ?? "pending";
+  const rsvpCfg = RSVP_ICONS[rsvp] ?? RSVP_ICONS["pending"];
+  const rsvpColor = RSVP_COLORS[rsvp] ?? RSVP_COLORS["pending"];
   const rsvpLabel = RSVP_LABELS[rsvp] ?? "—";
 
   useEffect(() => {
@@ -566,9 +563,9 @@ export default function AgendaPage() {
                 {rooms.length > 0 ? (
                   rooms.map((room) => {
                     const appt = slotRoomMap[slot]?.[room.id];
-                    const rsvp = appt?.rsvp_status ?? "noresponse";
-                    const rsvpCfg = RSVP_ICONS[rsvp] ?? RSVP_ICONS["noresponse"];
-                    const rsvpColor = RSVP_COLORS[rsvp] ?? RSVP_COLORS["noresponse"];
+                    const rsvp = appt?.rsvp_status ?? "pending";
+                    const rsvpCfg = RSVP_ICONS[rsvp] ?? RSVP_ICONS["pending"];
+                    const rsvpColor = RSVP_COLORS[rsvp] ?? RSVP_COLORS["pending"];
                     const cellKey = `${slot}-${room.id}`;
                     const isHovered = hoverSlot === cellKey;
 
@@ -796,9 +793,9 @@ export default function AgendaPage() {
                     </p>
                   ) : (
                     dayAppts.map((appt) => {
-                      const rsvp = appt.rsvp_status ?? "noresponse";
-                      const rsvpCfg = RSVP_ICONS[rsvp] ?? RSVP_ICONS["noresponse"];
-                      const rsvpColor = RSVP_COLORS[rsvp] ?? RSVP_COLORS["noresponse"];
+                      const rsvp = appt.rsvp_status ?? "pending";
+                      const rsvpCfg = RSVP_ICONS[rsvp] ?? RSVP_ICONS["pending"];
+                      const rsvpColor = RSVP_COLORS[rsvp] ?? RSVP_COLORS["pending"];
                       const hora = formatTime(appt.starts_at);
                       return (
                         <button

@@ -38,14 +38,14 @@ export default async function NovoProtocoloPage({
   const errorMsg = errorKey ? (errorMessages[errorKey] ?? "Erro inesperado.") : null;
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
+    <div className="px-6 py-5" style={{ background: "var(--background)", minHeight: "100%" }}>
       {/* Header */}
       <div className="mb-6">
         <Link
           href="/protocolos"
           style={{
             display: "inline-flex", alignItems: "center", gap: "6px",
-            color: "#A69060", fontSize: "13px", textDecoration: "none", marginBottom: "12px",
+            color: "var(--muted-foreground)", fontSize: "13px", textDecoration: "none", marginBottom: "12px",
           }}
         >
           <ArrowLeft size={14} strokeWidth={1.5} />
@@ -54,7 +54,7 @@ export default async function NovoProtocoloPage({
         <h1
           style={{
             fontFamily: "'Playfair Display', serif",
-            fontSize: "22px", fontWeight: 700, color: "#2D2319", margin: 0,
+            fontSize: "22px", fontWeight: 700, color: "var(--foreground)", margin: 0,
           }}
         >
           Novo Protocolo

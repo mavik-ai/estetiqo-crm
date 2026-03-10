@@ -51,7 +51,7 @@ export function AssinarForm({ protocolId, clientName, serviceName, totalSessions
 
       {/* Canvas de assinatura */}
       <div style={{
-        background: "#FFFFFF", border: "1px solid #EDE5D3", borderRadius: "14px", padding: "20px",
+        background: "var(--card)", border: "1px solid var(--border)", borderRadius: "14px", padding: "20px",
       }}>
         <p style={{
           fontSize: "11px", fontWeight: 700, color: "#BBA870",
@@ -59,7 +59,7 @@ export function AssinarForm({ protocolId, clientName, serviceName, totalSessions
         }}>
           Assinatura de {clientName}
         </p>
-        <p style={{ fontSize: "12px", color: "#A69060", marginBottom: "12px" }}>
+        <p style={{ fontSize: "12px", color: "var(--muted-foreground)", marginBottom: "12px" }}>
           Entregue o dispositivo para a cliente assinar abaixo
         </p>
         <SignatureCanvas onChange={handleChange} />

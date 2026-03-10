@@ -26,7 +26,7 @@ export function PasswordInput({
 
     const inputStyle = dark
         ? { background: '#252219', border: '1px solid #33301F', color: '#FFFFFF' }
-        : { background: '#F6F2EA', border: '1px solid #EDE5D3', color: '#2D2319' }
+        : { background: 'var(--background)', border: '1px solid #EDE5D3', color: 'var(--foreground)' }
 
     const iconColor = dark ? '#9A8E70' : '#A69060'
 

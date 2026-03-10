@@ -41,7 +41,7 @@ export default async function EditarClientePage({
 
   const { data: client } = await supabase
     .from('clients')
-    .select('id, name, phone, email, birth_date, sex, address, rating')
+    .select('id, name, phone, email, birth_date, sex, address, cep, rating')
     .eq('id', id)
     .eq('tenant_id', profile!.tenant_id)
     .single();
@@ -123,21 +123,29 @@ export default async function EditarClientePage({
               </div>
             </div>
 
-            <div>
-              <label style={labelStyle}>Endereço</label>
-              <input name="address" type="text" defaultValue={client.address ?? ''} placeholder="Rua, número, bairro, cidade" style={inputStyle} />
+            <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '16px' }}>
+              <div>
+                <label style={labelStyle}>CEP</label>
+                <input name="cep" type="text" defaultValue={client.cep ?? ''} placeholder="00000-000" maxLength={9} style={inputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>Endereço</label>
+                <input name="address" type="text" defaultValue={client.address ?? ''} placeholder="Rua, número, bairro, cidade" style={inputStyle} />
+              </div>
             </div>
 
             <div>
-              <label style={labelStyle}>Avaliação (1–5 estrelas)</label>
-              <select name="rating" defaultValue={client.rating?.toString() ?? ''} style={{ ...inputStyle, cursor: 'pointer' }}>
-                <option value="">Sem avaliação</option>
-                <option value="1">⭐ 1 — Básica</option>
-                <option value="2">⭐⭐ 2</option>
-                <option value="3">⭐⭐⭐ 3 — Regular</option>
-                <option value="4">⭐⭐⭐⭐ 4</option>
-                <option value="5">⭐⭐⭐⭐⭐ 5 — Excelente</option>
+              <label style={labelStyle}>Potencial da cliente</label>
+              <select name="rating" defaultValue={(client.rating ?? 1).toString()} style={{ ...inputStyle, cursor: 'pointer' }}>
+                <option value="1">⭐</option>
+                <option value="2">⭐⭐</option>
+                <option value="3">⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐</option>
+                <option value="5">⭐⭐⭐⭐⭐</option>
               </select>
+              <p style={{ fontSize: '11px', color: '#BBA870', margin: '4px 0 0' }}>
+                Avaliação interna do potencial de negócio desta cliente (1–5).
+              </p>
             </div>
 
           </div>

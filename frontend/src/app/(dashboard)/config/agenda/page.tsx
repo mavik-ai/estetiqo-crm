@@ -21,14 +21,14 @@ export default async function JanelaAtendimentoPage() {
   const hours = (hoursData ?? []) as DayHours[];
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
+    <div className="px-6 py-5" style={{ background: "var(--background)", minHeight: "100%" }}>
       {/* Header */}
       <div className="mb-6">
         <Link
           href="/config"
           style={{
             display: "inline-flex", alignItems: "center", gap: "6px",
-            color: "#A69060", fontSize: "13px", textDecoration: "none", marginBottom: "12px",
+            color: "var(--muted-foreground)", fontSize: "13px", textDecoration: "none", marginBottom: "12px",
           }}
         >
           <ArrowLeft size={14} strokeWidth={1.5} />
@@ -43,10 +43,10 @@ export default async function JanelaAtendimentoPage() {
             <Clock size={18} strokeWidth={1.5} color="#B8960C" />
           </div>
           <div>
-            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 700, color: "#2D2319", margin: 0 }}>
+            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 700, color: "var(--foreground)", margin: 0 }}>
               Janela de Atendimento
             </h1>
-            <p style={{ color: "#A69060", fontSize: "13px", marginTop: "2px" }}>
+            <p style={{ color: "var(--muted-foreground)", fontSize: "13px", marginTop: "2px" }}>
               Configure os dias e horários de funcionamento da clínica
             </p>
           </div>
@@ -58,9 +58,9 @@ export default async function JanelaAtendimentoPage() {
         background: "linear-gradient(135deg, #FBF5EA, #F3E8CC)",
         border: "1px solid rgba(184,150,12,0.2)",
         borderRadius: "12px", padding: "14px 18px", marginBottom: "20px",
-        fontSize: "12px", color: "#A69060",
+        fontSize: "12px", color: "var(--muted-foreground)",
       }}>
-        <strong style={{ color: "#2D2319" }}>Dica:</strong> Use o botão "Copiar p/ todos" para replicar o horário de um dia para os demais rapidamente.
+        <strong style={{ color: "var(--foreground)" }}>Dica:</strong> Use o botão "Copiar p/ todos" para replicar o horário de um dia para os demais rapidamente.
         Dias marcados como fechados não aparecerão na agenda.
       </div>
 

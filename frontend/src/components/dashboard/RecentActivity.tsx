@@ -12,8 +12,8 @@ const activities = [
 ];
 
 export function RecentActivity() {
-    const card = { background: "#FFFFFF", border: "1px solid #EDE5D3", borderRadius: "14px" };
-    const sTitle = { color: "#A69060", fontWeight: 700, letterSpacing: "0.12em", fontSize: "10px", textTransform: "uppercase" as const };
+    const card = { background: "var(--card)", border: "1px solid var(--border)", borderRadius: "14px" };
+    const sTitle = { color: "var(--muted-foreground)", fontWeight: 700, letterSpacing: "0.12em", fontSize: "10px", textTransform: "uppercase" as const };
 
     return (
         <div className="p-3.5" style={card}>

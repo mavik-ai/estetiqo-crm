@@ -3,7 +3,8 @@ import { DashboardMetrics, DashboardMetricsData } from "@/components/dashboard/D
 import { AppointmentTable, Appointment } from "@/components/dashboard/AppointmentTable";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { PopularServices } from "@/components/dashboard/PopularServices";
-import { AlertCircle, ChevronRight, Sparkles, Scissors, DoorOpen, Layers } from "lucide-react";
+import { OnboardingBanner } from "@/components/dashboard/OnboardingBanner";
+import { AlertCircle, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 async function getDashboardData() {
@@ -93,7 +94,7 @@ async function getDashboardData() {
 
     const restantes    = (apptUpcoming.data ?? []).filter(a => new Date(a.starts_at) > now).length;
     const rsvpPendentes = (apptUpcoming.data ?? []).filter(
-        a => a.rsvp_status === 'pending' || a.rsvp_status === 'noresponse'
+        a => a.rsvp_status === 'pending'
     ).length;
 
     // Serviços mais realizados no mês
@@ -161,77 +162,18 @@ export default async function DashboardPage() {
     const needsSetup    = data?.needsSetup     ?? false;
     const setupChecklist = data?.setupChecklist ?? { hasServices: false, hasRooms: false };
 
-    const card = { background: "#FFFFFF", border: "1px solid #EDE5D3", borderRadius: "14px" };
+    const card = { background: "var(--card)", border: "1px solid var(--border)", borderRadius: "14px" };
 
     return (
-        <div className="px-6 py-5 bg-[#F6F2EA] min-h-full">
+        <div className="px-6 py-5 bg-background min-h-full">
 
             {/* Banner de Onboarding */}
-        {needsSetup && (
-          <div
-            style={{
-              background: 'linear-gradient(135deg, #FBF5EA, #F3E8CC)',
-              border: '1px solid rgba(184,150,12,0.25)',
-              borderRadius: '14px',
-              padding: '20px 24px',
-              marginBottom: '16px',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-              <Sparkles size={20} strokeWidth={1.5} color="#B8960C" style={{ flexShrink: 0, marginTop: 2 }} />
-              <div style={{ flex: 1 }}>
-                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: '15px', fontWeight: 700, color: '#2D2319', margin: '0 0 6px' }}>
-                  Configure sua clínica antes de começar
-                </p>
-                <p style={{ fontSize: '12px', color: '#A69060', margin: '0 0 14px' }}>
-                  Complete os itens abaixo para usar o sistema com todas as funcionalidades.
-                </p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {!setupChecklist.hasServices && (
-                    <Link
-                      href="/servicos"
-                      style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '6px',
-                        padding: '7px 14px', borderRadius: '8px',
-                        background: 'rgba(184,150,12,0.10)', border: '1px solid rgba(184,150,12,0.25)',
-                        fontSize: '12px', fontWeight: 700, color: '#B8960C', textDecoration: 'none',
-                      }}
-                    >
-                      <Scissors size={12} strokeWidth={2} />
-                      Cadastrar 1º serviço
-                    </Link>
-                  )}
-                  {!setupChecklist.hasRooms && (
-                    <Link
-                      href="/config/salas"
-                      style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '6px',
-                        padding: '7px 14px', borderRadius: '8px',
-                        background: 'rgba(184,150,12,0.10)', border: '1px solid rgba(184,150,12,0.25)',
-                        fontSize: '12px', fontWeight: 700, color: '#B8960C', textDecoration: 'none',
-                      }}
-                    >
-                      <DoorOpen size={12} strokeWidth={2} />
-                      Cadastrar 1ª sala
-                    </Link>
-                  )}
-                  <Link
-                    href="/protocolos/novo"
-                    style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '6px',
-                      padding: '7px 14px', borderRadius: '8px',
-                      background: 'rgba(184,150,12,0.10)', border: '1px solid rgba(184,150,12,0.25)',
-                      fontSize: '12px', fontWeight: 700, color: '#B8960C', textDecoration: 'none',
-                    }}
-                  >
-                    <Layers size={12} strokeWidth={2} />
-                    Criar 1º protocolo
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+            {needsSetup && (
+                <OnboardingBanner
+                    hasServices={setupChecklist.hasServices}
+                    hasRooms={setupChecklist.hasRooms}
+                />
+            )}
 
         {pendentes > 0 && (
                 <div
@@ -242,7 +184,7 @@ export default async function DashboardPage() {
                     <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(196,136,10,0.08)", color: "#C4880A" }}>
                         <AlertCircle size={14} />
                     </div>
-                    <div className="flex-1 text-[13px] font-medium" style={{ color: "#2D2319" }}>
+                    <div className="flex-1 text-[13px] font-medium" style={{ color: "var(--foreground)" }}>
                         {pendentes === 1
                             ? "1 cliente ainda não confirmou presença para hoje."
                             : `${pendentes} clientes ainda não confirmaram presença para hoje.`}

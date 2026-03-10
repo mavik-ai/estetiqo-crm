@@ -20,7 +20,7 @@ const statusConfig: Record<string, { label: string; bg: string; color: string }>
 };
 
 function StatusBadge({ status }: { status: string }) {
-  const cfg = statusConfig[status] ?? { label: status, bg: "rgba(166,144,96,0.10)", color: "#A69060" };
+  const cfg = statusConfig[status] ?? { label: status, bg: "rgba(166,144,96,0.10)", color: "var(--muted-foreground)" };
   return (
     <span
       style={{
@@ -62,7 +62,7 @@ function ProgressBar({ completed, total }: { completed: number; total: number })
         />
       </div>
       <div className="flex justify-between items-center mt-1.5">
-        <span style={{ fontSize: "12px", color: "#A69060" }}>
+        <span style={{ fontSize: "12px", color: "var(--muted-foreground)" }}>
           {completed} de {total} sessões
         </span>
         <span style={{ fontSize: "12px", fontWeight: 600, color: "#B8960C" }}>{pct}%</span>
@@ -114,8 +114,8 @@ export default async function ProtocolosPage({
   const activeCount = protocols.filter((p) => p.status === "active").length;
 
   const card = {
-    background: "#FFFFFF",
-    border: "1px solid #EDE5D3",
+    background: "var(--card)",
+    border: "1px solid var(--border)",
     borderRadius: "14px",
   };
 
@@ -127,7 +127,7 @@ export default async function ProtocolosPage({
   ];
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
+    <div className="px-6 py-5" style={{ background: "var(--background)", minHeight: "100%" }}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
@@ -136,13 +136,13 @@ export default async function ProtocolosPage({
               fontFamily: "'Playfair Display', serif",
               fontSize: "22px",
               fontWeight: 700,
-              color: "#2D2319",
+              color: "var(--foreground)",
               margin: 0,
             }}
           >
             Protocolos
           </h1>
-          <p style={{ color: "#A69060", fontSize: "13px", marginTop: "2px" }}>
+          <p style={{ color: "var(--muted-foreground)", fontSize: "13px", marginTop: "2px" }}>
             {statusFilter === "all" ? protocols.length : activeCount} protocolo
             {protocols.length !== 1 ? "s" : ""}{" "}
             {statusFilter === "active"
@@ -215,7 +215,7 @@ export default async function ProtocolosPage({
           <Activity size={40} strokeWidth={1} color="#BBA870" />
           <p
             style={{
-              color: "#A69060",
+              color: "var(--muted-foreground)",
               fontSize: "15px",
               marginTop: "12px",
               textAlign: "center",
@@ -252,13 +252,13 @@ export default async function ProtocolosPage({
                       style={{
                         fontWeight: 600,
                         fontSize: "15px",
-                        color: "#2D2319",
+                        color: "var(--foreground)",
                         margin: 0,
                       }}
                     >
                       {clientName}
                     </p>
-                    <p style={{ color: "#A69060", fontSize: "13px", marginTop: "2px" }}>
+                    <p style={{ color: "var(--muted-foreground)", fontSize: "13px", marginTop: "2px" }}>
                       {serviceName}
                     </p>
                   </div>
@@ -277,12 +277,12 @@ export default async function ProtocolosPage({
                   style={{ borderTop: "1px solid #F0EBE0" }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1.5" style={{ color: "#A69060", fontSize: "12px" }}>
+                    <div className="flex items-center gap-1.5" style={{ color: "var(--muted-foreground)", fontSize: "12px" }}>
                       <Calendar size={13} strokeWidth={1.5} />
                       <span>{endDateStr}</span>
                     </div>
                     {protocol.target_weight && (
-                      <div className="flex items-center gap-1.5" style={{ color: "#A69060", fontSize: "12px" }}>
+                      <div className="flex items-center gap-1.5" style={{ color: "var(--muted-foreground)", fontSize: "12px" }}>
                         <Target size={13} strokeWidth={1.5} />
                         <span>{protocol.target_weight} kg</span>
                       </div>

@@ -112,7 +112,7 @@ export function ClienteSearch({
 
         {value ? (
           /* Cliente selecionado */
-          <div style={{ flex: 1, padding: "10px 0", fontSize: "14px", fontWeight: 600, color: "#2D2319", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ flex: 1, padding: "10px 0", fontSize: "14px", fontWeight: 600, color: "var(--foreground)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span>{selectedName}</span>
             {!disabled && (
               <button
@@ -136,7 +136,7 @@ export function ClienteSearch({
             disabled={disabled}
             style={{
               flex: 1, padding: "10px 10px 10px 0", border: "none", background: "transparent",
-              color: "#2D2319", fontSize: "14px", fontFamily: "inherit", outline: "none",
+              color: "var(--foreground)", fontSize: "14px", fontFamily: "inherit", outline: "none",
             }}
           />
         )}
@@ -147,13 +147,13 @@ export function ClienteSearch({
         <div
           style={{
             position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, zIndex: 200,
-            background: "#FFFFFF", border: "1px solid #EDE5D3",
+            background: "var(--card)", border: "1px solid var(--border)",
             borderRadius: "10px", boxShadow: "0 8px 24px rgba(0,0,0,0.10)",
             overflow: "hidden",
           }}
         >
           {loading && (
-            <p style={{ padding: "12px 14px", fontSize: "13px", color: "#A69060", margin: 0 }}>
+            <p style={{ padding: "12px 14px", fontSize: "13px", color: "var(--muted-foreground)", margin: 0 }}>
               Buscando...
             </p>
           )}
@@ -180,8 +180,8 @@ export function ClienteSearch({
                 {c.name.split(" ").slice(0, 2).map(p => p[0]?.toUpperCase()).join("")}
               </div>
               <div>
-                <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#2D2319" }}>{c.name}</p>
-                {c.phone && <p style={{ margin: 0, fontSize: "11px", color: "#A69060" }}>{c.phone}</p>}
+                <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "var(--foreground)" }}>{c.name}</p>
+                {c.phone && <p style={{ margin: 0, fontSize: "11px", color: "var(--muted-foreground)" }}>{c.phone}</p>}
               </div>
             </button>
           ))}
@@ -189,7 +189,7 @@ export function ClienteSearch({
           {/* Sem resultados + link de cadastro */}
           {showNoResult && (
             <div style={{ padding: "12px 14px", borderTop: results.length > 0 ? "1px solid #F0EBE0" : "none" }}>
-              <p style={{ margin: "0 0 8px", fontSize: "12px", color: "#A69060" }}>
+              <p style={{ margin: "0 0 8px", fontSize: "12px", color: "var(--muted-foreground)" }}>
                 Nenhuma paciente encontrada com "{query}"
               </p>
               {showCadastroLink && (

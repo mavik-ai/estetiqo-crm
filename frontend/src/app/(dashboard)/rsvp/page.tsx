@@ -33,13 +33,13 @@ export default async function RSVPPage() {
   const appointments = pending ?? [];
 
   const card = {
-    background: "#FFFFFF",
-    border: "1px solid #EDE5D3",
+    background: "var(--card)",
+    border: "1px solid var(--border)",
     borderRadius: "14px",
   } as const;
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
+    <div className="px-6 py-5" style={{ background: "var(--background)", minHeight: "100%" }}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
@@ -48,13 +48,13 @@ export default async function RSVPPage() {
               fontFamily: "'Playfair Display', serif",
               fontSize: "22px",
               fontWeight: 700,
-              color: "#2D2319",
+              color: "var(--foreground)",
               margin: 0,
             }}
           >
             RSVP
           </h1>
-          <p style={{ color: "#A69060", fontSize: "13px", marginTop: "2px" }}>
+          <p style={{ color: "var(--muted-foreground)", fontSize: "13px", marginTop: "2px" }}>
             Confirmações de presença pendentes
           </p>
         </div>
@@ -94,10 +94,10 @@ export default async function RSVPPage() {
         <div className="flex items-start gap-3">
           <MessageSquare size={20} strokeWidth={1.5} color="#B8960C" style={{ flexShrink: 0, marginTop: 2 }} />
           <div>
-            <p style={{ fontSize: "13px", fontWeight: 600, color: "#2D2319", margin: "0 0 4px" }}>
+            <p style={{ fontSize: "13px", fontWeight: 600, color: "var(--foreground)", margin: "0 0 4px" }}>
               Automação WhatsApp em breve
             </p>
-            <p style={{ fontSize: "12px", color: "#A69060", margin: 0 }}>
+            <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: 0 }}>
               A Onda 6 do sistema trará disparos automáticos via WhatsApp (Evolution API) assim que o agendamento for criado.
               Por enquanto, gerencie as confirmações manualmente pela Agenda.
             </p>
@@ -128,7 +128,7 @@ export default async function RSVPPage() {
           style={{ ...card, padding: "60px 20px", display: "flex", flexDirection: "column", alignItems: "center" }}
         >
           <CheckCircle size={40} strokeWidth={1} color="#2D8C4E" />
-          <p style={{ color: "#A69060", fontSize: "15px", marginTop: "12px", textAlign: "center" }}>
+          <p style={{ color: "var(--muted-foreground)", fontSize: "15px", marginTop: "12px", textAlign: "center" }}>
             Nenhuma confirmação pendente. Tudo em ordem!
           </p>
         </div>
@@ -137,7 +137,7 @@ export default async function RSVPPage() {
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
               <thead>
-                <tr style={{ borderBottom: "1px solid #EDE5D3" }}>
+                <tr style={{ borderBottom: "1px solid var(--border)" }}>
                   {["Paciente", "Serviço", "Data/Hora", "Status"].map((col) => (
                     <th
                       key={col}
@@ -177,9 +177,9 @@ export default async function RSVPPage() {
                       key={appt.id}
                       style={{ borderBottom: idx < appointments.length - 1 ? "1px solid #F0EBE0" : "none" }}
                     >
-                      <td style={{ padding: "12px 16px", fontWeight: 600, color: "#2D2319" }}>{clientName}</td>
-                      <td style={{ padding: "12px 16px", color: "#A69060" }}>{serviceName}</td>
-                      <td style={{ padding: "12px 16px", color: "#2D2319", whiteSpace: "nowrap" }}>{dateStr}</td>
+                      <td style={{ padding: "12px 16px", fontWeight: 600, color: "var(--foreground)" }}>{clientName}</td>
+                      <td style={{ padding: "12px 16px", color: "var(--muted-foreground)" }}>{serviceName}</td>
+                      <td style={{ padding: "12px 16px", color: "var(--foreground)", whiteSpace: "nowrap" }}>{dateStr}</td>
                       <td style={{ padding: "12px 16px" }}>
                         <span
                           style={{

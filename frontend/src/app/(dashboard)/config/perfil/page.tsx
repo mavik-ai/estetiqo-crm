@@ -19,10 +19,10 @@ export default async function PerfilPage() {
     name.split(' ').slice(0, 2).map((p: string) => p[0]?.toUpperCase() ?? '').join('');
 
   return (
-    <div style={{ padding: '24px', minHeight: '100%', background: '#F6F2EA' }}>
+    <div style={{ padding: '24px', minHeight: '100%', background: 'var(--background)' }}>
       {/* Header */}
       <div style={{ marginBottom: '24px' }}>
-        <Link href="/config" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#A69060', textDecoration: 'none', marginBottom: '10px' }}>
+        <Link href="/config" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'var(--muted-foreground)', textDecoration: 'none', marginBottom: '10px' }}>
           <ChevronLeft size={14} strokeWidth={2} />
           Configurações
         </Link>
@@ -31,10 +31,10 @@ export default async function PerfilPage() {
             <UserCircle size={20} strokeWidth={1.8} color="#FFFDF7" />
           </div>
           <div>
-            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: '22px', fontWeight: 700, color: '#2D2319', margin: 0 }}>
+            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: '22px', fontWeight: 700, color: 'var(--foreground)', margin: 0 }}>
               Meu Perfil
             </h1>
-            <p style={{ fontSize: '13px', color: '#A69060', margin: '2px 0 0' }}>
+            <p style={{ fontSize: '13px', color: 'var(--muted-foreground)', margin: '2px 0 0' }}>
               Dados pessoais e segurança da conta
             </p>
           </div>

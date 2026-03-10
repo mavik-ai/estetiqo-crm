@@ -132,7 +132,7 @@ export function SignatureCanvas({ onChange }: Props) {
             style={{
               background: 'none',
               border: 'none',
-              color: '#A69060',
+              color: 'var(--muted-foreground)',
               fontSize: '12px',
               cursor: 'pointer',
               textDecoration: 'underline',
