@@ -2,6 +2,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { Toaster } from "sonner";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
     const supabase = await createClient();
@@ -31,22 +32,44 @@ export default async function DashboardLayout({ children }: { children: React.Re
         .eq('id', user.id)
         .single();
 
-    const { count: pendingRsvp } = await supabase
+    // Busca agendamentos pendentes de RSVP com detalhes para o dropdown
+    const { data: pendingAppointments } = await supabase
         .from('appointments')
-        .select('id', { count: 'exact', head: true })
+        .select('id, starts_at, clients(name), services(name)')
         .eq('tenant_id', tenantRow!.tenant_id)
         .eq('rsvp_status', 'pending')
-        .gte('starts_at', new Date().toISOString());
+        .gte('starts_at', new Date().toISOString())
+        .order('starts_at')
+        .limit(5);
 
     return (
         <div className="min-h-screen flex" style={{ fontFamily: "var(--font-urbanist), sans-serif", background: "#F6F2EA" }}>
-            <Sidebar userName={profile?.name ?? firstName} userInitials={initials} userRole={roleLabel} />
+            <Sidebar userName={profile?.name ?? firstName} userInitials={initials} userRole={roleLabel} userEmail={user.email ?? ''} />
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
-                <Topbar userName={firstName} notificationCount={pendingRsvp ?? 0} />
+                <Topbar
+                    userName={firstName}
+                    notificationCount={pendingAppointments?.length ?? 0}
+                    pendingAppointments={pendingAppointments ?? []}
+                />
                 <div className="flex-1 overflow-auto">
                     {children}
                 </div>
             </div>
+            <Toaster
+                position="bottom-right"
+                toastOptions={{
+                    style: {
+                        fontFamily: "var(--font-urbanist), sans-serif",
+                        fontSize: "14px",
+                        borderRadius: "12px",
+                        border: "1px solid #EDE5D3",
+                    },
+                    classNames: {
+                        success: "bg-white text-[#2D2319]",
+                        error: "bg-white text-[#D94444]",
+                    },
+                }}
+            />
         </div>
     );
 }

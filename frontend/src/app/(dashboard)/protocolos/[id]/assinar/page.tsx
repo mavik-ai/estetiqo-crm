@@ -1,10 +1,10 @@
 import { createClient } from "@/utils/supabase/server";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { SessaoForm } from "./SessaoForm";
+import { AssinarForm } from "./AssinarForm";
 
-export default async function NovaSessaoPage({
+export default async function AssinarProtocoloPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -18,7 +18,7 @@ export default async function NovaSessaoPage({
 
   const { data: protocol } = await supabase
     .from("protocols")
-    .select("id, total_sessions, completed_sessions, clients(name), services(name)")
+    .select("id, total_sessions, clients(name), services(name)")
     .eq("id", id)
     .eq("tenant_id", profile!.tenant_id)
     .single();
@@ -29,43 +29,38 @@ export default async function NovaSessaoPage({
   const serviceRaw = Array.isArray(protocol.services) ? protocol.services[0] : protocol.services;
   const clientName  = (clientRaw  as { name: string } | null)?.name  ?? "—";
   const serviceName = (serviceRaw as { name: string } | null)?.name ?? "—";
-  const nextSession = (protocol.completed_sessions ?? 0) + 1;
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
-      {/* Header */}
-      <div className="mb-6">
+    <div style={{ background: "#F6F2EA", minHeight: "100%", padding: "24px" }}>
+      <div style={{ maxWidth: "540px", margin: "0 auto" }}>
         <Link
           href={`/protocolos/${id}`}
           style={{
             display: "inline-flex", alignItems: "center", gap: "6px",
-            color: "#A69060", fontSize: "13px", textDecoration: "none", marginBottom: "12px",
+            color: "#A69060", fontSize: "13px", textDecoration: "none", marginBottom: "16px",
           }}
         >
           <ArrowLeft size={14} strokeWidth={1.5} />
-          {clientName}
+          Ir para o protocolo
         </Link>
+
         <h1 style={{
           fontFamily: "'Playfair Display', serif", fontSize: "22px",
-          fontWeight: 700, color: "#2D2319", margin: 0,
+          fontWeight: 700, color: "#2D2319", margin: "0 0 4px",
         }}>
-          Registrar Sessão #{nextSession}
+          Autorização de Início
         </h1>
-        <p style={{ color: "#A69060", fontSize: "14px", marginTop: "2px" }}>
-          {serviceName} · {protocol.completed_sessions}/{protocol.total_sessions} sessões concluídas
+        <p style={{ color: "#A69060", fontSize: "14px", margin: "0 0 24px" }}>
+          {clientName} · {serviceName} · {protocol.total_sessions} sessões
         </p>
-      </div>
 
-      <SessaoForm
-        protocol={{
-          id: protocol.id,
-          total_sessions: protocol.total_sessions,
-          completed_sessions: protocol.completed_sessions ?? 0,
-          clientName,
-          serviceName,
-        }}
-        nextSession={nextSession}
-      />
+        <AssinarForm
+          protocolId={id}
+          clientName={clientName}
+          serviceName={serviceName}
+          totalSessions={protocol.total_sessions}
+        />
+      </div>
     </div>
   );
 }

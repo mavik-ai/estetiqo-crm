@@ -8,7 +8,8 @@ interface Session {
   session_number: number;
   abs_cm: number | null;
   abi_cm: number | null;
-  weight_kg: number | null;
+  weight_before_kg: number | null;
+  weight_after_kg: number | null;
   procedure_notes: string | null;
   performed_at: string | null;
 }
@@ -244,7 +245,7 @@ export default async function ProtocoloDetalhePage({
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
                   <thead>
                     <tr style={{ borderBottom: "1px solid #EDE5D3" }}>
-                      {["Sessão #", "ABS (cm)", "ABI (cm)", "Peso (kg)", "Procedimento", "Data"].map(
+                      {["Sessão #", "ABS (cm)", "ABI (cm)", "Peso antes → depois", "Procedimento", "Data"].map(
                         (col) => (
                           <th
                             key={col}
@@ -268,7 +269,7 @@ export default async function ProtocoloDetalhePage({
                   <tbody>
                     {sessions.map((session, idx) => {
                       const dateStr = session.performed_at
-                        ? new Date(session.performed_at).toLocaleDateString("pt-BR")
+                        ? new Date(session.performed_at).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })
                         : "—";
                       return (
                         <tr
@@ -287,8 +288,21 @@ export default async function ProtocoloDetalhePage({
                           <td style={{ padding: "10px", color: "#2D2319" }}>
                             {session.abi_cm ?? "—"}
                           </td>
-                          <td style={{ padding: "10px", color: "#2D2319" }}>
-                            {session.weight_kg ?? "—"}
+                          <td style={{ padding: "10px", color: "#2D2319", whiteSpace: "nowrap" }}>
+                            {session.weight_before_kg != null || session.weight_after_kg != null ? (
+                              <>
+                                <span>{session.weight_before_kg != null ? `${session.weight_before_kg} kg` : "—"}</span>
+                                <span style={{ color: "#BBA870", margin: "0 4px" }}>→</span>
+                                <span style={{
+                                  color: session.weight_after_kg != null && session.weight_before_kg != null
+                                    ? (session.weight_after_kg < session.weight_before_kg ? "#2D8C4E" : session.weight_after_kg > session.weight_before_kg ? "#D94444" : "#2D2319")
+                                    : "#2D2319",
+                                  fontWeight: session.weight_after_kg != null && session.weight_before_kg != null && session.weight_after_kg !== session.weight_before_kg ? 600 : 400,
+                                }}>
+                                  {session.weight_after_kg != null ? `${session.weight_after_kg} kg` : "—"}
+                                </span>
+                              </>
+                            ) : "—"}
                           </td>
                           <td
                             style={{

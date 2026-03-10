@@ -88,7 +88,15 @@ export default function NovoAgendamentoPage() {
   const [selectedProfessionalId, setSelectedProfessionalId] = useState("");
 
   const [date, setDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
-  const [startTime, setStartTime] = useState("09:00");
+  const [startTime, setStartTime] = useState(() => {
+    const now = new Date();
+    // Próxima meia hora arredondada para cima
+    const totalMin = now.getHours() * 60 + now.getMinutes();
+    const next = Math.ceil((totalMin + 1) / 30) * 30;
+    const h = Math.floor(next / 60) % 24;
+    const m = next % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  });
   const [endTime, setEndTime] = useState("10:00");
   const [notes, setNotes] = useState("");
 
@@ -419,6 +427,9 @@ export default function NovoAgendamentoPage() {
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
+                min={date === new Date().toISOString().split("T")[0]
+                  ? (() => { const n = new Date(); return `${String(n.getHours()).padStart(2,"0")}:${String(n.getMinutes()).padStart(2,"0")}`; })()
+                  : undefined}
                 style={{ ...inputStyle }}
                 required
               />

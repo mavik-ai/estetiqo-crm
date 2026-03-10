@@ -1,17 +1,21 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import {
     ChevronLeft,
     Phone,
     Calendar,
     MapPin,
     Star,
-    CheckCircle,
-    XCircle,
     Clock,
     User,
+    ClipboardList,
+    Mail,
+    AlertCircle,
+    Layers,
 } from "lucide-react";
+import { SavedToast } from "@/components/ui/SavedToast";
 
 interface HealthRecord {
     smoker: boolean | null;
@@ -91,7 +95,7 @@ function rsvpLabel(status: string | null): { label: string; color: string } {
         case "pending":
             return { label: "Pendente", color: "#B8960C" };
         default:
-            return { label: "Sem resposta", color: "#A69060" };
+            return { label: "Pendente", color: "#B8960C" };
     }
 }
 
@@ -133,6 +137,7 @@ export default async function ClienteFichaPage({
 }) {
     const { id } = await params;
 
+
     const supabase = await createClient();
     const {
         data: { user },
@@ -146,7 +151,7 @@ export default async function ClienteFichaPage({
 
     const tenantId = profile!.tenant_id;
 
-    const [clientRes, healthRes, apptRes] = await Promise.all([
+    const [clientRes, healthRes, apptRes, protocolsRes] = await Promise.all([
         supabase
             .from("clients")
             .select("*")
@@ -167,6 +172,12 @@ export default async function ClienteFichaPage({
             .eq("tenant_id", tenantId)
             .order("starts_at", { ascending: false })
             .limit(10),
+        supabase
+            .from("protocols")
+            .select("id, status, total_sessions, completed_sessions, created_at, services(name)")
+            .eq("client_id", id)
+            .eq("tenant_id", tenantId)
+            .order("created_at", { ascending: false }),
     ]);
 
     if (!clientRes.data) notFound();
@@ -174,6 +185,20 @@ export default async function ClienteFichaPage({
     const client = clientRes.data;
     const health = healthRes.data as HealthRecord | null;
     const appointments = apptRes.data ?? [];
+    const protocols = (protocolsRes.data ?? []) as Array<{
+        id: string;
+        status: string;
+        total_sessions: number;
+        completed_sessions: number;
+        created_at: string;
+        services: { name: string } | { name: string }[] | null;
+    }>;
+
+    const protocolStatusCfg: Record<string, { label: string; bg: string; color: string }> = {
+        active:    { label: "Ativo",     bg: "rgba(45,140,78,0.10)",  color: "#2D8C4E" },
+        completed: { label: "Concluído", bg: "rgba(58,123,213,0.10)", color: "#3A7BD5" },
+        cancelled: { label: "Cancelado", bg: "rgba(217,68,68,0.10)",  color: "#D94444" },
+    };
 
     const initials = getInitials(client.name ?? "");
     const idade = calcularIdade(client.birth_date ?? null);
@@ -188,6 +213,10 @@ export default async function ClienteFichaPage({
                 fontFamily: "var(--font-urbanist), sans-serif",
             }}
         >
+            <Suspense fallback={null}>
+                <SavedToast message="Dados da cliente salvos com sucesso!" />
+            </Suspense>
+
             {/* Header */}
             <div style={{ marginBottom: "20px" }}>
                 <Link
@@ -246,8 +275,27 @@ export default async function ClienteFichaPage({
                         )}
                     </div>
 
-                    {/* Botão editar */}
-                    <div style={{ marginLeft: "auto" }}>
+                    {/* Botões de ação */}
+                    <div style={{ marginLeft: "auto", display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        <Link
+                            href={`/clientes/${id}/avaliacao/nova`}
+                            style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                fontSize: "13px",
+                                fontWeight: 700,
+                                color: "#161412",
+                                textDecoration: "none",
+                                padding: "8px 16px",
+                                border: "none",
+                                borderRadius: "9px",
+                                background: "linear-gradient(135deg, #D4B86A, #B8960C)",
+                            }}
+                        >
+                            <ClipboardList size={14} strokeWidth={1.8} />
+                            Nova Avaliação
+                        </Link>
                         <Link
                             href={`/clientes/${id}/editar`}
                             style={{
@@ -296,6 +344,13 @@ export default async function ClienteFichaPage({
                                     Telefone
                                 </div>
                                 <div style={infoValue}>{client.phone ?? "—"}</div>
+                            </div>
+                            <div>
+                                <div style={{ display: "flex", alignItems: "center", gap: "5px", ...infoLabel }}>
+                                    <Mail size={11} strokeWidth={1.8} />
+                                    E-mail
+                                </div>
+                                <div style={infoValue}>{(client as Record<string, unknown>).email as string ?? "—"}</div>
                             </div>
                             <div>
                                 <div style={{ display: "flex", alignItems: "center", gap: "5px", ...infoLabel }}>
@@ -435,69 +490,171 @@ export default async function ClienteFichaPage({
                     </div>
                 </div>
 
+                    {/* Card Protocolos */}
+                    {protocols.length > 0 && (
+                        <div style={card}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+                                <h2 style={{ ...cardTitle, marginBottom: 0 }}>Protocolos</h2>
+                                <span style={{ fontSize: "11px", color: "#A69060" }}>
+                                    {protocols.filter(p => p.status === "active").length} ativo(s)
+                                </span>
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                                {protocols.map((proto) => {
+                                    const svcRaw = Array.isArray(proto.services) ? proto.services[0] : proto.services;
+                                    const svcName = (svcRaw as { name: string } | null)?.name ?? "—";
+                                    const pct = proto.total_sessions > 0
+                                        ? Math.round((proto.completed_sessions / proto.total_sessions) * 100)
+                                        : 0;
+                                    const cfg = protocolStatusCfg[proto.status] ?? { label: proto.status, bg: "#F0EBE0", color: "#A69060" };
+                                    return (
+                                        <Link
+                                            key={proto.id}
+                                            href={`/protocolos/${proto.id}`}
+                                            style={{ textDecoration: "none" }}
+                                        >
+                                            <div style={{
+                                                padding: "12px 14px", borderRadius: "10px",
+                                                border: "1px solid #EDE5D3", background: "#FEFCF7",
+                                                display: "flex", flexDirection: "column", gap: "8px",
+                                            }}>
+                                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                                        <Layers size={13} strokeWidth={1.5} style={{ color: "#B8960C", flexShrink: 0 }} />
+                                                        <span style={{ fontSize: "13px", fontWeight: 600, color: "#2D2319" }}>
+                                                            {svcName}
+                                                        </span>
+                                                    </div>
+                                                    <span style={{
+                                                        fontSize: "10px", fontWeight: 700, padding: "2px 8px",
+                                                        borderRadius: "20px", background: cfg.bg, color: cfg.color,
+                                                        whiteSpace: "nowrap",
+                                                    }}>
+                                                        {cfg.label}
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+                                                        <span style={{ fontSize: "11px", color: "#A69060" }}>
+                                                            {proto.completed_sessions}/{proto.total_sessions} sessões
+                                                        </span>
+                                                        <span style={{ fontSize: "11px", fontWeight: 600, color: "#B8960C" }}>{pct}%</span>
+                                                    </div>
+                                                    <div style={{ height: "5px", background: "#F0EBE0", borderRadius: "3px", overflow: "hidden" }}>
+                                                        <div style={{
+                                                            height: "100%", borderRadius: "3px",
+                                                            background: "linear-gradient(90deg, #D4B86A, #B8960C)",
+                                                            width: `${pct}%`,
+                                                        }} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
                 {/* Coluna direita: Ficha de Saúde */}
                 <div>
                     <div style={{ ...card, marginBottom: 0 }}>
                         <h2 style={cardTitle}>Ficha de Saúde</h2>
                         {!health ? (
                             <p style={{ color: "#A69060", fontSize: "13px" }}>
-                                Ficha de saúde não preenchida.
+                                Ficha de saúde não preenchida.{" "}
+                                <Link href={`/clientes/${id}/avaliacao/nova`} style={{ color: "#B8960C" }}>
+                                    Preencher agora →
+                                </Link>
                             </p>
-                        ) : (
-                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                                {healthLabels.map(({ key, label }) => {
-                                    const value = health[key] === true;
-                                    return (
-                                        <div
-                                            key={key}
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: "10px",
-                                                fontSize: "13px",
-                                                color: "#2D2319",
-                                            }}
-                                        >
-                                            {value ? (
-                                                <CheckCircle
-                                                    size={16}
-                                                    strokeWidth={1.8}
-                                                    style={{ color: "#2D8C4E", flexShrink: 0 }}
-                                                />
-                                            ) : (
-                                                <XCircle
-                                                    size={16}
-                                                    strokeWidth={1.8}
-                                                    style={{ color: "#EDE5D3", flexShrink: 0 }}
-                                                />
-                                            )}
-                                            <span style={{ color: value ? "#2D2319" : "#A69060" }}>
-                                                {label}
+                        ) : (() => {
+                            const positivos = healthLabels.filter(({ key }) => health[key] === true);
+                            const todoNegativo = positivos.length === 0;
+                            return (
+                                <div>
+                                    {todoNegativo ? (
+                                        <div style={{
+                                            display: "flex", alignItems: "center", gap: "10px",
+                                            padding: "12px 14px", background: "#F0FBF4",
+                                            border: "1px solid #A8D5B5", borderRadius: "10px",
+                                        }}>
+                                            <span style={{ fontSize: "18px" }}>✓</span>
+                                            <span style={{ fontSize: "13px", color: "#2D8C4E", fontWeight: 600 }}>
+                                                Sem restrições de saúde reportadas
                                             </span>
                                         </div>
-                                    );
-                                })}
-
-                                {health.other_conditions && (
-                                    <div
-                                        style={{
-                                            marginTop: "8px",
-                                            padding: "10px 12px",
-                                            background: "#FBF5EA",
-                                            border: "1px solid #EDE5D3",
-                                            borderRadius: "8px",
-                                        }}
-                                    >
-                                        <div style={{ ...infoLabel, marginBottom: "4px" }}>
-                                            Outros
+                                    ) : (
+                                        <div>
+                                            <div style={{
+                                                display: "flex", alignItems: "center", gap: "6px",
+                                                marginBottom: "10px",
+                                            }}>
+                                                <AlertCircle size={14} strokeWidth={1.8} color="#D97706" />
+                                                <span style={{ fontSize: "11px", fontWeight: 700, color: "#D97706", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                                                    {positivos.length} condição{positivos.length > 1 ? "ões" : ""} a considerar
+                                                </span>
+                                            </div>
+                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                                                {positivos.map(({ key, label }) => (
+                                                    <span
+                                                        key={key}
+                                                        style={{
+                                                            fontSize: "12px",
+                                                            fontWeight: 600,
+                                                            color: "#92400E",
+                                                            background: "#FEF3C7",
+                                                            border: "1px solid #FCD34D",
+                                                            borderRadius: "20px",
+                                                            padding: "4px 10px",
+                                                        }}
+                                                    >
+                                                        {label}
+                                                    </span>
+                                                ))}
+                                            </div>
                                         </div>
-                                        <p style={{ margin: 0, fontSize: "13px", color: "#2D2319", lineHeight: 1.5 }}>
-                                            {health.other_conditions}
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                                    )}
+
+                                    {health.other_conditions && (
+                                        <div style={{
+                                            marginTop: "12px", padding: "10px 12px",
+                                            background: "#FBF5EA", border: "1px solid #EDE5D3",
+                                            borderRadius: "8px",
+                                        }}>
+                                            <div style={{ ...infoLabel, marginBottom: "4px" }}>Outros</div>
+                                            <p style={{ margin: 0, fontSize: "13px", color: "#2D2319", lineHeight: 1.5 }}>
+                                                {health.other_conditions}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    <details style={{ marginTop: "12px" }}>
+                                        <summary style={{ fontSize: "12px", color: "#A69060", cursor: "pointer", userSelect: "none" }}>
+                                            Ver ficha completa
+                                        </summary>
+                                        <div style={{ marginTop: "10px", display: "flex", flexDirection: "column", gap: "6px" }}>
+                                            {healthLabels.map(({ key, label }) => {
+                                                const value = health[key] === true;
+                                                return (
+                                                    <div key={key} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px" }}>
+                                                        <div style={{
+                                                            width: "16px", height: "16px", borderRadius: "50%",
+                                                            background: value ? "#D1FAE5" : "#F5F5F4",
+                                                            border: `1px solid ${value ? "#6EE7B7" : "#E5E5E5"}`,
+                                                            display: "flex", alignItems: "center", justifyContent: "center",
+                                                            flexShrink: 0,
+                                                        }}>
+                                                            {value && <span style={{ fontSize: "8px", color: "#059669" }}>✓</span>}
+                                                        </div>
+                                                        <span style={{ color: value ? "#2D2319" : "#A69060" }}>{label}</span>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </details>
+                                </div>
+                            );
+                        })()}
                     </div>
                 </div>
             </div>

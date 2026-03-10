@@ -10,6 +10,7 @@ interface Service {
     price: number | null;
     duration_minutes: number | null;
     is_active: boolean | null;
+    preparation_notes: string | null;
 }
 
 interface ModalState {
@@ -75,7 +76,7 @@ export default function ServicosPage() {
 
         const { data } = await supabase
             .from("services")
-            .select("id, name, price, duration_minutes, is_active")
+            .select("id, name, price, duration_minutes, is_active, preparation_notes")
             .eq("tenant_id", profile.tenant_id)
             .order("name");
 
@@ -88,7 +89,7 @@ export default function ServicosPage() {
     }, [fetchServices]);
 
     function openCreate() {
-        setModal({ open: true, mode: "create", service: { name: "", price: null, duration_minutes: null } });
+        setModal({ open: true, mode: "create", service: { name: "", price: null, duration_minutes: null, preparation_notes: null } });
     }
 
     function openEdit(service: Service) {
@@ -126,6 +127,7 @@ export default function ServicosPage() {
             name: modal.service.name,
             price: modal.service.price ?? null,
             duration_minutes: modal.service.duration_minutes ?? null,
+            preparation_notes: modal.service.preparation_notes ?? null,
         };
 
         if (modal.mode === "create") {
@@ -463,7 +465,7 @@ export default function ServicosPage() {
                                 }}
                             >
                                 <div>
-                                    <label style={labelStyle}>Preco (R$)</label>
+                                    <label style={labelStyle}>Preço (R$)</label>
                                     <input
                                         type="number"
                                         step="0.01"
@@ -480,7 +482,7 @@ export default function ServicosPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label style={labelStyle}>Duracao (min)</label>
+                                    <label style={labelStyle}>Duração (min)</label>
                                     <input
                                         type="number"
                                         min="1"
@@ -495,6 +497,24 @@ export default function ServicosPage() {
                                         style={inputStyle}
                                     />
                                 </div>
+                            </div>
+
+                            <div>
+                                <label style={labelStyle}>Recomendações de preparo</label>
+                                <textarea
+                                    value={modal.service?.preparation_notes ?? ""}
+                                    onChange={(e) => updateField("preparation_notes", e.target.value || null)}
+                                    placeholder={"Ex:\n• Beba bastante água antes da sessão\n• Venha com roupas confortáveis\n• Evite refeições pesadas 2h antes"}
+                                    rows={4}
+                                    style={{
+                                        ...inputStyle,
+                                        resize: "vertical",
+                                        lineHeight: "1.5",
+                                    }}
+                                />
+                                <p style={{ fontSize: "11px", color: "#BBA870", margin: "4px 0 0" }}>
+                                    Aparece para a cliente após ela confirmar o RSVP via WhatsApp.
+                                </p>
                             </div>
                         </div>
 

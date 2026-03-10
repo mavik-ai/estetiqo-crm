@@ -46,5 +46,5 @@ export async function criarProtocolo(formData: FormData): Promise<void> {
     redirect('/protocolos/novo?error=save');
   }
 
-  redirect(`/protocolos/${protocol.id}`);
+  redirect(`/protocolos/${protocol.id}/assinar`);
 }

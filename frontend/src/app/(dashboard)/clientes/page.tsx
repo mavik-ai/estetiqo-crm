@@ -182,6 +182,7 @@ export default async function ClientesPage({
             </form>
 
             {/* Table card */}
+            <style>{`.client-row:hover { background: #FBF5EA; }`}</style>
             <div style={{ ...card, overflowX: "auto" }}>
                 {list.length === 0 ? (
                     <div
@@ -203,13 +204,13 @@ export default async function ClientesPage({
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
                             <tr>
-                                {["Nome", "Telefone", "Idade", "Avaliacao", "Acoes"].map(
-                                    (col, idx) => (
+                                {["Nome", "Telefone", "Idade", "Avaliação"].map(
+                                    (col) => (
                                         <th
                                             key={col}
                                             style={{
                                                 padding: "10px 16px",
-                                                textAlign: idx === 4 ? "right" : "left",
+                                                textAlign: "left",
                                                 fontSize: "9px",
                                                 fontWeight: 700,
                                                 letterSpacing: "0.08em",
@@ -219,11 +220,7 @@ export default async function ClientesPage({
                                                 whiteSpace: "nowrap",
                                             }}
                                         >
-                                            {col === "Acoes"
-                                                ? "Ações"
-                                                : col === "Avaliacao"
-                                                ? "Avaliação"
-                                                : col}
+                                            {col}
                                         </th>
                                     )
                                 )}
@@ -232,100 +229,53 @@ export default async function ClientesPage({
                         <tbody>
                             {list.map((client, index) => {
                                 const initials = getInitials(client.name);
+                                const href = `/clientes/${client.id}`;
+                                const cellLink: React.CSSProperties = {
+                                    display: "block",
+                                    textDecoration: "none",
+                                    color: "inherit",
+                                };
                                 return (
                                     <tr
                                         key={client.id}
+                                        className="client-row"
                                         style={{
-                                            borderBottom:
-                                                index < list.length - 1
-                                                    ? "1px solid #F3EDE0"
-                                                    : "none",
+                                            borderBottom: index < list.length - 1 ? "1px solid #F3EDE0" : "none",
                                         }}
                                     >
                                         {/* Nome */}
-                                        <td style={{ padding: "12px 16px" }}>
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap: "10px",
-                                                }}
-                                            >
-                                                <div
-                                                    style={{
-                                                        width: "34px",
-                                                        height: "34px",
-                                                        borderRadius: "50%",
-                                                        background:
-                                                            "linear-gradient(135deg, #D4B86A, #B8960C)",
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        color: "#FFFDF7",
-                                                        fontSize: "12px",
-                                                        fontWeight: 700,
-                                                        flexShrink: 0,
-                                                        letterSpacing: "0.02em",
-                                                    }}
-                                                >
+                                        <td style={{ padding: 0 }}>
+                                            <Link href={href} style={{ ...cellLink, padding: "12px 16px", display: "flex", alignItems: "center", gap: "10px" }}>
+                                                <div style={{
+                                                    width: "34px", height: "34px", borderRadius: "50%",
+                                                    background: "linear-gradient(135deg, #D4B86A, #B8960C)",
+                                                    display: "flex", alignItems: "center", justifyContent: "center",
+                                                    color: "#FFFDF7", fontSize: "12px", fontWeight: 700,
+                                                    flexShrink: 0, letterSpacing: "0.02em",
+                                                }}>
                                                     {initials}
                                                 </div>
-                                                <span
-                                                    style={{
-                                                        fontSize: "14px",
-                                                        fontWeight: 600,
-                                                        color: "#2D2319",
-                                                    }}
-                                                >
+                                                <span style={{ fontSize: "14px", fontWeight: 600, color: "#2D2319" }}>
                                                     {client.name}
                                                 </span>
-                                            </div>
+                                            </Link>
                                         </td>
                                         {/* Telefone */}
-                                        <td
-                                            style={{
-                                                padding: "12px 16px",
-                                                fontSize: "13px",
-                                                color: "#A69060",
-                                            }}
-                                        >
-                                            {client.phone ?? "—"}
+                                        <td style={{ padding: 0 }}>
+                                            <Link href={href} style={{ ...cellLink, padding: "12px 16px", fontSize: "13px", color: "#A69060" }}>
+                                                {client.phone ?? "—"}
+                                            </Link>
                                         </td>
                                         {/* Idade */}
-                                        <td
-                                            style={{
-                                                padding: "12px 16px",
-                                                fontSize: "13px",
-                                                color: "#A69060",
-                                            }}
-                                        >
-                                            {calcularIdade(client.birth_date)}
+                                        <td style={{ padding: 0 }}>
+                                            <Link href={href} style={{ ...cellLink, padding: "12px 16px", fontSize: "13px", color: "#A69060" }}>
+                                                {calcularIdade(client.birth_date)}
+                                            </Link>
                                         </td>
                                         {/* Avaliação */}
-                                        <td style={{ padding: "12px 16px" }}>
-                                            <StarRating rating={client.rating} />
-                                        </td>
-                                        {/* Ações */}
-                                        <td
-                                            style={{
-                                                padding: "12px 16px",
-                                                textAlign: "right",
-                                            }}
-                                        >
-                                            <Link
-                                                href={`/clientes/${client.id}`}
-                                                style={{
-                                                    fontSize: "12px",
-                                                    fontWeight: 600,
-                                                    color: "#B8960C",
-                                                    textDecoration: "none",
-                                                    padding: "5px 12px",
-                                                    border: "1px solid #D4B86A",
-                                                    borderRadius: "7px",
-                                                    display: "inline-block",
-                                                }}
-                                            >
-                                                Ver ficha
+                                        <td style={{ padding: 0 }}>
+                                            <Link href={href} style={{ ...cellLink, padding: "12px 16px" }}>
+                                                <StarRating rating={client.rating} />
                                             </Link>
                                         </td>
                                     </tr>

@@ -292,3 +292,59 @@ Por que: Ondas 2-5 concluídas — admin pode navegar e usar todos os módulos c
 Impacto: /clientes, /clientes/novo, /clientes/[id], /servicos, /protocolos, /protocolos/[id], /agenda, /agenda/novo, /config, /config/salas, Sidebar.tsx, layout.tsx.
 
 ---
+
+## [IMPL] 09/MAR/26 — Onda 7: Assinatura ao criar protocolo
+Quem: Claude Code / claude-sonnet-4-6
+O que: Após criação de protocolo, usuário é redirecionado para `/protocolos/[id]/assinar`. Página mostra termo de autorização com nome do serviço e total de sessões. Cliente assina no canvas. Ao confirmar, insere em `digital_signatures` com `type = 'protocol_start'`. Opção de pular disponível.
+Por que: Michele precisa de comprovante legal de autorização de início de protocolo.
+Impacto: `/protocolos/[id]/assinar/page.tsx` (NOVO), `/protocolos/[id]/assinar/AssinarForm.tsx` (NOVO), `/protocolos/[id]/assinar/actions.ts` (NOVO), `/protocolos/novo/actions.ts` (redirect atualizado).
+
+---
+
+## [IMPL] 09/MAR/26 — Onda 7: Formulário de sessão multi-etapas com comprovante de assinatura
+Quem: Claude Code / claude-sonnet-4-6
+O que: Formulário de sessão reformulado em 4 etapas: (1) Fotos antes + peso antes, (2) Procedimento (data, ABS, ABI, notas), (3) Fotos depois + peso depois, (4) Assinatura com painel de comprovante. Etapa 4 mostra preview da assinatura + grid com nome da cliente, data/hora, número da sessão e serviço. Checkbox obrigatório de confirmação. Upload de fotos para Supabase Storage. Verificação de duplicidade (1 sessão por protocolo por dia).
+Por que: Michele precisa do ciclo completo: peso antes → procedimento → peso depois → assinatura com comprovante.
+Impacto: `/protocolos/[id]/sessoes/nova/SessaoForm.tsx` (REESCRITO), `/protocolos/[id]/sessoes/nova/actions.ts` (atualizado — duplicidade + fotos + assinatura + performed_at), `/protocolos/[id]/page.tsx` (colunas peso antes→depois).
+
+---
+
+## [FIX] 09/MAR/26 — Timezone: Agendamentos exibindo horário errado (UTC-3)
+Quem: Claude Code / claude-sonnet-4-6
+O que: Agendamentos criados sem offset de timezone ficavam 3h a menos no display. Corrigido append de `-03:00` em todos os strings de datetime ao salvar. Adicionado `timeZone: 'America/Sao_Paulo'` em todos os `toLocaleString`/`toLocaleDateString`/`toLocaleTimeString`.
+Por que: Rafael marcou 08h e o sistema exibiu 05h.
+Impacto: `QuickCreateModal.tsx`, `sessions/nova/actions.ts`, `protocolos/[id]/page.tsx`, `clientes/[id]/page.tsx`, `c/[token]/page.tsx`.
+
+---
+
+## [IMPL] 09/MAR/26 — Avaliação: reordem de campos + melhoria de assinatura
+Quem: Claude Code / claude-sonnet-4-6
+O que: Etapa 3 da avaliação reordenada — Peso atual | Peso desejável (lado a lado), depois ABS | ABI, depois Número de sessões. Removido campo "Data de término esperada" (não faz sentido na avaliação). Etapa 4: label "Data da Avaliação" aparece antes do canvas. Texto de autorização profissional com referência à LGPD.
+Por que: Usabilidade e conformidade legal.
+Impacto: `AvaliacaoForm.tsx`, `avaliacao/nova/actions.ts`.
+
+---
+
+## [IMPL] 09/MAR/26 — Config: redesign premium com cards de altura igual
+Quem: Claude Code / claude-sonnet-4-6
+O que: Página de configurações completamente redesenhada. Cards com barra dourada no topo, Playfair Display nos títulos, ícone com fundo gradiente, hover effect (border + shadow dourado). Cards inativos com badge "Em breve" e opacidade reduzida. Adicionado card "Janela de Atendimento" (em breve). Grid com altura igual via `display: flex` + `height: 100%`.
+Por que: Rafael pediu interface premium com cards do mesmo tamanho.
+Impacto: `/config/page.tsx` (REESCRITO).
+
+---
+
+## [IMPL] 09/MAR/26 — Ficha da cliente: seção Protocolos com progresso
+Quem: Claude Code / claude-sonnet-4-6
+O que: Adicionada seção "Protocolos" na ficha da cliente com cards clicáveis. Cada card mostra: nome do serviço, badge de status (ativo/concluído/cancelado), barra de progresso, sessões completadas/total e percentual.
+Por que: Michele precisa ver todos os protocolos da cliente na ficha.
+Impacto: `/clientes/[id]/page.tsx`.
+
+---
+
+## [FIX] 09/MAR/26 — RSVP: simplificado para 3 status
+Quem: Claude Code / claude-sonnet-4-6
+O que: Removido status "Sem resposta"/"noresponse" do sistema. Status válidos: confirmado / pendente / cancelado. Fallback alterado para `pending` em vez de `noresponse`. Função `rsvpLabel` atualizada.
+Por que: Rafael pediu simplificação — apenas 3 status de RSVP.
+Impacto: `/rsvp/page.tsx`, `/clientes/[id]/page.tsx`.
+
+---

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import {
@@ -11,7 +11,10 @@ import {
   Clock,
   AlertCircle,
   XCircle,
+  X,
+  Calendar,
 } from "lucide-react";
+import { QuickCreateModal } from "./QuickCreateModal";
 
 interface Appointment {
   id: string;
@@ -20,6 +23,7 @@ interface Appointment {
   rsvp_status: string | null;
   no_show: boolean;
   room_id: string | null;
+  notes: string | null;
   clients: { id: string; name: string } | null;
   services: { id: string; name: string } | null;
   rooms: { id: string; name: string } | null;
@@ -28,6 +32,13 @@ interface Appointment {
 interface Room {
   id: string;
   name: string;
+}
+
+interface CreateSlot {
+  date: string;
+  time: string;
+  roomId: string;
+  preSelected: boolean; // true = clicou num slot específico da agenda
 }
 
 type ViewMode = "day" | "week";
@@ -44,6 +55,13 @@ const RSVP_COLORS: Record<string, { color: string }> = {
   pending:    { color: "#3A7BD5" },
   noresponse: { color: "#C4880A" },
   cancelled:  { color: "#D94444" },
+};
+
+const RSVP_LABELS: Record<string, string> = {
+  confirmed:  "Confirmado",
+  pending:    "Pendente",
+  noresponse: "Sem resposta",
+  cancelled:  "Cancelado",
 };
 
 function formatDateBR(date: Date): string {
@@ -63,6 +81,10 @@ function isoDate(date: Date): string {
   return date.toISOString().split("T")[0];
 }
 
+function formatTime(iso: string): string {
+  return new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
 function generateTimeSlots(): string[] {
   const slots: string[] = [];
   for (let h = 7; h <= 20; h++) {
@@ -79,6 +101,145 @@ function getSlotKey(startsAt: string): string {
   return `${h}:${m}`;
 }
 
+// Painel de detalhe do agendamento
+function AppointmentDetail({ appt, onClose }: { appt: Appointment; onClose: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const rsvp = appt.rsvp_status ?? "noresponse";
+  const rsvpCfg = RSVP_ICONS[rsvp] ?? RSVP_ICONS["noresponse"];
+  const rsvpColor = RSVP_COLORS[rsvp] ?? RSVP_COLORS["noresponse"];
+  const rsvpLabel = RSVP_LABELS[rsvp] ?? "—";
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [onClose]);
+
+  return (
+    <>
+      {/* Backdrop leve */}
+      <div style={{ position: "fixed", inset: 0, zIndex: 98 }} />
+      {/* Painel */}
+      <div
+        ref={ref}
+        style={{
+          position: "fixed",
+          top: "50%",
+          right: "24px",
+          transform: "translateY(-50%)",
+          width: "300px",
+          background: "#FFFFFF",
+          border: "1px solid #EDE5D3",
+          borderRadius: "16px",
+          boxShadow: "0 16px 48px rgba(45,35,25,0.16)",
+          zIndex: 99,
+          overflow: "hidden",
+        }}
+      >
+        {/* Header */}
+        <div style={{
+          padding: "16px 18px 12px",
+          borderBottom: "1px solid #F5EDE0",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+        }}>
+          <div>
+            <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 4px" }}>
+              Agendamento
+            </p>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: 700, color: "#2D2319", margin: 0 }}>
+              {appt.clients?.name ?? "—"}
+            </h3>
+          </div>
+          <button
+            onClick={onClose}
+            style={{ background: "none", border: "none", cursor: "pointer", color: "#A69060", padding: "2px" }}
+          >
+            <X size={16} strokeWidth={1.5} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: "14px 18px", display: "flex", flexDirection: "column", gap: "10px" }}>
+          {/* RSVP status */}
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            padding: "4px 10px",
+            borderRadius: "20px",
+            background: rsvpCfg.bg,
+            border: `1px solid ${rsvpCfg.border}`,
+            alignSelf: "flex-start",
+          }}>
+            <span style={{ color: rsvpColor.color }}>{rsvpCfg.icon}</span>
+            <span style={{ fontSize: "11px", fontWeight: 700, color: rsvpColor.color }}>{rsvpLabel}</span>
+          </div>
+
+          {/* Serviço */}
+          <div>
+            <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", letterSpacing: "0.05em", textTransform: "uppercase", margin: "0 0 2px" }}>Serviço</p>
+            <p style={{ fontSize: "13px", color: "#2D2319", margin: 0, fontWeight: 600 }}>{appt.services?.name ?? "—"}</p>
+          </div>
+
+          {/* Horário */}
+          <div>
+            <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", letterSpacing: "0.05em", textTransform: "uppercase", margin: "0 0 2px" }}>Horário</p>
+            <p style={{ fontSize: "13px", color: "#2D2319", margin: 0 }}>
+              {formatTime(appt.starts_at)} → {formatTime(appt.ends_at)}
+            </p>
+          </div>
+
+          {/* Sala */}
+          {appt.rooms && (
+            <div>
+              <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", letterSpacing: "0.05em", textTransform: "uppercase", margin: "0 0 2px" }}>Sala</p>
+              <p style={{ fontSize: "13px", color: "#2D2319", margin: 0 }}>{appt.rooms.name}</p>
+            </div>
+          )}
+
+          {/* Observações */}
+          {appt.notes && (
+            <div>
+              <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", letterSpacing: "0.05em", textTransform: "uppercase", margin: "0 0 2px" }}>Observações</p>
+              <p style={{ fontSize: "12px", color: "#A69060", margin: 0, lineHeight: "1.4" }}>{appt.notes}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        {appt.clients?.id && (
+          <div style={{ padding: "10px 18px 16px", borderTop: "1px solid #F5EDE0" }}>
+            <Link
+              href={`/clientes/${appt.clients.id}`}
+              onClick={onClose}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                padding: "8px 16px",
+                borderRadius: "9px",
+                background: "linear-gradient(135deg, #D4B86A, #B8960C)",
+                color: "#161412",
+                fontSize: "12px",
+                fontWeight: 700,
+                textDecoration: "none",
+              }}
+            >
+              <Calendar size={13} strokeWidth={2} />
+              Ver ficha da cliente
+            </Link>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
 export default function AgendaPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [view, setView] = useState<ViewMode>("day");
@@ -86,13 +247,16 @@ export default function AgendaPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Modal de criação rápida
+  const [createSlot, setCreateSlot] = useState<CreateSlot | null>(null);
+  // Painel de detalhe
+  const [detailAppt, setDetailAppt] = useState<Appointment | null>(null);
+  // Hover no slot vazio (key = `${slot}-${roomId}`)
+  const [hoverSlot, setHoverSlot] = useState<string | null>(null);
+
   const fetchData = useCallback(async (date: Date) => {
     setLoading(true);
     const supabase = createClient();
-    const dayStart = new Date(date);
-    dayStart.setHours(0, 0, 0, 0);
-    const dayEnd = new Date(date);
-    dayEnd.setHours(23, 59, 59, 999);
 
     let start: Date;
     let end: Date;
@@ -106,14 +270,16 @@ export default function AgendaPage() {
       end.setDate(start.getDate() + 6);
       end.setHours(23, 59, 59, 999);
     } else {
-      start = dayStart;
-      end = dayEnd;
+      start = new Date(date);
+      start.setHours(0, 0, 0, 0);
+      end = new Date(date);
+      end.setHours(23, 59, 59, 999);
     }
 
     const [apptRes, roomsRes] = await Promise.all([
       supabase
         .from("appointments")
-        .select("id, starts_at, ends_at, rsvp_status, no_show, room_id, clients(id, name), services(id, name), rooms(id, name)")
+        .select("id, starts_at, ends_at, rsvp_status, no_show, room_id, notes, clients(id, name), services(id, name), rooms(id, name)")
         .eq("is_block", false)
         .gte("starts_at", start.toISOString())
         .lte("starts_at", end.toISOString())
@@ -146,9 +312,14 @@ export default function AgendaPage() {
     setSelectedDate(d);
   }
 
+  function openCreate(date: string, time: string, roomId: string, preSelected = false) {
+    setDetailAppt(null);
+    setCreateSlot({ date, time, roomId, preSelected });
+  }
+
   const timeSlots = generateTimeSlots();
 
-  // Map: slot -> roomId -> Appointment
+  // Map: slot -> roomId -> Appointment (day view)
   const slotRoomMap: Record<string, Record<string, Appointment>> = {};
   appointments.forEach((appt) => {
     const slot = getSlotKey(appt.starts_at);
@@ -157,7 +328,7 @@ export default function AgendaPage() {
     slotRoomMap[slot][roomId] = appt;
   });
 
-  // Week view: map dateStr -> appointments
+  // Week view
   const weekDays: Date[] = [];
   if (view === "week") {
     const dow = selectedDate.getDay();
@@ -176,6 +347,9 @@ export default function AgendaPage() {
       weekApptMap[ds].push(appt);
     });
   }
+
+  const todayStr = isoDate(new Date());
+  const selectedDateStr = isoDate(selectedDate);
 
   return (
     <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
@@ -395,8 +569,8 @@ export default function AgendaPage() {
                     const rsvp = appt?.rsvp_status ?? "noresponse";
                     const rsvpCfg = RSVP_ICONS[rsvp] ?? RSVP_ICONS["noresponse"];
                     const rsvpColor = RSVP_COLORS[rsvp] ?? RSVP_COLORS["noresponse"];
-                    const clientName = appt?.clients?.name ?? "";
-                    const serviceName = appt?.services?.name ?? "";
+                    const cellKey = `${slot}-${room.id}`;
+                    const isHovered = hoverSlot === cellKey;
 
                     return (
                       <div
@@ -409,7 +583,12 @@ export default function AgendaPage() {
                         }}
                       >
                         {appt ? (
-                          <div
+                          /* Agendamento existente — clicável */
+                          <button
+                            onClick={() => {
+                              setCreateSlot(null);
+                              setDetailAppt(detailAppt?.id === appt.id ? null : appt);
+                            }}
                             style={{
                               flex: 1,
                               background: rsvpCfg.bg,
@@ -419,7 +598,13 @@ export default function AgendaPage() {
                               display: "flex",
                               flexDirection: "column",
                               gap: "3px",
+                              cursor: "pointer",
+                              textAlign: "left",
+                              outline: "none",
+                              transition: "opacity 0.1s",
                             }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = "0.8"; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = "1"; }}
                           >
                             <div className="flex items-center gap-1.5">
                               <span style={{ color: rsvpColor.color }}>{rsvpCfg.icon}</span>
@@ -434,7 +619,7 @@ export default function AgendaPage() {
                                   whiteSpace: "nowrap",
                                 }}
                               >
-                                {clientName}
+                                {appt.clients?.name ?? "—"}
                               </p>
                             </div>
                             <p
@@ -447,21 +632,39 @@ export default function AgendaPage() {
                                 whiteSpace: "nowrap",
                               }}
                             >
-                              {serviceName}
+                              {appt.services?.name ?? "—"}
                             </p>
-                          </div>
+                          </button>
                         ) : (
-                          <div
+                          /* Slot vazio — hover mostra botão de agendar */
+                          <button
+                            onClick={() => openCreate(selectedDateStr, slot, room.id, true)}
+                            onMouseEnter={() => setHoverSlot(cellKey)}
+                            onMouseLeave={() => setHoverSlot(null)}
                             style={{
                               flex: 1,
                               borderRadius: "8px",
                               display: "flex",
                               alignItems: "center",
-                              paddingLeft: "8px",
+                              justifyContent: isHovered ? "center" : "flex-start",
+                              paddingLeft: isHovered ? 0 : "8px",
+                              cursor: "pointer",
+                              border: isHovered ? "1.5px dashed #D4B86A" : "1.5px solid transparent",
+                              background: isHovered ? "rgba(212,184,106,0.06)" : "transparent",
+                              transition: "all 0.12s",
+                              outline: "none",
+                              gap: "4px",
                             }}
                           >
-                            <span style={{ fontSize: "11px", color: "#BBA870" }}>Disponível</span>
-                          </div>
+                            {isHovered ? (
+                              <>
+                                <Plus size={12} strokeWidth={2.5} style={{ color: "#B8960C" }} />
+                                <span style={{ fontSize: "11px", fontWeight: 700, color: "#B8960C" }}>Agendar</span>
+                              </>
+                            ) : (
+                              <span style={{ fontSize: "11px", color: "#EDE5D3" }}>—</span>
+                            )}
+                          </button>
                         )}
                       </div>
                     );
@@ -500,16 +703,28 @@ export default function AgendaPage() {
             }}
           >
             {weekDays.map((day, idx) => {
-              const isToday = isoDate(day) === isoDate(new Date());
+              const isToday = isoDate(day) === todayStr;
+              const ds = isoDate(day);
               return (
-                <div
+                <button
                   key={idx}
+                  onClick={() => {
+                    setSelectedDate(new Date(ds + "T12:00:00"));
+                    setView("day");
+                  }}
                   style={{
                     padding: "12px 10px",
                     borderLeft: idx > 0 ? "1px solid #EDE5D3" : "none",
                     background: isToday ? "rgba(184,150,12,0.06)" : "#FAFAF8",
                     textAlign: "center",
+                    cursor: "pointer",
+                    border: "none",
+                    borderLeft: idx > 0 ? "1px solid #EDE5D3" : "none",
+                    outline: "none",
+                    transition: "background 0.1s",
                   }}
+                  onMouseEnter={e => { if (!isToday) (e.currentTarget as HTMLButtonElement).style.background = "#F5EDE0"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = isToday ? "rgba(184,150,12,0.06)" : "#FAFAF8"; }}
                 >
                   <p
                     style={{
@@ -522,7 +737,7 @@ export default function AgendaPage() {
                   >
                     {formatWeekDay(day)}
                   </p>
-                </div>
+                </button>
               );
             })}
           </div>
@@ -537,7 +752,7 @@ export default function AgendaPage() {
             {weekDays.map((day, idx) => {
               const ds = isoDate(day);
               const dayAppts = weekApptMap[ds] ?? [];
-              const isToday = ds === isoDate(new Date());
+              const isToday = ds === todayStr;
               return (
                 <div
                   key={idx}
@@ -550,8 +765,33 @@ export default function AgendaPage() {
                     gap: "6px",
                   }}
                 >
+                  {/* Botão agendar no dia */}
+                  {rooms.length > 0 && (
+                    <button
+                      onClick={() => openCreate(ds, "09:00", rooms[0].id, false)}
+                      style={{
+                        width: "100%",
+                        padding: "4px 0",
+                        fontSize: "10px",
+                        fontWeight: 700,
+                        color: "#B8960C",
+                        background: "rgba(212,184,106,0.08)",
+                        border: "1px dashed #D4B86A",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "3px",
+                        outline: "none",
+                      }}
+                    >
+                      <Plus size={10} strokeWidth={2.5} /> Agendar
+                    </button>
+                  )}
+
                   {dayAppts.length === 0 ? (
-                    <p style={{ fontSize: "11px", color: "#BBA870", textAlign: "center", marginTop: "8px" }}>
+                    <p style={{ fontSize: "11px", color: "#BBA870", textAlign: "center", marginTop: "4px" }}>
                       —
                     </p>
                   ) : (
@@ -559,19 +799,27 @@ export default function AgendaPage() {
                       const rsvp = appt.rsvp_status ?? "noresponse";
                       const rsvpCfg = RSVP_ICONS[rsvp] ?? RSVP_ICONS["noresponse"];
                       const rsvpColor = RSVP_COLORS[rsvp] ?? RSVP_COLORS["noresponse"];
-                      const hora = new Date(appt.starts_at).toLocaleTimeString("pt-BR", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      });
+                      const hora = formatTime(appt.starts_at);
                       return (
-                        <div
+                        <button
                           key={appt.id}
+                          onClick={() => {
+                            setCreateSlot(null);
+                            setDetailAppt(detailAppt?.id === appt.id ? null : appt);
+                          }}
                           style={{
                             background: rsvpCfg.bg,
                             border: `1px solid ${rsvpCfg.border}`,
                             borderRadius: "7px",
                             padding: "6px 8px",
+                            cursor: "pointer",
+                            textAlign: "left",
+                            outline: "none",
+                            width: "100%",
+                            transition: "opacity 0.1s",
                           }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = "0.75"; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = "1"; }}
                         >
                           <div className="flex items-center gap-1" style={{ color: rsvpColor.color }}>
                             {rsvpCfg.icon}
@@ -604,7 +852,7 @@ export default function AgendaPage() {
                           >
                             {appt.services?.name ?? "—"}
                           </p>
-                        </div>
+                        </button>
                       );
                     })
                   )}
@@ -613,6 +861,30 @@ export default function AgendaPage() {
             })}
           </div>
         </div>
+      )}
+
+      {/* Modal de criação rápida */}
+      {createSlot && (
+        <QuickCreateModal
+          date={createSlot.date}
+          time={createSlot.time}
+          roomId={createSlot.roomId}
+          rooms={rooms}
+          preSelected={createSlot.preSelected}
+          onClose={() => setCreateSlot(null)}
+          onSuccess={() => {
+            setCreateSlot(null);
+            fetchData(selectedDate);
+          }}
+        />
+      )}
+
+      {/* Painel de detalhe do agendamento */}
+      {detailAppt && (
+        <AppointmentDetail
+          appt={detailAppt}
+          onClose={() => setDetailAppt(null)}
+        />
       )}
     </div>
   );

@@ -36,6 +36,7 @@ const labelStyle: React.CSSProperties = {
 export default function SalasPage() {
   const supabase = createClient();
 
+  const [tenantId, setTenantId] = useState<string | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -50,18 +51,32 @@ export default function SalasPage() {
   // Delete confirm
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  async function loadRooms() {
+  async function loadRooms(tid: string) {
     setLoading(true);
     const { data } = await supabase
       .from("rooms")
       .select("id, name, is_active")
+      .eq("tenant_id", tid)
       .order("name");
     setRooms((data ?? []) as Room[]);
     setLoading(false);
   }
 
   useEffect(() => {
-    loadRooms();
+    async function init() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: profile } = await supabase
+        .from("users")
+        .select("tenant_id")
+        .eq("id", user.id)
+        .single();
+      const tid = profile?.tenant_id;
+      if (!tid) return;
+      setTenantId(tid);
+      await loadRooms(tid);
+    }
+    init();
   }, []);
 
   function openCreate() {
@@ -91,6 +106,7 @@ export default function SalasPage() {
       setFormError("O nome da sala é obrigatório.");
       return;
     }
+    if (!tenantId) return;
     setFormLoading(true);
     setFormError(null);
 
@@ -98,7 +114,8 @@ export default function SalasPage() {
       const { error } = await supabase
         .from("rooms")
         .update({ name: formName.trim(), is_active: formIsActive })
-        .eq("id", editingRoom.id);
+        .eq("id", editingRoom.id)
+        .eq("tenant_id", tenantId);
       if (error) {
         setFormError("Erro ao atualizar sala.");
         setFormLoading(false);
@@ -107,7 +124,7 @@ export default function SalasPage() {
     } else {
       const { error } = await supabase
         .from("rooms")
-        .insert({ name: formName.trim(), is_active: formIsActive });
+        .insert({ name: formName.trim(), is_active: formIsActive, tenant_id: tenantId });
       if (error) {
         setFormError("Erro ao criar sala.");
         setFormLoading(false);
@@ -117,18 +134,20 @@ export default function SalasPage() {
 
     setFormLoading(false);
     closeModal();
-    await loadRooms();
+    await loadRooms(tenantId);
   }
 
   async function handleToggle(room: Room) {
-    await supabase.from("rooms").update({ is_active: !room.is_active }).eq("id", room.id);
-    await loadRooms();
+    if (!tenantId) return;
+    await supabase.from("rooms").update({ is_active: !room.is_active }).eq("id", room.id).eq("tenant_id", tenantId);
+    await loadRooms(tenantId);
   }
 
   async function handleDelete(id: string) {
-    await supabase.from("rooms").delete().eq("id", id);
+    if (!tenantId) return;
+    await supabase.from("rooms").delete().eq("id", id).eq("tenant_id", tenantId);
     setDeletingId(null);
-    await loadRooms();
+    await loadRooms(tenantId);
   }
 
   return (

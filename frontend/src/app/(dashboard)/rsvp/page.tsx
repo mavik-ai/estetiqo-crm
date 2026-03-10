@@ -1,12 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { MessageSquare, CheckCircle, Clock, XCircle, AlertTriangle, ArrowRight } from "lucide-react";
+import { MessageSquare, CheckCircle, Clock, XCircle, ArrowRight } from "lucide-react";
 
 const rsvpConfig: Record<string, { label: string; icon: React.ReactNode; bg: string; color: string }> = {
-  confirmed:  { label: "Confirmado",     icon: <CheckCircle   size={14} strokeWidth={1.5} />, bg: "rgba(45,140,78,0.10)",  color: "#2D8C4E" },
-  pending:    { label: "Pendente",       icon: <Clock         size={14} strokeWidth={1.5} />, bg: "rgba(184,150,12,0.10)", color: "#B8960C" },
-  cancelled:  { label: "Cancelado",     icon: <XCircle       size={14} strokeWidth={1.5} />, bg: "rgba(217,68,68,0.10)",  color: "#D94444" },
-  noresponse: { label: "Sem resposta",  icon: <AlertTriangle size={14} strokeWidth={1.5} />, bg: "rgba(166,144,96,0.10)", color: "#A69060" },
+  confirmed: { label: "Confirmado", icon: <CheckCircle size={14} strokeWidth={1.5} />, bg: "rgba(45,140,78,0.10)",  color: "#2D8C4E" },
+  pending:   { label: "Pendente",   icon: <Clock      size={14} strokeWidth={1.5} />, bg: "rgba(184,150,12,0.10)", color: "#B8960C" },
+  cancelled: { label: "Cancelado",  icon: <XCircle    size={14} strokeWidth={1.5} />, bg: "rgba(217,68,68,0.10)",  color: "#D94444" },
 };
 
 export default async function RSVPPage() {
@@ -172,7 +171,7 @@ export default async function RSVPPage() {
                         minute: "2-digit",
                       })
                     : "—";
-                  const cfg = rsvpConfig[appt.rsvp_status] ?? rsvpConfig.noresponse;
+                  const cfg = rsvpConfig[appt.rsvp_status] ?? rsvpConfig.pending;
                   return (
                     <tr
                       key={appt.id}
