@@ -15,9 +15,9 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "10px 14px",
   borderRadius: "10px",
-  border: "1px solid #EDE5D3",
+  border: "1px solid var(--border)",
   background: "#FAFAF8",
-  color: "#2D2319",
+  color: "var(--foreground)",
   fontSize: "14px",
   outline: "none",
   fontFamily: "inherit",
@@ -170,7 +170,7 @@ export default function SalasPage() {
   }
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
+    <div className="px-6 py-5" style={{ background: "var(--background)", minHeight: "100%" }}>
       {/* Header */}
       <div className="mb-6">
         <Link
@@ -179,7 +179,7 @@ export default function SalasPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: "6px",
-            color: "#A69060",
+            color: "var(--muted-foreground)",
             fontSize: "13px",
             textDecoration: "none",
             marginBottom: "12px",
@@ -196,13 +196,13 @@ export default function SalasPage() {
                 fontFamily: "'Playfair Display', serif",
                 fontSize: "22px",
                 fontWeight: 700,
-                color: "#2D2319",
+                color: "var(--foreground)",
                 margin: 0,
               }}
             >
               Salas de Atendimento
             </h1>
-            <p style={{ color: "#A69060", fontSize: "13px", marginTop: "2px" }}>
+            <p style={{ color: "var(--muted-foreground)", fontSize: "13px", marginTop: "2px" }}>
               {rooms.length} sala{rooms.length !== 1 ? "s" : ""} cadastrada{rooms.length !== 1 ? "s" : ""}
             </p>
           </div>
@@ -268,14 +268,14 @@ export default function SalasPage() {
       ) : rooms.length === 0 ? (
         <div
           style={{
-            background: "#FFFFFF",
-            border: "1px solid #EDE5D3",
+            background: "var(--card)",
+            border: "1px solid var(--border)",
             borderRadius: "14px",
             padding: "60px 20px",
             textAlign: "center",
           }}
         >
-          <p style={{ color: "#A69060", fontSize: "15px" }}>Nenhuma sala cadastrada ainda.</p>
+          <p style={{ color: "var(--muted-foreground)", fontSize: "15px" }}>Nenhuma sala cadastrada ainda.</p>
           <button
             onClick={openCreate}
             style={{
@@ -297,8 +297,8 @@ export default function SalasPage() {
       ) : (
         <div
           style={{
-            background: "#FFFFFF",
-            border: "1px solid #EDE5D3",
+            background: "var(--card)",
+            border: "1px solid var(--border)",
             borderRadius: "14px",
             overflow: "hidden",
             maxWidth: "700px",
@@ -332,7 +332,7 @@ export default function SalasPage() {
                     style={{
                       fontSize: "14px",
                       fontWeight: 600,
-                      color: "#2D2319",
+                      color: "var(--foreground)",
                       margin: 0,
                     }}
                   >
@@ -363,7 +363,7 @@ export default function SalasPage() {
                     width: "34px",
                     height: "34px",
                     borderRadius: "8px",
-                    border: "1px solid #EDE5D3",
+                    border: "1px solid var(--border)",
                     background: "transparent",
                     cursor: "pointer",
                     color: room.is_active ? "#2D8C4E" : "#D94444",
@@ -384,10 +384,10 @@ export default function SalasPage() {
                     width: "34px",
                     height: "34px",
                     borderRadius: "8px",
-                    border: "1px solid #EDE5D3",
+                    border: "1px solid var(--border)",
                     background: "transparent",
                     cursor: "pointer",
-                    color: "#A69060",
+                    color: "var(--muted-foreground)",
                     transition: "background 0.15s",
                   }}
                 >
@@ -420,9 +420,9 @@ export default function SalasPage() {
                         fontSize: "12px",
                         fontWeight: 600,
                         borderRadius: "7px",
-                        border: "1px solid #EDE5D3",
+                        border: "1px solid var(--border)",
                         background: "transparent",
-                        color: "#A69060",
+                        color: "var(--muted-foreground)",
                         cursor: "pointer",
                         fontFamily: "inherit",
                       }}
@@ -441,7 +441,7 @@ export default function SalasPage() {
                       width: "34px",
                       height: "34px",
                       borderRadius: "8px",
-                      border: "1px solid #EDE5D3",
+                      border: "1px solid var(--border)",
                       background: "transparent",
                       cursor: "pointer",
                       color: "#D94444",
@@ -476,8 +476,8 @@ export default function SalasPage() {
         >
           <div
             style={{
-              background: "#FFFFFF",
-              border: "1px solid #EDE5D3",
+              background: "var(--card)",
+              border: "1px solid var(--border)",
               borderRadius: "16px",
               padding: "28px",
               width: "100%",
@@ -492,7 +492,7 @@ export default function SalasPage() {
                   fontFamily: "'Playfair Display', serif",
                   fontSize: "18px",
                   fontWeight: 700,
-                  color: "#2D2319",
+                  color: "var(--foreground)",
                   margin: 0,
                 }}
               >
@@ -507,10 +507,10 @@ export default function SalasPage() {
                   width: "30px",
                   height: "30px",
                   borderRadius: "8px",
-                  border: "1px solid #EDE5D3",
+                  border: "1px solid var(--border)",
                   background: "transparent",
                   cursor: "pointer",
-                  color: "#A69060",
+                  color: "var(--muted-foreground)",
                 }}
               >
                 <X size={14} strokeWidth={2} />
@@ -538,7 +538,7 @@ export default function SalasPage() {
                 gap: "10px",
                 padding: "12px 14px",
                 borderRadius: "10px",
-                border: "1px solid #EDE5D3",
+                border: "1px solid var(--border)",
                 background: "#FAFAF8",
                 marginBottom: "20px",
                 cursor: "pointer",
@@ -561,7 +561,7 @@ export default function SalasPage() {
               >
                 {formIsActive && <Check size={11} strokeWidth={2.5} color="#161412" />}
               </div>
-              <p style={{ fontSize: "14px", color: "#2D2319", margin: 0, fontWeight: 500, userSelect: "none" }}>
+              <p style={{ fontSize: "14px", color: "var(--foreground)", margin: 0, fontWeight: 500, userSelect: "none" }}>
                 Sala ativa
               </p>
             </div>
@@ -591,9 +591,9 @@ export default function SalasPage() {
                   flex: 1,
                   padding: "11px",
                   borderRadius: "10px",
-                  border: "1px solid #EDE5D3",
+                  border: "1px solid var(--border)",
                   background: "transparent",
-                  color: "#A69060",
+                  color: "var(--muted-foreground)",
                   fontSize: "14px",
                   fontWeight: 600,
                   cursor: "pointer",

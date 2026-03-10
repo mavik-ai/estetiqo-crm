@@ -23,8 +23,8 @@ const DEFAULT_HOURS: DayHours[] = DIAS.map(d => ({
 
 const inputStyle: React.CSSProperties = {
   padding: "7px 10px", borderRadius: "8px",
-  border: "1px solid #EDE5D3", background: "#FAFAF8",
-  color: "#2D2319", fontSize: "13px", fontFamily: "inherit",
+  border: "1px solid var(--border)", background: "#FAFAF8",
+  color: "var(--foreground)", fontSize: "13px", fontFamily: "inherit",
   outline: "none", width: "90px",
 };
 
@@ -66,7 +66,7 @@ export function JanelaForm({ initial }: { initial: DayHours[] }) {
 
   return (
     <div>
-      <div style={{ background: "#FFFFFF", border: "1px solid #EDE5D3", borderRadius: "14px", overflow: "hidden" }}>
+      <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "14px", overflow: "hidden" }}>
         {DIAS.map((dia, idx) => {
           const h = hours.find(x => x.day_of_week === dia.key)!;
           return (
@@ -104,7 +104,7 @@ export function JanelaForm({ initial }: { initial: DayHours[] }) {
               {/* Dia da semana */}
               <span style={{
                 width: "108px", flexShrink: 0,
-                fontSize: "13px", fontWeight: h.is_open ? 600 : 400, color: "#2D2319",
+                fontSize: "13px", fontWeight: h.is_open ? 600 : 400, color: "var(--foreground)",
               }}>
                 {dia.label}
               </span>
@@ -118,7 +118,7 @@ export function JanelaForm({ initial }: { initial: DayHours[] }) {
                     onChange={e => update(dia.key, "open_time", e.target.value)}
                     style={inputStyle}
                   />
-                  <span style={{ fontSize: "12px", color: "#A69060" }}>até</span>
+                  <span style={{ fontSize: "12px", color: "var(--muted-foreground)" }}>até</span>
                   <input
                     type="time"
                     value={h.close_time}
@@ -131,9 +131,9 @@ export function JanelaForm({ initial }: { initial: DayHours[] }) {
                     title="Copiar este horário para todos os dias"
                     style={{
                       display: "flex", alignItems: "center", gap: "4px",
-                      background: "none", border: "1px solid #EDE5D3",
+                      background: "none", border: "1px solid var(--border)",
                       borderRadius: "6px", padding: "5px 8px",
-                      fontSize: "11px", color: "#A69060", cursor: "pointer",
+                      fontSize: "11px", color: "var(--muted-foreground)", cursor: "pointer",
                       fontFamily: "inherit",
                     }}
                   >

@@ -84,38 +84,44 @@
 }
 
 .dark {
-  --background: #161412;
-  --foreground: #FFFFFF;
-  --card: #252219;
-  --card-foreground: #FFFFFF;
+  --background: #131210;
+  --foreground: #F2EDE4;
+  --card: #1E1C19;
+  --card-foreground: #F2EDE4;
   --popover: #252219;
-  --popover-foreground: #FFFFFF;
-  --primary: #D4B86A;
-  --primary-foreground: #161412;
-  --secondary: #33301F;
-  --secondary-foreground: #FFFFFF;
-  --muted: #1C1A17;
-  --muted-foreground: #D4C9A8;
-  --accent: #2A2518;
-  --accent-foreground: #FFFFFF;
-  --destructive: #F07070;
+  --popover-foreground: #F2EDE4;
+  --primary: #C9A84C;
+  --primary-foreground: #0E0C0A;
+  --secondary: #2C2921;
+  --secondary-foreground: #F2EDE4;
+  --muted: #181613;
+  --muted-foreground: #9E9080;
+  --accent: #242118;
+  --accent-foreground: #F2EDE4;
+  --destructive: #E05555;
   --destructive-foreground: #FFFFFF;
-  --border: #33301F;
-  --input: #33301F;
-  --ring: #D4B86A;
+  --border: #302D24;
+  --input: #181613;
+  --ring: #C9A84C;
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
   --chart-3: oklch(0.546 0.245 262.881);
   --chart-4: oklch(0.488 0.243 264.376);
   --chart-5: oklch(0.424 0.199 265.638);
-  --sidebar: #1C1A17;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #D4B86A;
-  --sidebar-primary-foreground: #161412;
-  --sidebar-accent: #2A2518;
-  --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #33301F;
-  --sidebar-ring: #D4B86A;
+  --radius: 0.625rem;
+  --sidebar: #0F0E0C;
+  --sidebar-foreground: #F2EDE4;
+  --sidebar-primary: #C9A84C;
+  --sidebar-primary-foreground: #0E0C0A;
+  --sidebar-accent: #1E1C19;
+  --sidebar-accent-foreground: #F2EDE4;
+  --sidebar-border: #252219;
+  --sidebar-ring: #C9A84C;
+  /* Tokens semânticos de hover/seleção para dark premium */
+  --hover-subtle: rgba(255, 255, 255, 0.04);
+  --hover-gold: rgba(201, 168, 76, 0.07);
+  --active-gold: rgba(201, 168, 76, 0.12);
+  --active-border-gold: rgba(201, 168, 76, 0.3);
 }
 
 @layer base {
@@ -142,4 +148,82 @@
   outline: none;
   border-color: #D4B86A !important;
   box-shadow: 0 0 0 3px rgba(212, 184, 106, 0.15);
+}
+/* Dark mode: override Tailwind hardcoded classes */
+.dark .bg-\[\#F6F2EA\] { background-color: var(--background) !important; }
+.dark .bg-\[\#FFFFFF\] { background-color: var(--card) !important; }
+.dark .border-\[\#EDE5D3\] { border-color: var(--border) !important; }
+.dark .text-\[\#2D2319\] { color: var(--foreground) !important; }
+.dark .text-\[\#A69060\] { color: var(--muted-foreground) !important; }
+
+/* ===================================================
+   DARK MODE — CORREÇÕES ABRANGENTES DE CONTRASTE
+   =================================================== */
+
+/* color-scheme: instrui o browser a renderizar elementos
+   nativos (scrollbar, date picker, select) em modo escuro */
+.dark {
+  color-scheme: dark;
+}
+
+/* =================================================================
+   CAMPOS DE FORMULÁRIO — fundo mais escuro que o card (efeito "inset"
+   premium, similar ao Linear / Vercel dark).
+   !important sobrescreve inline styles hardcoded.
+   ================================================================= */
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+.dark select,
+.dark textarea {
+  background-color: var(--input) !important;    /* #181613 — mais escuro */
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;       /* #302D24 — visível */
+}
+
+/* Foco: anel dourado sutil */
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.18) !important;
+  outline: none !important;
+}
+
+/* Placeholder */
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--muted-foreground) !important;
+  opacity: 0.55;
+}
+
+/* Select options */
+.dark option {
+  background-color: var(--popover);
+  color: var(--foreground);
+}
+
+/* =================================================================
+   CONTAINERS COM FUNDO CLARO HARDCODED — dark override
+   ================================================================= */
+.dark .bg-\[\#FAFAF8\],
+.dark .bg-\[\#FEFCF7\] { background-color: var(--card) !important; }
+.dark .bg-\[\#FBF5EA\] { background-color: var(--accent) !important; }
+.dark .bg-\[\#F5EDE0\],
+.dark .bg-\[\#F0EBE0\] { background-color: var(--secondary) !important; }
+.dark .bg-white        { background-color: var(--card) !important; }
+
+/* =================================================================
+   HOVER / SELEÇÃO — abordagem sutil sem fill colorido
+   Regra geral: borda dourada + overlay rgba mínimo
+   ================================================================= */
+
+/* Linhas de tabela clicáveis */
+.dark tr[data-clickable]:hover td,
+.dark [data-row]:hover {
+  background-color: rgba(255, 255, 255, 0.025) !important;
+}
+
+/* Botões ghost / ícone */
+.dark button.ghost-hover:hover,
+.dark a.ghost-hover:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
 }

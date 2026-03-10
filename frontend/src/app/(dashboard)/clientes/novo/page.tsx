@@ -24,11 +24,11 @@ const healthFields: { key: string; label: string }[] = [
 const inputStyle: React.CSSProperties = {
     width: "100%",
     padding: "10px 12px",
-    background: "#FFFFFF",
-    border: "1px solid #EDE5D3",
+    background: "var(--card)",
+    border: "1px solid var(--border)",
     borderRadius: "8px",
     fontSize: "14px",
-    color: "#2D2319",
+    color: "var(--foreground)",
     outline: "none",
     fontFamily: "var(--font-urbanist), sans-serif",
     boxSizing: "border-box",
@@ -44,8 +44,8 @@ const labelStyle: React.CSSProperties = {
 };
 
 const card: React.CSSProperties = {
-    background: "#FFFFFF",
-    border: "1px solid #EDE5D3",
+    background: "var(--card)",
+    border: "1px solid var(--border)",
     borderRadius: "14px",
     padding: "24px",
     marginBottom: "16px",
@@ -55,7 +55,7 @@ const sectionTitle: React.CSSProperties = {
     fontFamily: "'Playfair Display', serif",
     fontSize: "16px",
     fontWeight: 700,
-    color: "#2D2319",
+    color: "var(--foreground)",
     marginBottom: "4px",
 };
 
@@ -72,7 +72,7 @@ export default async function NovaClientePage({
             style={{
                 padding: "24px",
                 minHeight: "100%",
-                background: "#F6F2EA",
+                background: "var(--background)",
                 fontFamily: "var(--font-urbanist), sans-serif",
             }}
         >
@@ -85,7 +85,7 @@ export default async function NovaClientePage({
                         alignItems: "center",
                         gap: "4px",
                         fontSize: "13px",
-                        color: "#A69060",
+                        color: "var(--muted-foreground)",
                         textDecoration: "none",
                         marginBottom: "8px",
                     }}
@@ -98,7 +98,7 @@ export default async function NovaClientePage({
                         fontFamily: "'Playfair Display', serif",
                         fontSize: "22px",
                         fontWeight: 700,
-                        color: "#2D2319",
+                        color: "var(--foreground)",
                         margin: 0,
                     }}
                 >
@@ -110,7 +110,7 @@ export default async function NovaClientePage({
                 {/* Seção 1: Dados Pessoais */}
                 <div style={card}>
                     <h2 style={sectionTitle}>Dados Pessoais</h2>
-                    <p style={{ color: "#A69060", fontSize: "13px", margin: "0 0 20px" }}>
+                    <p style={{ color: "var(--muted-foreground)", fontSize: "13px", margin: "0 0 20px" }}>
                         Informações básicas da cliente
                     </p>
 
@@ -216,7 +216,7 @@ export default async function NovaClientePage({
                 {/* Seção 2: Ficha de Saúde */}
                 <div style={card}>
                     <h2 style={sectionTitle}>Ficha de Saúde</h2>
-                    <p style={{ color: "#A69060", fontSize: "13px", margin: "0 0 20px" }}>
+                    <p style={{ color: "var(--muted-foreground)", fontSize: "13px", margin: "0 0 20px" }}>
                         16 perguntas obrigatórias
                     </p>
 
@@ -236,12 +236,12 @@ export default async function NovaClientePage({
                                     alignItems: "center",
                                     gap: "10px",
                                     background: "#FBF5EA",
-                                    border: "1px solid #EDE5D3",
+                                    border: "1px solid var(--border)",
                                     borderRadius: "8px",
                                     padding: "10px 12px",
                                     cursor: "pointer",
                                     fontSize: "13px",
-                                    color: "#2D2319",
+                                    color: "var(--foreground)",
                                     fontWeight: 500,
                                 }}
                             >

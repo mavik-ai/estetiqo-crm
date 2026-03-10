@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Calendar, TrendingUp, UserX, Star, Layers, UserPlus } from "lucide-react";
 
 const card = {
-  background: "#FFFFFF",
-  border: "1px solid #EDE5D3",
+  background: "var(--card)",
+  border: "1px solid var(--border)",
   borderRadius: "14px",
 } as const;
 
@@ -138,7 +138,7 @@ export default async function RelatoriosPage({
   ];
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
+    <div className="px-6 py-5" style={{ background: "var(--background)", minHeight: "100%" }}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
@@ -147,13 +147,13 @@ export default async function RelatoriosPage({
               fontFamily: "'Playfair Display', serif",
               fontSize: "22px",
               fontWeight: 700,
-              color: "#2D2319",
+              color: "var(--foreground)",
               margin: 0,
             }}
           >
             Relatórios
           </h1>
-          <p style={{ color: "#A69060", fontSize: "13px", marginTop: "2px" }}>
+          <p style={{ color: "var(--muted-foreground)", fontSize: "13px", marginTop: "2px" }}>
             Visão geral de desempenho da clínica
           </p>
         </div>
@@ -172,7 +172,7 @@ export default async function RelatoriosPage({
                   fontSize: "12px",
                   fontWeight: 600,
                   border: isActive ? "1px solid #B8960C" : "1px solid #EDE5D3",
-                  background: isActive ? "linear-gradient(135deg, #D4B86A, #B8960C)" : "#FFFFFF",
+                  background: isActive ? "linear-gradient(135deg, #D4B86A, #B8960C)" : "var(--card)",
                   color: isActive ? "#161412" : "#A69060",
                   textDecoration: "none",
                 }}
@@ -194,8 +194,8 @@ export default async function RelatoriosPage({
                 {m.label}
               </span>
             </div>
-            <p style={{ fontSize: "24px", fontWeight: 700, color: "#2D2319", margin: "0 0 4px" }}>{m.value}</p>
-            <p style={{ fontSize: "12px", color: "#A69060", margin: 0 }}>{m.sub}</p>
+            <p style={{ fontSize: "24px", fontWeight: 700, color: "var(--foreground)", margin: "0 0 4px" }}>{m.value}</p>
+            <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: 0 }}>{m.sub}</p>
           </div>
         ))}
       </div>
@@ -207,7 +207,7 @@ export default async function RelatoriosPage({
             fontFamily: "'Playfair Display', serif",
             fontSize: "16px",
             fontWeight: 600,
-            color: "#2D2319",
+            color: "var(--foreground)",
             margin: "0 0 20px",
           }}
         >
@@ -215,14 +215,14 @@ export default async function RelatoriosPage({
         </h2>
 
         {topServices.length === 0 ? (
-          <p style={{ color: "#A69060", fontSize: "14px", textAlign: "center", padding: "32px 0" }}>
+          <p style={{ color: "var(--muted-foreground)", fontSize: "14px", textAlign: "center", padding: "32px 0" }}>
             Nenhum atendimento no período selecionado.
           </p>
         ) : (
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
               <thead>
-                <tr style={{ borderBottom: "1px solid #EDE5D3" }}>
+                <tr style={{ borderBottom: "1px solid var(--border)" }}>
                   {["Serviço", "Atendimentos", "Receita"].map((col) => (
                     <th
                       key={col}
@@ -248,10 +248,10 @@ export default async function RelatoriosPage({
                     key={svc.name}
                     style={{ borderBottom: idx < topServices.length - 1 ? "1px solid #F0EBE0" : "none" }}
                   >
-                    <td style={{ padding: "12px", fontWeight: 600, color: "#2D2319" }}>
+                    <td style={{ padding: "12px", fontWeight: 600, color: "var(--foreground)" }}>
                       {svc.name}
                     </td>
-                    <td style={{ padding: "12px", color: "#2D2319", textAlign: "right" }}>
+                    <td style={{ padding: "12px", color: "var(--foreground)", textAlign: "right" }}>
                       {svc.count}
                     </td>
                     <td style={{ padding: "12px", color: "#2D8C4E", fontWeight: 600, textAlign: "right" }}>

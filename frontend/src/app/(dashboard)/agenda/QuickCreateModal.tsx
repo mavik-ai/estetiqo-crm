@@ -62,8 +62,8 @@ function isRoomFree(roomId: string, slotTime: string, durationMin: number, appts
 
 const inputStyle: React.CSSProperties = {
   width: "100%", padding: "9px 12px", borderRadius: "9px",
-  border: "1px solid #EDE5D3", background: "#FEFCF7",
-  fontSize: "13px", color: "#2D2319", fontFamily: "inherit", outline: "none",
+  border: "1px solid var(--border)", background: "var(--muted)",
+  fontSize: "13px", color: "var(--foreground)", fontFamily: "inherit", outline: "none",
   boxSizing: "border-box",
 };
 const labelStyle: React.CSSProperties = {
@@ -245,8 +245,8 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
         position: "fixed", top: "50%", left: "50%",
         transform: "translate(-50%, -50%)",
         width: "min(520px, 94vw)",
-        background: "#FFFFFF", borderRadius: "18px",
-        border: "1px solid #EDE5D3",
+        background: "var(--card)", borderRadius: "18px",
+        border: "1px solid var(--border)",
         boxShadow: "0 20px 60px rgba(45,35,25,0.18)",
         zIndex: 101,
         maxHeight: "90vh", display: "flex", flexDirection: "column",
@@ -254,12 +254,12 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
 
         {/* Header */}
         <div style={{
-          padding: "18px 22px 14px", borderBottom: "1px solid #F5EDE0",
+          padding: "18px 22px 14px", borderBottom: "1px solid var(--border)",
           display: "flex", alignItems: "flex-start", justifyContent: "space-between",
-          flexShrink: 0, borderRadius: "18px 18px 0 0", background: "#FFFFFF",
+          flexShrink: 0, borderRadius: "18px 18px 0 0", background: "var(--card)",
         }}>
           <div>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "17px", fontWeight: 700, color: "#2D2319", margin: 0 }}>
+            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "17px", fontWeight: 700, color: "var(--foreground)", margin: 0 }}>
               Novo Agendamento
             </h2>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "4px", flexWrap: "wrap" }}>
@@ -280,15 +280,15 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
               )}
             </div>
           </div>
-          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#A69060", padding: "4px", flexShrink: 0 }}>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted-foreground)", padding: "4px", flexShrink: 0 }}>
             <X size={18} strokeWidth={1.5} />
           </button>
         </div>
 
         {/* Steps indicator */}
         <div style={{
-          padding: "12px 22px", borderBottom: "1px solid #F5EDE0",
-          display: "flex", alignItems: "center", flexShrink: 0, background: "#FFFFFF",
+          padding: "12px 22px", borderBottom: "1px solid var(--border)",
+          display: "flex", alignItems: "center", flexShrink: 0, background: "var(--card)",
         }}>
           {stepLabels.map((label, i) => {
             const n = i + 1;
@@ -345,17 +345,17 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
                 {showDropdown && clientSearch.length >= 2 && !selectedClient && (
                   <div style={{
                     marginTop: "4px",
-                    background: "#FFFFFF", border: "1px solid #EDE5D3", borderRadius: "9px",
+                    background: "var(--card)", border: "1px solid var(--border)", borderRadius: "9px",
                     boxShadow: "0 4px 12px rgba(0,0,0,0.06)", overflow: "hidden",
                   }}>
                     {clientResults.length === 0 ? (
-                      <div style={{ padding: "10px 12px", fontSize: "12px", color: "#A69060" }}>Nenhuma paciente encontrada.</div>
+                      <div style={{ padding: "10px 12px", fontSize: "12px", color: "var(--muted-foreground)" }}>Nenhuma paciente encontrada.</div>
                     ) : clientResults.map(c => (
                       <button key={c.id} type="button"
                         onMouseDown={() => { setSelectedClient(c); setClientSearch(c.name); setShowDropdown(false); }}
                         style={{
                           width: "100%", textAlign: "left", padding: "10px 12px",
-                          fontSize: "13px", color: "#2D2319", background: "none",
+                          fontSize: "13px", color: "var(--foreground)", background: "none",
                           border: "none", cursor: "pointer", borderBottom: "1px solid #F0EBE0",
                           fontFamily: "inherit",
                         }}
@@ -385,10 +385,10 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
                     {selectedClient.name.split(" ").slice(0, 2).map(p => p[0]?.toUpperCase() ?? "").join("")}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: "14px", fontWeight: 700, color: "#2D2319", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <p style={{ fontSize: "14px", fontWeight: 700, color: "var(--foreground)", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {selectedClient.name}
                     </p>
-                    <p style={{ fontSize: "11px", color: "#A69060", margin: 0 }}>Paciente selecionada</p>
+                    <p style={{ fontSize: "11px", color: "var(--muted-foreground)", margin: 0 }}>Paciente selecionada</p>
                   </div>
                   <button
                     onClick={() => { setSelectedClient(null); setClientSearch(""); }}
@@ -416,17 +416,17 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
                           onClick={() => { setSelectedProtocolId(isSelected ? "" : p.id); setSelectedServiceId(""); }}
                           style={{
                             textAlign: "left", padding: "12px 14px", borderRadius: "10px",
-                            border: isSelected ? "2px solid #B8960C" : "1.5px solid #EDE5D3",
-                            background: isSelected ? "rgba(184,150,12,0.06)" : "#FEFCF7",
+                            border: isSelected ? "2px solid var(--primary)" : "1.5px solid var(--border)",
+                            background: isSelected ? "rgba(201,168,76,0.08)" : "var(--card)",
                             cursor: "pointer", fontFamily: "inherit",
                             display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px",
                           }}
                         >
                           <div>
-                            <p style={{ fontSize: "13px", fontWeight: 700, color: "#2D2319", margin: "0 0 2px" }}>
+                            <p style={{ fontSize: "13px", fontWeight: 700, color: "var(--foreground)", margin: "0 0 2px" }}>
                               {p.services?.name ?? "Protocolo"}
                             </p>
-                            <p style={{ fontSize: "11px", color: "#A69060", margin: 0 }}>
+                            <p style={{ fontSize: "11px", color: "var(--muted-foreground)", margin: 0 }}>
                               Sessão {p.completed_sessions + 1}/{p.total_sessions}
                               {p.services?.duration_minutes ? ` · ${p.services.duration_minutes} min` : ""}
                             </p>
@@ -488,26 +488,26 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
           {!preSelected && step === 3 && (
             <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
-                <button onClick={prevDay} style={{ background: "#F5EDE0", border: "none", borderRadius: "8px", padding: "8px 10px", cursor: "pointer", color: "#A69060" }}>
+                <button onClick={prevDay} style={{ background: "#F5EDE0", border: "none", borderRadius: "8px", padding: "8px 10px", cursor: "pointer", color: "var(--muted-foreground)" }}>
                   <ChevronLeft size={16} strokeWidth={1.5} />
                 </button>
                 <div style={{ textAlign: "center" }}>
-                  <p style={{ fontSize: "13px", fontWeight: 700, color: "#2D2319", margin: 0, textTransform: "capitalize" }}>
+                  <p style={{ fontSize: "13px", fontWeight: 700, color: "var(--foreground)", margin: 0, textTransform: "capitalize" }}>
                     {fmtDateFull(selectedDate)}
                   </p>
                   {selectedService && (
-                    <p style={{ fontSize: "11px", color: "#A69060", margin: "2px 0 0" }}>
+                    <p style={{ fontSize: "11px", color: "var(--muted-foreground)", margin: "2px 0 0" }}>
                       {selectedService.name} · {durationMin} min
                     </p>
                   )}
                 </div>
-                <button onClick={nextDay} style={{ background: "#F5EDE0", border: "none", borderRadius: "8px", padding: "8px 10px", cursor: "pointer", color: "#A69060" }}>
+                <button onClick={nextDay} style={{ background: "#F5EDE0", border: "none", borderRadius: "8px", padding: "8px 10px", cursor: "pointer", color: "var(--muted-foreground)" }}>
                   <ChevronRight size={16} strokeWidth={1.5} />
                 </button>
               </div>
 
               {loadingSlots ? (
-                <div style={{ textAlign: "center", padding: "20px", color: "#A69060", fontSize: "13px" }}>
+                <div style={{ textAlign: "center", padding: "20px", color: "var(--muted-foreground)", fontSize: "13px" }}>
                   Verificando disponibilidade...
                 </div>
               ) : (
@@ -522,9 +522,9 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
                           onClick={() => setSelectedTime(isSelected ? "" : slot)}
                           style={{
                             padding: "8px 4px", borderRadius: "8px", textAlign: "center",
-                            border: isSelected ? "2px solid #B8960C" : available ? "1.5px solid #EDE5D3" : "1.5px solid #F0EBE0",
-                            background: isSelected ? "linear-gradient(135deg, #D4B86A, #B8960C)" : available ? "#FEFCF7" : "#F8F5F0",
-                            color: isSelected ? "#161412" : available ? "#2D2319" : "#C8BEAB",
+                            border: isSelected ? "2px solid var(--primary)" : available ? "1.5px solid var(--border)" : "1.5px solid var(--border)",
+                            background: isSelected ? "linear-gradient(135deg, #C9A84C, #A67E0A)" : "var(--card)",
+                            color: isSelected ? "#0E0C0A" : available ? "var(--foreground)" : "var(--muted-foreground)",
                             fontSize: "12px", fontWeight: isSelected ? 700 : available ? 600 : 400,
                             cursor: available ? "pointer" : "not-allowed", fontFamily: "inherit",
                             opacity: available ? 1 : 0.5,
@@ -552,10 +552,10 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
                 padding: "10px 14px", borderRadius: "9px",
                 background: "rgba(184,150,12,0.06)", border: "1px solid rgba(184,150,12,0.15)",
               }}>
-                <p style={{ fontSize: "13px", fontWeight: 700, color: "#2D2319", margin: "0 0 2px", textTransform: "capitalize" }}>
+                <p style={{ fontSize: "13px", fontWeight: 700, color: "var(--foreground)", margin: "0 0 2px", textTransform: "capitalize" }}>
                   {fmtDateFull(selectedDate)} às {selectedTime}
                 </p>
-                <p style={{ fontSize: "12px", color: "#A69060", margin: 0 }}>
+                <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: 0 }}>
                   {selectedService?.name} · até {addMinutes(selectedTime, durationMin)}
                 </p>
               </div>
@@ -575,15 +575,15 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
                         onClick={() => setSelectedRoomId(isSelected ? "" : r.id)}
                         style={{
                           textAlign: "left", padding: "12px 14px", borderRadius: "10px",
-                          border: isSelected ? "2px solid #B8960C" : "1.5px solid #EDE5D3",
-                          background: isSelected ? "rgba(184,150,12,0.06)" : "#FEFCF7",
+                          border: isSelected ? "2px solid var(--primary)" : "1.5px solid var(--border)",
+                          background: isSelected ? "rgba(201,168,76,0.08)" : "var(--card)",
                           cursor: "pointer", fontFamily: "inherit",
                           display: "flex", alignItems: "center", justifyContent: "space-between",
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                           <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "linear-gradient(135deg, #D4B86A, #B8960C)", flexShrink: 0 }} />
-                          <span style={{ fontSize: "13px", fontWeight: 700, color: "#2D2319" }}>{r.name}</span>
+                          <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--foreground)" }}>{r.name}</span>
                         </div>
                         {isSelected && (
                           <div style={{ width: "20px", height: "20px", borderRadius: "50%", background: "linear-gradient(135deg, #D4B86A, #B8960C)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -601,7 +601,7 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
                     }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#D94444", flexShrink: 0 }} />
-                        <span style={{ fontSize: "13px", color: "#A69060" }}>{r.name}</span>
+                        <span style={{ fontSize: "13px", color: "var(--muted-foreground)" }}>{r.name}</span>
                       </div>
                       <span style={{ fontSize: "10px", color: "#BBA870", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>Ocupada</span>
                     </div>
@@ -617,7 +617,7 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
               {/* Resumo do agendamento */}
               <div style={{
                 padding: "14px 16px", borderRadius: "12px",
-                background: "#FEFCF7", border: "1px solid #EDE5D3",
+                background: "var(--muted)", border: "1px solid var(--border)",
                 display: "flex", flexDirection: "column", gap: "8px",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -630,21 +630,21 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
                     {selectedClient?.name.split(" ").slice(0, 2).map(p => p[0]?.toUpperCase() ?? "").join("")}
                   </div>
                   <div>
-                    <p style={{ fontSize: "14px", fontWeight: 700, color: "#2D2319", margin: 0 }}>{selectedClient?.name}</p>
-                    <p style={{ fontSize: "11px", color: "#A69060", margin: 0 }}>{selectedService?.name ?? "—"}</p>
+                    <p style={{ fontSize: "14px", fontWeight: 700, color: "var(--foreground)", margin: 0 }}>{selectedClient?.name}</p>
+                    <p style={{ fontSize: "11px", color: "var(--muted-foreground)", margin: 0 }}>{selectedService?.name ?? "—"}</p>
                   </div>
                 </div>
                 <div style={{ height: "1px", background: "#EDE5D3" }} />
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
                   <div>
                     <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", textTransform: "uppercase", letterSpacing: "0.05em", margin: "0 0 2px" }}>Horário</p>
-                    <p style={{ fontSize: "12px", color: "#2D2319", margin: 0, fontWeight: 600 }}>
+                    <p style={{ fontSize: "12px", color: "var(--foreground)", margin: 0, fontWeight: 600 }}>
                       {effectiveTime} → {addMinutes(effectiveTime, durationMin)}
                     </p>
                   </div>
                   <div>
                     <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", textTransform: "uppercase", letterSpacing: "0.05em", margin: "0 0 2px" }}>Sala</p>
-                    <p style={{ fontSize: "12px", color: "#2D2319", margin: 0, fontWeight: 600 }}>{effectiveRoom?.name ?? "—"}</p>
+                    <p style={{ fontSize: "12px", color: "var(--foreground)", margin: 0, fontWeight: 600 }}>{effectiveRoom?.name ?? "—"}</p>
                   </div>
                 </div>
               </div>
@@ -677,15 +677,15 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
 
         {/* Footer */}
         <div style={{
-          padding: "14px 22px 18px", borderTop: "1px solid #F5EDE0",
+          padding: "14px 22px 18px", borderTop: "1px solid var(--border)",
           display: "flex", justifyContent: "space-between", gap: "10px",
-          flexShrink: 0, borderRadius: "0 0 18px 18px", background: "#FFFFFF",
+          flexShrink: 0, borderRadius: "0 0 18px 18px", background: "var(--card)",
         }}>
           <button
             onClick={step === 1 ? onClose : () => setStep(s => s - 1)}
             style={{
-              padding: "9px 18px", borderRadius: "9px", border: "1px solid #EDE5D3",
-              background: "none", fontSize: "13px", color: "#A69060",
+              padding: "9px 18px", borderRadius: "9px", border: "1px solid var(--border)",
+              background: "none", fontSize: "13px", color: "var(--muted-foreground)",
               cursor: "pointer", fontFamily: "inherit",
             }}
           >

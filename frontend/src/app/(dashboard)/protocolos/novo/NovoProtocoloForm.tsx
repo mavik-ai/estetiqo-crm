@@ -15,8 +15,8 @@ interface Props {
 
 const inputStyle: React.CSSProperties = {
   width: "100%", padding: "10px 14px", borderRadius: "10px",
-  border: "1px solid #EDE5D3", background: "#FAFAF8",
-  color: "#2D2319", fontSize: "14px", fontFamily: "inherit", outline: "none",
+  border: "1px solid var(--border)", background: "#FAFAF8",
+  color: "var(--foreground)", fontSize: "14px", fontFamily: "inherit", outline: "none",
   boxSizing: "border-box",
 };
 const labelStyle: React.CSSProperties = {
@@ -62,7 +62,7 @@ export function NovoProtocoloForm({ services, errorMsg }: Props) {
   return (
     <div
       style={{
-        background: "#FFFFFF", border: "1px solid #EDE5D3",
+        background: "var(--card)", border: "1px solid var(--border)",
         borderRadius: "14px", padding: "28px", maxWidth: "600px",
       }}
     >
@@ -154,8 +154,8 @@ export function NovoProtocoloForm({ services, errorMsg }: Props) {
             href="/protocolos"
             style={{
               padding: "10px 20px", borderRadius: "10px",
-              border: "1px solid #EDE5D3", background: "transparent",
-              color: "#A69060", fontSize: "14px", fontWeight: 600, textDecoration: "none",
+              border: "1px solid var(--border)", background: "transparent",
+              color: "var(--muted-foreground)", fontSize: "14px", fontWeight: 600, textDecoration: "none",
             }}
           >
             Cancelar

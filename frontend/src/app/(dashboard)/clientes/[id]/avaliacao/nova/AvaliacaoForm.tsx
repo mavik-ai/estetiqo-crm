@@ -25,7 +25,7 @@ export interface Servico { id: string; name: string }
 // ─── helpers de estilo ───────────────────────────────────────────────────────
 
 const card: React.CSSProperties = {
-  background: '#FFFFFF',
+  background: 'var(--card)',
   border: '1px solid #EDE5D3',
   borderRadius: '16px',
   padding: '24px',
@@ -36,7 +36,7 @@ const sectionTitle: React.CSSProperties = {
   fontFamily: "'Playfair Display', serif",
   fontSize: '16px',
   fontWeight: 700,
-  color: '#2D2319',
+  color: 'var(--foreground)',
   marginTop: 0,
   marginBottom: '20px',
 };
@@ -58,7 +58,7 @@ const inputStyle: React.CSSProperties = {
   border: '1px solid #EDE5D3',
   background: '#FEFCF7',
   fontSize: '14px',
-  color: '#2D2319',
+  color: 'var(--foreground)',
   fontFamily: 'inherit',
   outline: 'none',
   boxSizing: 'border-box',
@@ -74,7 +74,7 @@ const btnPrimary: React.CSSProperties = {
 const btnGhost: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '6px',
   padding: '11px 22px', borderRadius: '10px', border: '1px solid #EDE5D3',
-  background: 'transparent', color: '#A69060', fontSize: '14px', fontWeight: 600,
+  background: 'transparent', color: 'var(--muted-foreground)', fontSize: '14px', fontWeight: 600,
   cursor: 'pointer', fontFamily: 'inherit',
 };
 
@@ -168,7 +168,7 @@ function Step1({
         {/* Nome (read-only) */}
         <div style={{ marginBottom: '16px' }}>
           <label style={labelStyle}>Nome</label>
-          <div style={{ ...inputStyle, background: '#F6F2EA', color: '#A69060' }}>{clientName}</div>
+          <div style={{ ...inputStyle, background: 'var(--background)', color: 'var(--muted-foreground)' }}>{clientName}</div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '16px' }}>
@@ -185,7 +185,7 @@ function Step1({
           {/* Idade auto-calculada */}
           <div>
             <label style={labelStyle}>Idade</label>
-            <div style={{ ...inputStyle, background: '#F6F2EA', color: '#A69060' }}>
+            <div style={{ ...inputStyle, background: 'var(--background)', color: 'var(--muted-foreground)' }}>
               {calcIdade(clientData.birth_date)}
             </div>
           </div>
@@ -295,9 +295,11 @@ function SimNao({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
             borderRadius: '8px',
             fontSize: '12px',
             fontWeight: 700,
-            border: value === v ? '1.5px solid #B8960C' : '1px solid #EDE5D3',
-            background: value === v ? (v ? '#FBF5EA' : '#FEFCF7') : '#FEFCF7',
-            color: value === v ? (v ? '#B8960C' : '#5A7A5A') : '#BBA870',
+            border: value === v ? '1.5px solid var(--primary)' : '1px solid var(--border)',
+            background: value === v
+              ? (v ? 'rgba(201,168,76,0.10)' : 'rgba(201,168,76,0.06)')
+              : 'transparent',
+            color: value === v ? 'var(--primary)' : 'var(--muted-foreground)',
             cursor: 'pointer',
             fontFamily: 'inherit',
             minWidth: '46px',
@@ -332,11 +334,11 @@ function Step2({
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 padding: '10px 14px', borderRadius: '10px',
-                border: anamnese[key] ? '1px solid #D4B86A' : '1px solid #F0EBE0',
-                background: anamnese[key] ? '#FBF5EA' : '#FEFCF7',
+                border: anamnese[key] ? '1px solid rgba(201,168,76,0.3)' : '1px solid var(--border)',
+                background: anamnese[key] ? 'rgba(201,168,76,0.05)' : 'var(--card)',
               }}
             >
-              <span style={{ fontSize: '14px', color: '#2D2319', fontWeight: anamnese[key] ? 600 : 400 }}>
+              <span style={{ fontSize: '14px', color: 'var(--foreground)', fontWeight: anamnese[key] ? 600 : 400 }}>
                 {label}
               </span>
               <SimNao value={anamnese[key]} onChange={(v) => onChange({ ...anamnese, [key]: v })} />
@@ -347,12 +349,12 @@ function Step2({
           <div
             style={{
               padding: '12px 14px', borderRadius: '10px',
-              border: anamnese.has_other_conditions ? '1px solid #D4B86A' : '1px solid #F0EBE0',
-              background: anamnese.has_other_conditions ? '#FBF5EA' : '#FEFCF7',
+              border: anamnese.has_other_conditions ? '1px solid rgba(201,168,76,0.3)' : '1px solid var(--border)',
+              background: anamnese.has_other_conditions ? 'rgba(201,168,76,0.05)' : 'var(--card)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: anamnese.has_other_conditions ? '12px' : 0 }}>
-              <span style={{ fontSize: '14px', color: '#2D2319', fontWeight: anamnese.has_other_conditions ? 600 : 400 }}>
+              <span style={{ fontSize: '14px', color: 'var(--foreground)', fontWeight: anamnese.has_other_conditions ? 600 : 400 }}>
                 Possui algum problema de saúde não citado acima?
               </span>
               <SimNao
@@ -660,7 +662,7 @@ export function AvaliacaoForm({
   }
 
   return (
-    <div style={{ padding: '0 24px 24px', background: '#F6F2EA' }}>
+    <div style={{ padding: '0 24px 24px', background: 'var(--background)' }}>
       <ProgressBar step={step} />
 
       {error && (

@@ -38,10 +38,10 @@ const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '10px 14px',
   borderRadius: '10px',
-  border: '1px solid #EDE5D3',
-  background: '#FEFCF7',
+  border: '1px solid var(--border)',
+  background: 'var(--accent)',
   fontSize: '14px',
-  color: '#2D2319',
+  color: 'var(--foreground)',
   fontFamily: 'inherit',
   outline: 'none',
   boxSizing: 'border-box',
@@ -50,12 +50,12 @@ const inputStyle: React.CSSProperties = {
 const sectionTitle: React.CSSProperties = {
   fontSize: '12px',
   fontWeight: 700,
-  color: '#BBA870',
+  color: 'var(--muted-foreground)',
   letterSpacing: '0.08em',
   textTransform: 'uppercase',
   margin: '0 0 16px',
   paddingBottom: '8px',
-  borderBottom: '1px solid #F5EDE0',
+  borderBottom: '1px solid var(--border)',
 };
 
 export function ClinicaForm({ tenant }: Props) {
@@ -106,7 +106,7 @@ export function ClinicaForm({ tenant }: Props) {
     <form onSubmit={handleSubmit} style={{ maxWidth: '600px' }}>
 
       {/* Dados Básicos */}
-      <div style={{ background: '#FFFFFF', border: '1px solid #EDE5D3', borderRadius: '16px', padding: '28px', marginBottom: '16px' }}>
+      <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '28px', marginBottom: '16px' }}>
         <p style={sectionTitle}>Dados Básicos</p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
           <div>
@@ -133,7 +133,7 @@ export function ClinicaForm({ tenant }: Props) {
       </div>
 
       {/* Endereço */}
-      <div style={{ background: '#FFFFFF', border: '1px solid #EDE5D3', borderRadius: '16px', padding: '28px', marginBottom: '16px' }}>
+      <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '28px', marginBottom: '16px' }}>
         <p style={sectionTitle}>Endereço</p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           {/* CEP */}
@@ -206,7 +206,7 @@ export function ClinicaForm({ tenant }: Props) {
       </div>
 
       {/* Dados Fiscais */}
-      <div style={{ background: '#FFFFFF', border: '1px solid #EDE5D3', borderRadius: '16px', padding: '28px', marginBottom: '16px' }}>
+      <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '28px', marginBottom: '16px' }}>
         <p style={sectionTitle}>Dados Fiscais</p>
         <div>
           <label style={labelStyle}>CNPJ</label>
@@ -217,19 +217,6 @@ export function ClinicaForm({ tenant }: Props) {
           </p>
         </div>
       </div>
-
-      {/* Slug (readonly) */}
-      {tenant?.slug && (
-        <div style={{ background: '#FFFFFF', border: '1px solid #EDE5D3', borderRadius: '16px', padding: '20px 28px', marginBottom: '16px' }}>
-          <label style={labelStyle}>Identificador único (slug)</label>
-          <div style={{ ...inputStyle, background: '#F6F2EA', color: '#A69060' }}>
-            {tenant.slug}
-          </div>
-          <p style={{ fontSize: '11px', color: '#BBA870', margin: '4px 0 0' }}>
-            Não pode ser alterado após criação da conta
-          </p>
-        </div>
-      )}
 
       {/* Footer */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '12px' }}>

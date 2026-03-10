@@ -64,8 +64,8 @@ function CardInner({ card }: { card: ConfigCard }) {
   return (
     <div
       style={{
-        background: card.disabled ? "#FAFAF8" : "#FFFFFF",
-        border: "1px solid #EDE5D3",
+        background: card.disabled ? "var(--muted)" : "var(--card)",
+        border: "1px solid var(--border)",
         borderRadius: "16px",
         padding: "22px 22px 20px",
         display: "flex",
@@ -117,8 +117,8 @@ function CardInner({ card }: { card: ConfigCard }) {
               fontSize: "10px",
               fontWeight: 700,
               color: "#BBA870",
-              background: "#F6F2EA",
-              border: "1px solid #EDE5D3",
+              background: "var(--background)",
+              border: "1px solid var(--border)",
               borderRadius: "6px",
               padding: "2px 8px",
               letterSpacing: "0.04em",
@@ -151,7 +151,7 @@ function CardInner({ card }: { card: ConfigCard }) {
             fontFamily: "'Playfair Display', serif",
             fontSize: "15px",
             fontWeight: 700,
-            color: card.disabled ? "#8A7E60" : "#2D2319",
+            color: card.disabled ? "var(--muted-foreground)" : "var(--foreground)",
             margin: "0 0 5px",
           }}
         >
@@ -160,7 +160,7 @@ function CardInner({ card }: { card: ConfigCard }) {
         <p
           style={{
             fontSize: "12px",
-            color: card.disabled ? "#BBA870" : "#A69060",
+            color: "var(--muted-foreground)",
             margin: 0,
             lineHeight: "1.55",
           }}
@@ -174,20 +174,20 @@ function CardInner({ card }: { card: ConfigCard }) {
 
 export default function ConfigPage() {
   return (
-    <div style={{ background: "#F6F2EA", minHeight: "100%", padding: "28px 24px" }}>
+    <div style={{ background: "var(--background)", minHeight: "100%", padding: "28px 24px" }}>
       <div style={{ marginBottom: "28px" }}>
         <h1
           style={{
             fontFamily: "'Playfair Display', serif",
             fontSize: "22px",
             fontWeight: 700,
-            color: "#2D2319",
+            color: "var(--foreground)",
             margin: 0,
           }}
         >
           Configurações
         </h1>
-        <p style={{ color: "#A69060", fontSize: "13px", marginTop: "3px" }}>
+        <p style={{ color: "var(--muted-foreground)", fontSize: "13px", marginTop: "3px" }}>
           Gerencie as configurações do sistema
         </p>
       </div>

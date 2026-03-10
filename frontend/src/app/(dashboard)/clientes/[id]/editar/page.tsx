@@ -19,9 +19,9 @@ const inputStyle: React.CSSProperties = {
   padding: '10px 14px',
   borderRadius: '10px',
   border: '1px solid #EDE5D3',
-  background: '#FEFCF7',
+  background: 'var(--accent)',
   fontSize: '14px',
-  color: '#2D2319',
+  color: 'var(--foreground)',
   fontFamily: 'inherit',
   outline: 'none',
   boxSizing: 'border-box',
@@ -51,14 +51,14 @@ export default async function EditarClientePage({
   const action = editarDadosCliente.bind(null, id);
 
   return (
-    <div style={{ padding: '24px', minHeight: '100%', background: '#F6F2EA' }}>
+    <div style={{ padding: '24px', minHeight: '100%', background: 'var(--background)' }}>
       {/* Header */}
       <div style={{ marginBottom: '24px' }}>
         <Link
           href={`/clientes/${id}`}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '4px',
-            fontSize: '13px', color: '#A69060', textDecoration: 'none', marginBottom: '10px',
+            fontSize: '13px', color: 'var(--muted-foreground)', textDecoration: 'none', marginBottom: '10px',
           }}
         >
           <ChevronLeft size={14} strokeWidth={2} />
@@ -73,10 +73,10 @@ export default async function EditarClientePage({
             <User size={20} strokeWidth={1.8} color="#FFFDF7" />
           </div>
           <div>
-            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: '22px', fontWeight: 700, color: '#2D2319', margin: 0 }}>
+            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: '22px', fontWeight: 700, color: 'var(--foreground)', margin: 0 }}>
               Editar Dados
             </h1>
-            <p style={{ fontSize: '13px', color: '#A69060', margin: '2px 0 0' }}>
+            <p style={{ fontSize: '13px', color: 'var(--muted-foreground)', margin: '2px 0 0' }}>
               {client.name}
             </p>
           </div>
@@ -86,7 +86,7 @@ export default async function EditarClientePage({
       {/* Formulário */}
       <form action={action} style={{ maxWidth: '560px' }}>
         <div style={{
-          background: '#FFFFFF', border: '1px solid #EDE5D3',
+          background: 'var(--card)', border: '1px solid #EDE5D3',
           borderRadius: '16px', padding: '28px',
         }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -144,7 +144,7 @@ export default async function EditarClientePage({
         </div>
 
         <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link href={`/clientes/${id}`} style={{ fontSize: '13px', color: '#A69060', textDecoration: 'none' }}>
+          <Link href={`/clientes/${id}`} style={{ fontSize: '13px', color: 'var(--muted-foreground)', textDecoration: 'none' }}>
             Cancelar
           </Link>
           <button

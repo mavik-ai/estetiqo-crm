@@ -17,11 +17,11 @@ const labelStyle: React.CSSProperties = {
 };
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '10px 14px', borderRadius: '10px',
-  border: '1px solid #EDE5D3', background: '#FEFCF7', fontSize: '14px',
-  color: '#2D2319', fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box',
+  border: '1px solid #EDE5D3', background: 'var(--accent)', fontSize: '14px',
+  color: 'var(--foreground)', fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box',
 };
 const sectionCard: React.CSSProperties = {
-  background: '#FFFFFF', border: '1px solid #EDE5D3', borderRadius: '16px',
+  background: 'var(--card)', border: '1px solid #EDE5D3', borderRadius: '16px',
   padding: '28px', marginBottom: '16px',
 };
 const sectionTitle: React.CSSProperties = {
@@ -91,8 +91,8 @@ export function PerfilForm({ name, email, role, initials }: Props) {
               {previewInitials}
             </div>
             <div>
-              <p style={{ fontSize: '14px', fontWeight: 600, color: '#2D2319', margin: 0 }}>{currentName || '—'}</p>
-              <p style={{ fontSize: '12px', color: '#A69060', margin: '2px 0 0' }}>{role} · {email}</p>
+              <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--foreground)', margin: 0 }}>{currentName || '—'}</p>
+              <p style={{ fontSize: '12px', color: 'var(--muted-foreground)', margin: '2px 0 0' }}>{role} · {email}</p>
             </div>
           </div>
 
@@ -114,7 +114,7 @@ export function PerfilForm({ name, email, role, initials }: Props) {
             </div>
             <div>
               <label style={labelStyle}>E-mail</label>
-              <div style={{ ...inputStyle, background: '#F6F2EA', color: '#A69060' }}>{email}</div>
+              <div style={{ ...inputStyle, background: 'var(--background)', color: 'var(--muted-foreground)' }}>{email}</div>
               <p style={{ fontSize: '11px', color: '#BBA870', margin: '4px 0 0' }}>
                 O e-mail não pode ser alterado aqui.
               </p>

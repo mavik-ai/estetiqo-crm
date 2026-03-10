@@ -130,8 +130,8 @@ function AppointmentDetail({ appt, onClose }: { appt: Appointment; onClose: () =
           right: "24px",
           transform: "translateY(-50%)",
           width: "300px",
-          background: "#FFFFFF",
-          border: "1px solid #EDE5D3",
+          background: "var(--card)",
+          border: "1px solid var(--border)",
           borderRadius: "16px",
           boxShadow: "0 16px 48px rgba(45,35,25,0.16)",
           zIndex: 99,
@@ -141,7 +141,7 @@ function AppointmentDetail({ appt, onClose }: { appt: Appointment; onClose: () =
         {/* Header */}
         <div style={{
           padding: "16px 18px 12px",
-          borderBottom: "1px solid #F5EDE0",
+          borderBottom: "1px solid var(--border)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-start",
@@ -150,13 +150,13 @@ function AppointmentDetail({ appt, onClose }: { appt: Appointment; onClose: () =
             <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 4px" }}>
               Agendamento
             </p>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: 700, color: "#2D2319", margin: 0 }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: 700, color: "var(--foreground)", margin: 0 }}>
               {appt.clients?.name ?? "—"}
             </h3>
           </div>
           <button
             onClick={onClose}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "#A69060", padding: "2px" }}
+            style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted-foreground)", padding: "2px" }}
           >
             <X size={16} strokeWidth={1.5} />
           </button>
@@ -182,13 +182,13 @@ function AppointmentDetail({ appt, onClose }: { appt: Appointment; onClose: () =
           {/* Serviço */}
           <div>
             <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", letterSpacing: "0.05em", textTransform: "uppercase", margin: "0 0 2px" }}>Serviço</p>
-            <p style={{ fontSize: "13px", color: "#2D2319", margin: 0, fontWeight: 600 }}>{appt.services?.name ?? "—"}</p>
+            <p style={{ fontSize: "13px", color: "var(--foreground)", margin: 0, fontWeight: 600 }}>{appt.services?.name ?? "—"}</p>
           </div>
 
           {/* Horário */}
           <div>
             <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", letterSpacing: "0.05em", textTransform: "uppercase", margin: "0 0 2px" }}>Horário</p>
-            <p style={{ fontSize: "13px", color: "#2D2319", margin: 0 }}>
+            <p style={{ fontSize: "13px", color: "var(--foreground)", margin: 0 }}>
               {formatTime(appt.starts_at)} → {formatTime(appt.ends_at)}
             </p>
           </div>
@@ -197,7 +197,7 @@ function AppointmentDetail({ appt, onClose }: { appt: Appointment; onClose: () =
           {appt.rooms && (
             <div>
               <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", letterSpacing: "0.05em", textTransform: "uppercase", margin: "0 0 2px" }}>Sala</p>
-              <p style={{ fontSize: "13px", color: "#2D2319", margin: 0 }}>{appt.rooms.name}</p>
+              <p style={{ fontSize: "13px", color: "var(--foreground)", margin: 0 }}>{appt.rooms.name}</p>
             </div>
           )}
 
@@ -205,14 +205,14 @@ function AppointmentDetail({ appt, onClose }: { appt: Appointment; onClose: () =
           {appt.notes && (
             <div>
               <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", letterSpacing: "0.05em", textTransform: "uppercase", margin: "0 0 2px" }}>Observações</p>
-              <p style={{ fontSize: "12px", color: "#A69060", margin: 0, lineHeight: "1.4" }}>{appt.notes}</p>
+              <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: 0, lineHeight: "1.4" }}>{appt.notes}</p>
             </div>
           )}
         </div>
 
         {/* Footer */}
         {appt.clients?.id && (
-          <div style={{ padding: "10px 18px 16px", borderTop: "1px solid #F5EDE0" }}>
+          <div style={{ padding: "10px 18px 16px", borderTop: "1px solid var(--border)" }}>
             <Link
               href={`/clientes/${appt.clients.id}`}
               onClick={onClose}
@@ -352,7 +352,7 @@ export default function AgendaPage() {
   const selectedDateStr = isoDate(selectedDate);
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
+    <div className="px-6 py-5" style={{ background: "var(--background)", minHeight: "100%" }}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
@@ -361,13 +361,13 @@ export default function AgendaPage() {
               fontFamily: "'Playfair Display', serif",
               fontSize: "22px",
               fontWeight: 700,
-              color: "#2D2319",
+              color: "var(--foreground)",
               margin: 0,
             }}
           >
             Agenda
           </h1>
-          <p style={{ color: "#A69060", fontSize: "13px", marginTop: "2px", textTransform: "capitalize" }}>
+          <p style={{ color: "var(--muted-foreground)", fontSize: "13px", marginTop: "2px", textTransform: "capitalize" }}>
             {view === "day" ? formatDateBR(selectedDate) : "Visão Semanal"}
           </p>
         </div>
@@ -377,15 +377,15 @@ export default function AgendaPage() {
           <div
             className="flex items-center"
             style={{
-              background: "#FFFFFF",
-              border: "1px solid #EDE5D3",
+              background: "var(--card)",
+              border: "1px solid var(--border)",
               borderRadius: "10px",
               overflow: "hidden",
             }}
           >
             <button
               onClick={prevDate}
-              style={{ padding: "8px 10px", color: "#A69060", cursor: "pointer", border: "none", background: "transparent" }}
+              style={{ padding: "8px 10px", color: "var(--muted-foreground)", cursor: "pointer", border: "none", background: "transparent" }}
               aria-label="Data anterior"
             >
               <ChevronLeft size={16} strokeWidth={1.5} />
@@ -396,19 +396,19 @@ export default function AgendaPage() {
                 padding: "8px 12px",
                 fontSize: "12px",
                 fontWeight: 600,
-                color: "#2D2319",
+                color: "var(--foreground)",
                 border: "none",
                 background: "transparent",
                 cursor: "pointer",
-                borderLeft: "1px solid #EDE5D3",
-                borderRight: "1px solid #EDE5D3",
+                borderLeft: "1px solid var(--border)",
+                borderRight: "1px solid var(--border)",
               }}
             >
               Hoje
             </button>
             <button
               onClick={nextDate}
-              style={{ padding: "8px 10px", color: "#A69060", cursor: "pointer", border: "none", background: "transparent" }}
+              style={{ padding: "8px 10px", color: "var(--muted-foreground)", cursor: "pointer", border: "none", background: "transparent" }}
               aria-label="Próxima data"
             >
               <ChevronRight size={16} strokeWidth={1.5} />
@@ -418,8 +418,8 @@ export default function AgendaPage() {
           {/* Toggle Dia/Semana */}
           <div
             style={{
-              background: "#FFFFFF",
-              border: "1px solid #EDE5D3",
+              background: "var(--card)",
+              border: "1px solid var(--border)",
               borderRadius: "10px",
               padding: "3px",
               display: "flex",
@@ -487,8 +487,8 @@ export default function AgendaPage() {
         /* ---- VISÃO DIA ---- */
         <div
           style={{
-            background: "#FFFFFF",
-            border: "1px solid #EDE5D3",
+            background: "var(--card)",
+            border: "1px solid var(--border)",
             borderRadius: "14px",
             overflow: "hidden",
           }}
@@ -498,21 +498,21 @@ export default function AgendaPage() {
             style={{
               display: "grid",
               gridTemplateColumns: `80px repeat(${Math.max(rooms.length, 1)}, 1fr)`,
-              borderBottom: "1px solid #EDE5D3",
+              borderBottom: "1px solid var(--border)",
             }}
           >
-            <div style={{ padding: "12px 10px", background: "#FAFAF8" }} />
+            <div style={{ padding: "12px 10px", background: "var(--muted)" }} />
             {rooms.length > 0 ? (
               rooms.map((room) => (
                 <div
                   key={room.id}
                   style={{
                     padding: "12px 16px",
-                    background: "#FAFAF8",
-                    borderLeft: "1px solid #EDE5D3",
+                    background: "var(--muted)",
+                    borderLeft: "1px solid var(--border)",
                     fontSize: "12px",
                     fontWeight: 700,
-                    color: "#2D2319",
+                    color: "var(--foreground)",
                     letterSpacing: "0.02em",
                     textTransform: "uppercase",
                   }}
@@ -524,10 +524,10 @@ export default function AgendaPage() {
               <div
                 style={{
                   padding: "12px 16px",
-                  background: "#FAFAF8",
-                  borderLeft: "1px solid #EDE5D3",
+                  background: "var(--muted)",
+                  borderLeft: "1px solid var(--border)",
                   fontSize: "12px",
-                  color: "#A69060",
+                  color: "var(--muted-foreground)",
                 }}
               >
                 Sem salas configuradas
@@ -576,7 +576,7 @@ export default function AgendaPage() {
                       <div
                         key={room.id}
                         style={{
-                          borderLeft: "1px solid #EDE5D3",
+                          borderLeft: "1px solid var(--border)",
                           padding: "6px 8px",
                           display: "flex",
                           alignItems: "stretch",
@@ -612,7 +612,7 @@ export default function AgendaPage() {
                                 style={{
                                   fontSize: "12px",
                                   fontWeight: 700,
-                                  color: "#2D2319",
+                                  color: "var(--foreground)",
                                   margin: 0,
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
@@ -625,7 +625,7 @@ export default function AgendaPage() {
                             <p
                               style={{
                                 fontSize: "11px",
-                                color: "#A69060",
+                                color: "var(--muted-foreground)",
                                 margin: 0,
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
@@ -672,7 +672,7 @@ export default function AgendaPage() {
                 ) : (
                   <div
                     style={{
-                      borderLeft: "1px solid #EDE5D3",
+                      borderLeft: "1px solid var(--border)",
                       padding: "6px 8px",
                       display: "flex",
                       alignItems: "center",
@@ -689,8 +689,8 @@ export default function AgendaPage() {
         /* ---- VISÃO SEMANA ---- */
         <div
           style={{
-            background: "#FFFFFF",
-            border: "1px solid #EDE5D3",
+            background: "var(--card)",
+            border: "1px solid var(--border)",
             borderRadius: "14px",
             overflow: "hidden",
           }}
@@ -699,7 +699,7 @@ export default function AgendaPage() {
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(7, 1fr)",
-              borderBottom: "1px solid #EDE5D3",
+              borderBottom: "1px solid var(--border)",
             }}
           >
             {weekDays.map((day, idx) => {
@@ -715,16 +715,16 @@ export default function AgendaPage() {
                   style={{
                     padding: "12px 10px",
                     borderLeft: idx > 0 ? "1px solid #EDE5D3" : "none",
-                    background: isToday ? "rgba(184,150,12,0.06)" : "#FAFAF8",
+                    background: isToday ? "rgba(184,150,12,0.08)" : "transparent",
                     textAlign: "center",
                     cursor: "pointer",
                     border: "none",
-                    borderLeft: idx > 0 ? "1px solid #EDE5D3" : "none",
+                    borderLeft: idx > 0 ? "1px solid var(--border)" : "none",
                     outline: "none",
                     transition: "background 0.1s",
                   }}
-                  onMouseEnter={e => { if (!isToday) (e.currentTarget as HTMLButtonElement).style.background = "#F5EDE0"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = isToday ? "rgba(184,150,12,0.06)" : "#FAFAF8"; }}
+                  onMouseEnter={e => { if (!isToday) (e.currentTarget as HTMLButtonElement).style.background = "var(--accent)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = isToday ? "rgba(184,150,12,0.08)" : "transparent"; }}
                 >
                   <p
                     style={{
@@ -831,7 +831,7 @@ export default function AgendaPage() {
                             style={{
                               fontSize: "11px",
                               fontWeight: 700,
-                              color: "#2D2319",
+                              color: "var(--foreground)",
                               margin: "2px 0 0",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
@@ -843,7 +843,7 @@ export default function AgendaPage() {
                           <p
                             style={{
                               fontSize: "10px",
-                              color: "#A69060",
+                              color: "var(--muted-foreground)",
                               margin: 0,
                               overflow: "hidden",
                               textOverflow: "ellipsis",

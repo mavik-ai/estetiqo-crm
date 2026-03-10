@@ -25,8 +25,8 @@ const STEP_LABELS = ["Antes", "Procedimento", "Depois", "Assinatura"];
 
 const inputStyle: React.CSSProperties = {
   width: "100%", padding: "10px 14px", borderRadius: "10px",
-  border: "1px solid #EDE5D3", background: "#FAFAF8",
-  color: "#2D2319", fontSize: "14px", fontFamily: "inherit", outline: "none",
+  border: "1px solid var(--border)", background: "#FAFAF8",
+  color: "var(--foreground)", fontSize: "14px", fontFamily: "inherit", outline: "none",
   boxSizing: "border-box",
 };
 const labelStyle: React.CSSProperties = {
@@ -43,7 +43,7 @@ function PhotoGrid({ files, onRemove }: { files: File[]; onRemove: (i: number) =
           <img
             src={URL.createObjectURL(f)}
             alt=""
-            style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "10px", border: "1px solid #EDE5D3" }}
+            style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "10px", border: "1px solid var(--border)" }}
           />
           <button
             type="button"
@@ -170,16 +170,16 @@ export function SessaoForm({ protocol, nextSession }: Props) {
     <div style={{ maxWidth: "560px" }}>
       {/* Barra de progresso do protocolo */}
       <div style={{
-        background: "#FFFFFF", border: "1px solid #EDE5D3", borderRadius: "12px",
+        background: "var(--card)", border: "1px solid var(--border)", borderRadius: "12px",
         padding: "14px 18px", marginBottom: "16px",
         display: "flex", alignItems: "center", gap: "12px",
       }}>
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-            <span style={{ fontSize: "12px", fontWeight: 700, color: "#2D2319" }}>
+            <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--foreground)" }}>
               Sessão #{nextSession} de {protocol.total_sessions}
             </span>
-            <span style={{ fontSize: "12px", color: "#A69060" }}>{progressPct}% concluído</span>
+            <span style={{ fontSize: "12px", color: "var(--muted-foreground)" }}>{progressPct}% concluído</span>
           </div>
           <div style={{ height: "6px", background: "#F0EBE0", borderRadius: "3px" }}>
             <div style={{
@@ -193,11 +193,11 @@ export function SessaoForm({ protocol, nextSession }: Props) {
 
       {/* Card principal */}
       <div style={{
-        background: "#FFFFFF", border: "1px solid #EDE5D3", borderRadius: "14px", overflow: "hidden",
+        background: "var(--card)", border: "1px solid var(--border)", borderRadius: "14px", overflow: "hidden",
       }}>
         {/* Steps indicator */}
         <div style={{
-          padding: "14px 20px", borderBottom: "1px solid #F5EDE0",
+          padding: "14px 20px", borderBottom: "1px solid var(--border)",
           display: "flex", alignItems: "center",
         }}>
           {STEP_LABELS.map((label, i) => {
@@ -259,7 +259,7 @@ export function SessaoForm({ protocol, nextSession }: Props) {
                 >
                   <Camera size={24} strokeWidth={1.5} style={{ color: "#B8960C" }} />
                   <span style={{ fontSize: "13px", fontWeight: 600, color: "#B8960C" }}>Tirar foto / selecionar</span>
-                  <span style={{ fontSize: "11px", color: "#A69060" }}>Câmera traseira · múltiplas fotos</span>
+                  <span style={{ fontSize: "11px", color: "var(--muted-foreground)" }}>Câmera traseira · múltiplas fotos</span>
                 </button>
                 <PhotoGrid files={photosBefore} onRemove={i => removePhoto(i, "before")} />
               </div>
@@ -364,7 +364,7 @@ export function SessaoForm({ protocol, nextSession }: Props) {
                 >
                   <Camera size={24} strokeWidth={1.5} style={{ color: "#B8960C" }} />
                   <span style={{ fontSize: "13px", fontWeight: 600, color: "#B8960C" }}>Tirar foto / selecionar</span>
-                  <span style={{ fontSize: "11px", color: "#A69060" }}>Câmera traseira · múltiplas fotos</span>
+                  <span style={{ fontSize: "11px", color: "var(--muted-foreground)" }}>Câmera traseira · múltiplas fotos</span>
                 </button>
                 <PhotoGrid files={photosAfter} onRemove={i => removePhoto(i, "after")} />
               </div>
@@ -388,7 +388,7 @@ export function SessaoForm({ protocol, nextSession }: Props) {
                 <div style={{
                   padding: "10px 14px", borderRadius: "9px",
                   background: "rgba(184,150,12,0.06)", border: "1px solid rgba(184,150,12,0.15)",
-                  fontSize: "13px", color: "#2D2319",
+                  fontSize: "13px", color: "var(--foreground)",
                 }}>
                   Variação de peso:{" "}
                   <strong style={{ color: Number(weightAfter) < Number(weightBefore) ? "#2D8C4E" : "#D94444" }}>
@@ -405,7 +405,7 @@ export function SessaoForm({ protocol, nextSession }: Props) {
               {/* Instrução + canvas */}
               <div>
                 <label style={labelStyle}>Assinatura da cliente *</label>
-                <p style={{ fontSize: "12px", color: "#A69060", marginBottom: "10px", marginTop: 0 }}>
+                <p style={{ fontSize: "12px", color: "var(--muted-foreground)", marginBottom: "10px", marginTop: 0 }}>
                   Entregue o celular para a cliente assinar abaixo
                 </p>
                 <SignatureCanvas onChange={handleSignatureChange} />
@@ -413,16 +413,16 @@ export function SessaoForm({ protocol, nextSession }: Props) {
 
               {/* Comprovante — aparece após assinar */}
               {signatureData && (
-                <div style={{ border: "1px solid #EDE5D3", borderRadius: "12px", overflow: "hidden" }}>
+                <div style={{ border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden" }}>
                   {/* Preview da assinatura */}
-                  <div style={{ padding: "14px 16px", background: "#FEFCF7", borderBottom: "1px solid #F0EBE0" }}>
+                  <div style={{ padding: "14px 16px", background: "var(--muted)", borderBottom: "1px solid #F0EBE0" }}>
                     <p style={{ fontSize: "10px", fontWeight: 700, color: "#BBA870", letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 10px" }}>
                       Comprovante de Assinatura
                     </p>
                     <img
                       src={signatureData}
                       alt="Assinatura"
-                      style={{ width: "100%", height: "72px", objectFit: "contain", background: "#fff", borderRadius: "8px", border: "1px solid #EDE5D3", display: "block" }}
+                      style={{ width: "100%", height: "72px", objectFit: "contain", background: "#fff", borderRadius: "8px", border: "1px solid var(--border)", display: "block" }}
                     />
                   </div>
 
@@ -436,7 +436,7 @@ export function SessaoForm({ protocol, nextSession }: Props) {
                     ].map(({ label, value }) => (
                       <div key={label}>
                         <span style={{ fontSize: "10px", color: "#BBA870", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "2px" }}>{label}</span>
-                        <span style={{ fontSize: "12px", fontWeight: 600, color: "#2D2319" }}>{value}</span>
+                        <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--foreground)" }}>{value}</span>
                       </div>
                     ))}
                   </div>
@@ -449,7 +449,7 @@ export function SessaoForm({ protocol, nextSession }: Props) {
                       onChange={(e) => setConfirmed(e.target.checked)}
                       style={{ marginTop: "2px", accentColor: "#B8960C", width: "16px", height: "16px", flexShrink: 0, cursor: "pointer" }}
                     />
-                    <span style={{ fontSize: "12px", color: "#2D2319", lineHeight: "1.55" }}>
+                    <span style={{ fontSize: "12px", color: "var(--foreground)", lineHeight: "1.55" }}>
                       Li o comprovante acima e confirmo que a assinatura é de minha autoria e que a sessão <strong>#{nextSession} de {protocol.serviceName}</strong> foi realizada conforme o procedimento.
                     </span>
                   </label>
@@ -472,7 +472,7 @@ export function SessaoForm({ protocol, nextSession }: Props) {
 
         {/* Footer */}
         <div style={{
-          padding: "14px 20px 18px", borderTop: "1px solid #F5EDE0",
+          padding: "14px 20px 18px", borderTop: "1px solid var(--border)",
           display: "flex", justifyContent: "space-between", gap: "10px",
         }}>
           <button
@@ -481,8 +481,8 @@ export function SessaoForm({ protocol, nextSession }: Props) {
             style={{
               display: "flex", alignItems: "center", gap: "4px",
               padding: "10px 16px", borderRadius: "10px",
-              border: "1px solid #EDE5D3", background: "none",
-              fontSize: "13px", color: "#A69060", cursor: "pointer", fontFamily: "inherit",
+              border: "1px solid var(--border)", background: "none",
+              fontSize: "13px", color: "var(--muted-foreground)", cursor: "pointer", fontFamily: "inherit",
             }}
           >
             <ChevronLeft size={14} strokeWidth={1.5} />

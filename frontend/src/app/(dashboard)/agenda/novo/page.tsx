@@ -39,9 +39,9 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "10px 14px",
   borderRadius: "10px",
-  border: "1px solid #EDE5D3",
-  background: "#FAFAF8",
-  color: "#2D2319",
+  border: "1px solid var(--border)",
+  background: "var(--accent)",
+  color: "var(--foreground)",
   fontSize: "14px",
   outline: "none",
   fontFamily: "inherit",
@@ -194,7 +194,7 @@ export default function NovoAgendamentoPage() {
   const selectedService = services.find((s) => s.id === selectedServiceId);
 
   return (
-    <div className="px-6 py-5" style={{ background: "#F6F2EA", minHeight: "100%" }}>
+    <div className="px-6 py-5" style={{ background: "var(--background)", minHeight: "100%" }}>
       {/* Header */}
       <div className="mb-6">
         <Link
@@ -203,7 +203,7 @@ export default function NovoAgendamentoPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: "6px",
-            color: "#A69060",
+            color: "var(--muted-foreground)",
             fontSize: "13px",
             textDecoration: "none",
             marginBottom: "12px",
@@ -217,7 +217,7 @@ export default function NovoAgendamentoPage() {
             fontFamily: "'Playfair Display', serif",
             fontSize: "22px",
             fontWeight: 700,
-            color: "#2D2319",
+            color: "var(--foreground)",
             margin: 0,
           }}
         >
@@ -228,8 +228,8 @@ export default function NovoAgendamentoPage() {
       {/* Card formulário */}
       <div
         style={{
-          background: "#FFFFFF",
-          border: "1px solid #EDE5D3",
+          background: "var(--card)",
+          border: "1px solid var(--border)",
           borderRadius: "14px",
           padding: "28px",
           maxWidth: "680px",
@@ -273,8 +273,8 @@ export default function NovoAgendamentoPage() {
                   top: "100%",
                   left: 0,
                   right: 0,
-                  background: "#FFFFFF",
-                  border: "1px solid #EDE5D3",
+                  background: "var(--card)",
+                  border: "1px solid var(--border)",
                   borderRadius: "10px",
                   boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
                   zIndex: 50,
@@ -283,7 +283,7 @@ export default function NovoAgendamentoPage() {
                 }}
               >
                 {clientResults.length === 0 ? (
-                  <div style={{ padding: "10px 14px", fontSize: "13px", color: "#A69060" }}>
+                  <div style={{ padding: "10px 14px", fontSize: "13px", color: "var(--muted-foreground)" }}>
                     Nenhum paciente encontrado.
                   </div>
                 ) : (
@@ -301,7 +301,7 @@ export default function NovoAgendamentoPage() {
                         textAlign: "left",
                         padding: "10px 14px",
                         fontSize: "14px",
-                        color: "#2D2319",
+                        color: "var(--foreground)",
                         background: "transparent",
                         border: "none",
                         cursor: "pointer",
