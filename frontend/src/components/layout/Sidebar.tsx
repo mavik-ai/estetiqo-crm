@@ -1,12 +1,11 @@
 'use client'
 
-import { Home, Calendar, Users, FileText, Settings, BarChart3, LogOut, ChevronUp, User, Sun, Moon, Monitor } from "lucide-react";
+import { Home, Calendar, Users, FileText, Settings, BarChart3, LogOut, ChevronUp, User } from "lucide-react";
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import { useTheme } from 'next-themes';
 
 const navItems = [
     { icon: <Home size={18} />, label: "Dashboard", href: "/" },
@@ -28,11 +27,7 @@ export function Sidebar({ userName = "Michele Oliveira", userInitials = "MO", us
     const router = useRouter();
     const supabase = createClient();
     const [menuOpen, setMenuOpen] = useState(false);
-    const [mounted, setMounted] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
-    const { theme, setTheme, resolvedTheme } = useTheme();
-
-    useEffect(() => { setMounted(true); }, []);
 
     const handleLogout = async () => {
         setMenuOpen(false);
@@ -60,7 +55,7 @@ export function Sidebar({ userName = "Michele Oliveira", userInitials = "MO", us
                 <div className="px-5 pt-6 pb-5">
                     <Link href="/" aria-label="Ir para o Dashboard">
                         <Image
-                            src={mounted && resolvedTheme === 'dark' ? '/logo-dark.png' : '/logo.png'}
+                            src="/logo.png"
                             alt="Estetiqo"
                             width={160}
                             height={44}
@@ -109,7 +104,7 @@ export function Sidebar({ userName = "Michele Oliveira", userInitials = "MO", us
                         <div style={{
                             position: "absolute", bottom: "calc(100% + 8px)", left: 0, right: 0,
                             background: "var(--popover)", border: "1px solid var(--border)",
-                            borderRadius: "14px", boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
+                            borderRadius: "14px", boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
                             overflow: "hidden", zIndex: 50,
                         }}>
                             {/* Header */}
@@ -138,32 +133,6 @@ export function Sidebar({ userName = "Michele Oliveira", userInitials = "MO", us
                                         {label}
                                     </Link>
                                 ))}
-                            </div>
-
-                            {/* Seletor de Tema */}
-                            <div style={{ padding: "8px 10px 4px", borderTop: "1px solid var(--border)" }}>
-                                <p style={{ fontSize: "10px", fontWeight: 700, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 6px" }}>Tema</p>
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "4px" }}>
-                                    {[
-                                        { value: "light", label: "Claro", Icon: Sun },
-                                        { value: "dark", label: "Escuro", Icon: Moon },
-                                        { value: "system", label: "Sistema", Icon: Monitor },
-                                    ].map(({ value, label, Icon }) => {
-                                        const sel = theme === value;
-                                        return (
-                                            <button key={value} onClick={() => setTheme(value)} style={{
-                                                display: "flex", flexDirection: "column", alignItems: "center",
-                                                gap: "4px", padding: "7px 4px", borderRadius: "8px",
-                                                border: sel ? "1px solid var(--primary)" : "1px solid transparent",
-                                                background: sel ? "color-mix(in srgb, var(--primary) 12%, transparent)" : "transparent",
-                                                cursor: "pointer", fontFamily: "inherit",
-                                            }}>
-                                                <Icon size={14} strokeWidth={1.8} style={{ color: sel ? "var(--primary)" : "var(--muted-foreground)" }} />
-                                                <span style={{ fontSize: "10px", fontWeight: sel ? 700 : 500, color: sel ? "var(--primary)" : "var(--muted-foreground)" }}>{label}</span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
                             </div>
 
                             {/* Sair */}
