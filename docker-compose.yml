@@ -16,7 +16,10 @@ services:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
       - CORS_ORIGINS=${CORS_ORIGINS}
-      # Outras vars como chaves da Evolution API e Stripe irão aqui
+      - EVOLUTION_API_URL=${EVOLUTION_API_URL}
+      - EVOLUTION_API_TOKEN=${EVOLUTION_API_TOKEN}
+      - EVOLUTION_INSTANCE_NAME=${EVOLUTION_INSTANCE_NAME}
+      - N8N_API_KEY=${N8N_API_KEY}
 
   # ==========================================
   # SERVIÇO 2: FRONTEND (NextJS SSR - Node)
@@ -33,6 +36,7 @@ services:
       - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-      - NEXT_PUBLIC_API_URL=http://api:8000 # Comunicação interna Docker
+      - NEXT_PUBLIC_API_URL=http://api:8000
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
     depends_on:
       - api # Garante que o Front só sob após o Back estar de pé

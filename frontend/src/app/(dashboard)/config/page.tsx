@@ -45,8 +45,6 @@ const configCards: ConfigCard[] = [
     title: "WhatsApp",
     description: "Conecte sua instância para envios automáticos",
     href: "/config/whatsapp",
-    disabled: true,
-    badge: "Em breve",
   },
   {
     icon: <Users size={22} strokeWidth={1.5} />,

@@ -151,6 +151,56 @@ Impacto: `/frontend/src/app/layout.tsx`.
 
 <!-- NOVOS UPDATES ABAIXO DESTA LINHA -->
 
+## [IMPL] 11/MAR/26 07:15 — Onboarding de WhatsApp Multi-Tenant (QR Code)
+Quem: Antigravity / gemini
+O que: Criado o fluxo completo para as clínicas conectarem seu próprio WhatsApp lendo QR Code.
+- **Banco**: Adicionadas colunas `whatsapp_number` e `whatsapp_status` em `tenants`.
+- **Backend FastAPI**: Novas rotas dedicadas (`/api/v1/whatsapp/instance/create`, `status`, `delete`) protegidss que orquestram a Evolution API de forma invisível.
+- **Frontend App**: Server Actions (`config/whatsapp/actions.ts`) e Tela (`config/whatsapp/page.tsx`) com 3 estados (Forms, Polling QR Code, Conectado).
+Por que: O sistema é B2B. O super admin não conecta WhatsApp. Cada clínica logada vai nas suas configurações, insere seu número e lê o QR Code usando seu proprio aparelho, ativando os disparos (RSVP etc) via a Evolution API.
+Impacto: `PRD.md`, schema `tenants`, Backend (`whatsapp_config.py`, `evolution_api.py`, `router.py`), Frontend (`actions.ts`, `page.tsx`).
+
+---
+
+## [IMPL] 10/MAR/26 21:35 — Multi-tenancy para Instâncias Evolution API
+Quem: Antigravity / gemini
+O que: Adicionada a coluna `evolution_instance_name` na tabela `tenants`. Atualizada a action `criarAgendamento` no frontend para pescar esse nome do tenant ativo e passar como parâmetro para o backend (`/api/v1/whatsapp/send-rsvp`), que agora dispara para a instância correta de cada clínica.
+Por que: A pedido do Rafael, a definição da instância do WhatsApp não deve ser global no admin, mas sim dinâmica puxando de cada cliente (tenant).
+Impacto: `PRD.md`, schema Supabase (`tenants`), `backend/app/api/v1/endpoints/whatsapp.py`, `backend/app/services/evolution_api.py`, `frontend/src/app/(dashboard)/agenda/novo/actions.ts`.
+
+---
+
+## [IMPL] 10/MAR/26 21:10 — Módulo 3 (Infraestrutura) concluído
+Quem: Antigravity / gemini
+O que: Revisadas variáveis de ambiente necessárias nos Dockerfiles e `docker-compose.yml`, adicionando mapeamento para N8N, Evolution API e Supabase Admin.
+Por que: Preparação final para deploy da Onda 12 na infraestrutura Coolify/VPS.
+Impacto: `docker-compose.yml`, `task.md`.
+
+---
+
+## [IMPL] 10/MAR/26 21:09 — Módulo 2 (Agente Camila / N8N) concluído
+Quem: Antigravity / gemini
+O que: Criados endpoints autenticados por API Key (`/api/v1/n8n/disponibilidade` e `/api/v1/n8n/agendamento`) no FastAPI para a Inteligência Artificial.
+Por que: O Agente de WhatsApp precisa saber horários livres e alocar pacientes no CRM sem expor dados.
+Impacto: `backend/app/api/v1/endpoints/n8n.py`, `backend/app/api/v1/router.py`, `core/config.py`.
+
+---
+
+## [IMPL] 10/MAR/26 21:08 — Módulo 1 (WhatsApp + RSVP) concluído
+Quem: Antigravity / gemini
+O que: Criado serviço `evolution_api.py` no backend. Ações de agendamento do NextJS agora geram `rsvp_token` e disparam POST `/api/v1/whatsapp/send-rsvp`. Criada página pública `/c/[token]` com `createAdminClient()` para bypass de RLS.
+Por que: MVP necessita reduzir no-shows por meio de confirmação ativa no WhatsApp.
+Impacto: `frontend/src/app/c/[token]/page.tsx`, `actions.ts`, `services/evolution_api.py`.
+
+---
+
+## [IMPL] 10/MAR/26 21:07 — Implementação da Reta Final do MVP (Início)
+Quem: Antigravity / gemini
+O que: Plano de implementação aprovado pelo Rafael. Iniciando desenvolvimento do Módulo 1 (WhatsApp + RSVP), Módulo 2 (Endpoints N8N) e Módulo 3 (Deploy).
+Por que: Últimos passos para viabilizar o MVP na Hostinger.
+Impacto: `task.md`, `implementation_plan.md`.
+
+---
 ## [IMPL] 09/MAR/26 — Onda 1 / M1.1: RLS policies aplicadas no Supabase
 Quem: Claude Code / claude-sonnet-4-6
 O que: Criada função helper `get_user_tenant_id()` e policies de isolamento por tenant nas tabelas: clients, appointments, protocols, services, rooms, sessions, session_photos, digital_signatures, activity_log.

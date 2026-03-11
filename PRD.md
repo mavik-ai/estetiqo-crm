@@ -119,6 +119,9 @@ CREATE TABLE tenants (
   plan TEXT DEFAULT 'trial',
   trial_ends_at TIMESTAMPTZ,
   stripe_customer_id TEXT,
+  evolution_instance_name TEXT,
+  whatsapp_number TEXT,
+  whatsapp_status TEXT DEFAULT 'disconnected' CHECK (whatsapp_status IN ('disconnected', 'pending', 'connected')),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

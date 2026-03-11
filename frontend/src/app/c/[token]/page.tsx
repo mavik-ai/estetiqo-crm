@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import { CheckCircle2, XCircle, Clock, MapPin, Sparkles, Calendar } from 'lucide-react';
 import { confirmarRSVP, cancelarRSVP } from './actions';
 
@@ -10,7 +10,7 @@ interface Props {
 export default async function RSVPPublicPage({ params, searchParams }: Props) {
   const { token } = await params;
   const { action } = await searchParams;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Busca dados do agendamento (acesso anônimo via rsvp_token — ver RLS migration)
   const { data: appt } = await supabase

@@ -1,11 +1,11 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 export async function confirmarRSVP(token: string): Promise<void> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const headersList = await headers();
   const ip = headersList.get('x-forwarded-for') ?? headersList.get('x-real-ip') ?? 'unknown';
 
@@ -34,7 +34,7 @@ export async function confirmarRSVP(token: string): Promise<void> {
 }
 
 export async function cancelarRSVP(token: string): Promise<void> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const headersList = await headers();
   const ip = headersList.get('x-forwarded-for') ?? headersList.get('x-real-ip') ?? 'unknown';
 

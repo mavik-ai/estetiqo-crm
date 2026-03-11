@@ -28,3 +28,19 @@
 - [x] Frontend: Desenvolver `app/(auth)/login/page.tsx` seguindo Design System
 - [x] Frontend: Configurar tipografia global (Playfair Display + Urbanist)
 - [x] Global: Criação do Superadmin (registro@mavikai.com.br) bypassando Auth via Node Script + SQL.
+
+---
+
+# Tarefas - Reta Final (MVP Deploy)
+## Módulo 1: WhatsApp + RSVP (Onda 6)
+- [x] Criar serviço de integração `evolution_api.py` no Backend.
+- [x] Integrar geração de token e disparo de ZAP na action de Novo Agendamento.
+- [x] Criar página pública de RSVP `/c/[token]` com actions de confirmação.
+
+## Módulo 2: Endpoints Agente IA (N8N)
+- [x] Criar rotas `/api/v1/n8n/disponibilidade` e `/api/v1/n8n/agendamento`.
+- [x] Adicionar segurança via API Key.
+
+## Módulo 3: Infraestrutura (Onda 12)
+- [x] Revisar variáveis de ambiente para produção (`.env`).
+- [x] Testar Build via Docker Compose (não suportado na máquina, análise visual concluída).
