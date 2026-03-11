@@ -22,7 +22,8 @@ async def send_rsvp_message(instance_name: str, phone: str, client_name: str, da
 
     message_text = f"Olá {client_name}! 🌟\n\nEste é um lembrete do seu agendamento na *Estetiqo* para o dia *{date_str}* às *{time_str}*.\n\nPor favor, confirme sua presença acessando o link abaixo:\n{rsvp_link}\n\nTe esperamos lá!"
 
-    url = f"{settings.EVOLUTION_API_URL}/message/sendText/{instance_name}"
+    base_url = settings.EVOLUTION_API_URL.rstrip('/')
+    url = f"{base_url}/message/sendText/{instance_name}"
     headers = {
         "apikey": settings.EVOLUTION_API_TOKEN,
         "Content-Type": "application/json"
@@ -54,7 +55,8 @@ async def create_instance(instance_name: str, phone: str = "") -> dict:
         logger.error("Credenciais da Evolution API ausentes.")
         return {"error": "Credenciais da Evolution API ausentes"}
         
-    url = f"{settings.EVOLUTION_API_URL}/instance/create"
+    base_url = settings.EVOLUTION_API_URL.rstrip('/')
+    url = f"{base_url}/instance/create"
     headers = {
         "apikey": settings.EVOLUTION_API_TOKEN,
         "Content-Type": "application/json"
@@ -79,7 +81,8 @@ async def get_connection_state(instance_name: str) -> dict:
     if not settings.EVOLUTION_API_URL or not settings.EVOLUTION_API_TOKEN:
         return {"error": "Credenciais ausentes"}
         
-    url = f"{settings.EVOLUTION_API_URL}/instance/connectionState/{instance_name}"
+    base_url = settings.EVOLUTION_API_URL.rstrip('/')
+    url = f"{base_url}/instance/connectionState/{instance_name}"
     headers = {
         "apikey": settings.EVOLUTION_API_TOKEN
     }
@@ -103,7 +106,8 @@ async def logout_instance(instance_name: str) -> dict:
     if not settings.EVOLUTION_API_URL or not settings.EVOLUTION_API_TOKEN:
         return {"error": "Credenciais ausentes"}
         
-    url = f"{settings.EVOLUTION_API_URL}/instance/logout/{instance_name}"
+    base_url = settings.EVOLUTION_API_URL.rstrip('/')
+    url = f"{base_url}/instance/logout/{instance_name}"
     headers = {
         "apikey": settings.EVOLUTION_API_TOKEN
     }

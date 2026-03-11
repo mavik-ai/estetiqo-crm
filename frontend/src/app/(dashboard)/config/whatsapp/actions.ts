@@ -13,7 +13,7 @@ export async function criarInstanciaWhatsapp(formData: FormData) {
   if (!session?.access_token) return { error: "Autenticação requerida" };
 
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
     const response = await fetch(`${backendUrl}/api/v1/whatsapp/instance/create`, {
       method: 'POST',
       headers: {
@@ -43,7 +43,7 @@ export async function consultarStatusWhatsapp() {
   if (!session?.access_token) return { error: "Autenticação requerida" };
 
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
     const response = await fetch(`${backendUrl}/api/v1/whatsapp/instance/status`, {
       method: 'GET',
       headers: {
@@ -71,7 +71,7 @@ export async function desconectarWhatsapp() {
   if (!session?.access_token) return { error: "Autenticação requerida" };
 
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
     const response = await fetch(`${backendUrl}/api/v1/whatsapp/instance`, {
       method: 'DELETE',
       headers: {

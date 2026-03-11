@@ -1,11 +1,10 @@
 import logging
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Header
 from pydantic import BaseModel
 from typing import Optional
 
-from app.db.database import get_supabase
+from app.api.v1.endpoints.dashboard import get_supabase, verify_token, get_tenant_id
 from app.services.evolution_api import create_instance, get_connection_state, logout_instance
-from app.api.deps import get_current_user_tenant
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ class InstanceStatusResponse(BaseModel):
 @router.post("/instance/create")
 async def setup_whatsapp_instance(
     request: CreateInstanceRequest,
-    tenant_details: dict = Depends(get_current_user_tenant)
+    authorization: str = Header(None)
 ):
     """
     1. Verifica o tenant ativo.
@@ -31,7 +30,8 @@ async def setup_whatsapp_instance(
     4. Salva a intent no BD.
     5. Retorna o origin do QRCode pro front.
     """
-    tenant_id = tenant_details["tenant_id"]
+    user_id = verify_token(authorization)
+    tenant_id = get_tenant_id(user_id)
     supabase = get_supabase()
 
     # Busca o slug do tenant no banco
@@ -83,7 +83,7 @@ async def setup_whatsapp_instance(
 
 @router.get("/instance/status")
 async def check_whatsapp_status(
-    tenant_details: dict = Depends(get_current_user_tenant)
+    authorization: str = Header(None)
 ):
     """
     1. Descobre a qual tenant o User pertence.
@@ -91,7 +91,8 @@ async def check_whatsapp_status(
     3. Consulta a Evolution API pelo state.
     4. Se open, vira 'connected' no DB.
     """
-    tenant_id = tenant_details["tenant_id"]
+    user_id = verify_token(authorization)
+    tenant_id = get_tenant_id(user_id)
     supabase = get_supabase()
 
     response = supabase.table("tenants").select("evolution_instance_name, whatsapp_status, whatsapp_number").eq("id", tenant_id).execute()
@@ -137,12 +138,13 @@ async def check_whatsapp_status(
 
 @router.delete("/instance")
 async def disconnect_whatsapp(
-    tenant_details: dict = Depends(get_current_user_tenant)
+    authorization: str = Header(None)
 ):
     """
     Deleta a instancia e limpa o banco de dados.
     """
-    tenant_id = tenant_details["tenant_id"]
+    user_id = verify_token(authorization)
+    tenant_id = get_tenant_id(user_id)
     supabase = get_supabase()
 
     response = supabase.table("tenants").select("evolution_instance_name").eq("id", tenant_id).execute()
