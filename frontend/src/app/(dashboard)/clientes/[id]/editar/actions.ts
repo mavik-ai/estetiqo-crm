@@ -14,11 +14,14 @@ export async function editarDadosCliente(clientId: string, formData: FormData) {
   const tenantId = profile?.tenant_id;
   if (!tenantId) redirect('/clientes');
 
-  // Montar birth_date: dia + mês obrigatórios, ano opcional (usa 2000 se não informado)
-  const day = (formData.get('birth_day') as string)?.padStart(2, '0');
-  const month = (formData.get('birth_month') as string)?.padStart(2, '0');
+  // Montar birth_date a partir de "DD/MM" + ano
+  const dm   = (formData.get('birth_dm')   as string)?.trim();
   const year = (formData.get('birth_year') as string)?.trim() || '2000';
-  const birthDate = day && month ? `${year}-${month}-${day}` : null;
+  let birthDate: string | null = null;
+  if (dm && dm.includes('/')) {
+    const [d, m] = dm.split('/');
+    if (d && m) birthDate = `${year}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+  }
 
   await supabase
     .from('clients')

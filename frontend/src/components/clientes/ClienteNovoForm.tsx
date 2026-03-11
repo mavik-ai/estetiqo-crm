@@ -23,6 +23,7 @@ const labelStyle: React.CSSProperties = {
     color: "#BBA870",
     marginBottom: "5px",
     letterSpacing: "0.03em",
+    textTransform: "uppercase" as const,
 };
 
 const card: React.CSSProperties = {
@@ -38,13 +39,19 @@ const sectionTitle: React.CSSProperties = {
     fontSize: "16px",
     fontWeight: 700,
     color: "var(--foreground)",
-    marginBottom: "4px",
+    margin: "0 0 4px",
+};
+
+const sectionDesc: React.CSSProperties = {
+    color: "var(--muted-foreground)",
+    fontSize: "13px",
+    margin: "0 0 20px",
 };
 
 export function ClienteNovoForm({ nomeInicial = "" }: { nomeInicial?: string }) {
     const [isPending, startTransition] = useTransition();
 
-    // Endereço
+    // ViaCEP
     const [cep, setCep] = useState("");
     const [logradouro, setLogradouro] = useState("");
     const [bairro, setBairro] = useState("");
@@ -56,7 +63,6 @@ export function ClienteNovoForm({ nomeInicial = "" }: { nomeInicial?: string }) 
         let val = e.target.value.replace(/\D/g, "");
         if (val.length > 8) val = val.slice(0, 8);
         setCep(val);
-
         if (val.length === 8) {
             setFetchingCep(true);
             try {
@@ -68,9 +74,7 @@ export function ClienteNovoForm({ nomeInicial = "" }: { nomeInicial?: string }) 
                     setCidade(data.localidade ?? "");
                     setUf(data.uf ?? "");
                 }
-            } catch {
-                // silencioso — usuário preenche manualmente
-            } finally {
+            } catch { /* silencioso */ } finally {
                 setFetchingCep(false);
             }
         }
@@ -80,64 +84,50 @@ export function ClienteNovoForm({ nomeInicial = "" }: { nomeInicial?: string }) 
         <form action={(formData) => {
             startTransition(() => { criarCliente(formData); });
         }}>
-            {/* Dados Pessoais */}
+
+            {/* ── SEÇÃO 1: Dados básicos ── */}
             <div style={card}>
-                <h2 style={sectionTitle}>Dados Pessoais</h2>
-                <p style={{ color: "var(--muted-foreground)", fontSize: "13px", margin: "0 0 20px" }}>
-                    Informações básicas da paciente
-                </p>
+                <h2 style={sectionTitle}>Dados básicos</h2>
+                <p style={sectionDesc}>Informações principais da paciente</p>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                     {/* Nome */}
                     <div>
                         <label htmlFor="name" style={labelStyle}>Nome completo *</label>
                         <input
-                            id="name"
-                            type="text"
-                            name="name"
-                            required
+                            id="name" name="name" type="text" required
                             defaultValue={nomeInicial}
                             placeholder="Nome da paciente"
                             style={inputStyle}
                         />
                     </div>
 
-                    {/* Nascimento + Sexo */}
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "14px" }}>
+                    {/* Aniversário + Ano + Sexo */}
+                    <div style={{ display: "grid", gridTemplateColumns: "120px 100px 1fr", gap: "14px" }}>
                         <div>
-                            <label style={labelStyle}>Dia e mês de nascimento</label>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
-                                <input
-                                    type="number"
-                                    name="birth_day"
-                                    min={1} max={31}
-                                    placeholder="Dia"
-                                    style={inputStyle}
-                                />
-                                <select name="birth_month" style={{ ...inputStyle, cursor: "pointer" }}>
-                                    <option value="">Mês</option>
-                                    {["Janeiro","Fevereiro","Março","Abril","Maio","Junho",
-                                      "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"]
-                                      .map((m, i) => (
-                                        <option key={i + 1} value={String(i + 1).padStart(2, "0")}>{m}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label htmlFor="birth_year" style={labelStyle}>Ano de nascimento</label>
+                            <label htmlFor="birth_dm" style={labelStyle}>Aniversário</label>
                             <input
-                                id="birth_year"
-                                type="number"
-                                name="birth_year"
-                                min={1900}
-                                max={new Date().getFullYear()}
-                                placeholder="Ex: 1990"
+                                id="birth_dm" name="birth_dm" type="text"
+                                placeholder="00/00"
+                                maxLength={5}
+                                onChange={e => {
+                                    // máscara DD/MM
+                                    let v = e.target.value.replace(/\D/g, "");
+                                    if (v.length > 2) v = v.slice(0, 2) + "/" + v.slice(2, 4);
+                                    e.target.value = v;
+                                }}
                                 style={inputStyle}
                             />
                         </div>
-
+                        <div>
+                            <label htmlFor="birth_year" style={labelStyle}>Ano nasc.</label>
+                            <input
+                                id="birth_year" name="birth_year" type="text"
+                                placeholder="0000"
+                                maxLength={4}
+                                style={inputStyle}
+                            />
+                        </div>
                         <div>
                             <label htmlFor="sex" style={labelStyle}>Sexo</label>
                             <select id="sex" name="sex" style={{ ...inputStyle, cursor: "pointer" }}>
@@ -148,153 +138,138 @@ export function ClienteNovoForm({ nomeInicial = "" }: { nomeInicial?: string }) 
                             </select>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    {/* Contato */}
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "14px" }}>
-                        <div>
-                            <label htmlFor="phone" style={labelStyle}>Telefone / WhatsApp</label>
-                            <input
-                                id="phone"
-                                type="text"
-                                name="phone"
-                                placeholder="(99) 99999-9999"
-                                style={inputStyle}
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="email" style={labelStyle}>E-mail</label>
-                            <input
-                                id="email"
-                                type="email"
-                                name="email"
-                                placeholder="email@exemplo.com"
-                                style={inputStyle}
-                            />
-                        </div>
+            {/* ── SEÇÃO 2: Informações para contato ── */}
+            <div style={card}>
+                <h2 style={sectionTitle}>Informações para contato</h2>
+                <p style={sectionDesc}>Adicione informações que facilitem o contato com a cliente.</p>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                    <div>
+                        <label htmlFor="email" style={labelStyle}>E-mail</label>
+                        <input
+                            id="email" name="email" type="email"
+                            placeholder="exemplo@email.com"
+                            style={inputStyle}
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="phone" style={labelStyle}>WhatsApp</label>
+                        <input
+                            id="phone" name="phone" type="text"
+                            placeholder="(99) 99999-9999"
+                            style={inputStyle}
+                        />
                     </div>
                 </div>
             </div>
 
-            {/* Endereço */}
+            {/* ── SEÇÃO 3: Dados de endereço ── */}
             <div style={card}>
-                <h2 style={sectionTitle}>Endereço</h2>
-                <p style={{ color: "var(--muted-foreground)", fontSize: "13px", margin: "0 0 20px" }}>
-                    Digite o CEP para preencher automaticamente
-                </p>
+                <h2 style={sectionTitle}>Dados de endereço</h2>
+                <p style={sectionDesc}>Adicione a localização da sua cliente.</p>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                    {/* CEP */}
-                    <div style={{ maxWidth: "160px" }}>
-                        <label htmlFor="cep" style={labelStyle}>
-                            CEP {fetchingCep && <span style={{ fontSize: "11px", color: "#B8960C", marginLeft: "4px" }}>buscando...</span>}
-                        </label>
-                        <input
-                            id="cep"
-                            name="cep"
-                            type="text"
-                            value={cep}
-                            onChange={handleCepChange}
-                            placeholder="00000000"
-                            maxLength={8}
-                            style={inputStyle}
-                        />
-                    </div>
-
-                    {/* Logradouro + Número */}
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 120px", gap: "14px" }}>
+                    {/* CEP + País + Estado */}
+                    <div style={{ display: "grid", gridTemplateColumns: "140px 1fr 120px", gap: "14px" }}>
                         <div>
-                            <label htmlFor="logradouro" style={labelStyle}>Logradouro</label>
+                            <label htmlFor="cep" style={labelStyle}>
+                                CEP {fetchingCep && <span style={{ fontSize: "10px", color: "#B8960C" }}>buscando...</span>}
+                            </label>
                             <input
-                                id="logradouro"
-                                name="logradouro"
-                                type="text"
-                                value={logradouro}
-                                onChange={e => setLogradouro(e.target.value)}
-                                placeholder="Rua / Avenida..."
+                                id="cep" name="cep" type="text"
+                                value={cep} onChange={handleCepChange}
+                                placeholder="00000-000"
+                                maxLength={8}
                                 style={inputStyle}
                             />
                         </div>
                         <div>
-                            <label htmlFor="numero" style={labelStyle}>Número</label>
+                            <label htmlFor="pais" style={labelStyle}>País</label>
                             <input
-                                id="numero"
-                                name="numero"
-                                type="text"
-                                placeholder="123"
-                                style={inputStyle}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Complemento */}
-                    <div>
-                        <label htmlFor="complemento" style={labelStyle}>Complemento</label>
-                        <input
-                            id="complemento"
-                            name="complemento"
-                            type="text"
-                            placeholder="Apto, bloco, sala... (opcional)"
-                            style={inputStyle}
-                        />
-                    </div>
-
-                    {/* Bairro + Cidade + UF */}
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 80px", gap: "14px" }}>
-                        <div>
-                            <label htmlFor="bairro" style={labelStyle}>Bairro</label>
-                            <input
-                                id="bairro"
-                                name="bairro"
-                                type="text"
-                                value={bairro}
-                                onChange={e => setBairro(e.target.value)}
-                                placeholder="Bairro"
+                                id="pais" name="pais" type="text"
+                                defaultValue="Brasil"
                                 style={inputStyle}
                             />
                         </div>
                         <div>
-                            <label htmlFor="cidade" style={labelStyle}>Cidade</label>
+                            <label htmlFor="uf" style={labelStyle}>Estado</label>
                             <input
-                                id="cidade"
-                                name="cidade"
-                                type="text"
-                                value={cidade}
-                                onChange={e => setCidade(e.target.value)}
-                                placeholder="Cidade"
-                                style={inputStyle}
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="uf" style={labelStyle}>UF</label>
-                            <input
-                                id="uf"
-                                name="uf"
-                                type="text"
-                                value={uf}
-                                onChange={e => setUf(e.target.value.toUpperCase())}
+                                id="uf" name="uf" type="text"
+                                value={uf} onChange={e => setUf(e.target.value.toUpperCase())}
                                 placeholder="SP"
                                 maxLength={2}
                                 style={inputStyle}
                             />
                         </div>
                     </div>
+
+                    {/* Cidade + Bairro */}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                        <div>
+                            <label htmlFor="cidade" style={labelStyle}>Cidade</label>
+                            <input
+                                id="cidade" name="cidade" type="text"
+                                value={cidade} onChange={e => setCidade(e.target.value)}
+                                placeholder="Cidade"
+                                style={inputStyle}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="bairro" style={labelStyle}>Bairro</label>
+                            <input
+                                id="bairro" name="bairro" type="text"
+                                value={bairro} onChange={e => setBairro(e.target.value)}
+                                placeholder="Bairro X"
+                                style={inputStyle}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Rua + Número + Complemento */}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 100px 160px", gap: "14px" }}>
+                        <div>
+                            <label htmlFor="logradouro" style={labelStyle}>Rua</label>
+                            <input
+                                id="logradouro" name="logradouro" type="text"
+                                value={logradouro} onChange={e => setLogradouro(e.target.value)}
+                                placeholder="Rua Y"
+                                style={inputStyle}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="numero" style={labelStyle}>Número</label>
+                            <input
+                                id="numero" name="numero" type="text"
+                                placeholder="77"
+                                style={inputStyle}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="complemento" style={labelStyle}>Complemento</label>
+                            <input
+                                id="complemento" name="complemento" type="text"
+                                placeholder="Sala 153, Bloco B"
+                                style={inputStyle}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Botão submit */}
+            {/* Botão */}
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <button
                     type="submit"
                     disabled={isPending}
                     style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "6px",
                         background: isPending ? "var(--muted)" : "linear-gradient(135deg, #D4B86A, #B8960C)",
                         color: isPending ? "var(--muted-foreground)" : "#161412",
                         fontWeight: 700,
                         fontSize: "14px",
-                        padding: "11px 28px",
+                        padding: "11px 32px",
                         borderRadius: "9px",
                         border: "none",
                         cursor: isPending ? "not-allowed" : "pointer",
