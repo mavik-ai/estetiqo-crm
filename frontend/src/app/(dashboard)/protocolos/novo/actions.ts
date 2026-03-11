@@ -22,6 +22,8 @@ export async function criarProtocolo(formData: FormData): Promise<void> {
   const endDate        = (formData.get('expected_end_date') as string) || null;
   const targetWeightRaw = formData.get('target_weight') as string;
   const targetWeight   = targetWeightRaw ? Number(targetWeightRaw) : null;
+  const intervalDaysRaw = formData.get('interval_days') as string;
+  const intervalDays   = intervalDaysRaw ? Number(intervalDaysRaw) : null;
 
   if (!clientId || !serviceId || !totalSessions || totalSessions < 1) {
     redirect('/protocolos/novo?error=campos');
@@ -38,6 +40,7 @@ export async function criarProtocolo(formData: FormData): Promise<void> {
       status:             'active',
       expected_end_date:  endDate,
       target_weight:      targetWeight,
+      interval_days:      intervalDays,
     })
     .select('id')
     .single();

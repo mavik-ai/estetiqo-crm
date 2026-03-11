@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Calendar, TrendingUp, UserX, Star, Layers, UserPlus } from "lucide-react";
 
@@ -34,9 +35,11 @@ export default async function RelatoriosPage({
 
   const { data: profile } = await supabase
     .from("users")
-    .select("tenant_id")
+    .select("tenant_id, role")
     .eq("id", user!.id)
     .single();
+
+  if (profile?.role === 'operator') redirect('/agenda');
 
   const tenantId = profile!.tenant_id;
 
@@ -119,7 +122,7 @@ export default async function RelatoriosPage({
     },
     {
       icon: <UserPlus size={20} strokeWidth={1.5} color="#2D8C4E" />,
-      label: "Novos Clientes",
+      label: "Novos Pacientes",
       value: String(novosClientes),
       sub: "cadastradas no período",
     },

@@ -15,6 +15,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { QuickCreateModal } from "./QuickCreateModal";
+import { RescheduleModal } from "./RescheduleModal";
 
 interface Appointment {
   id: string;
@@ -82,11 +83,11 @@ function formatTime(iso: string): string {
   return new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
 }
 
-function generateTimeSlots(): string[] {
+function generateTimeSlots(startHour: number, endHour: number): string[] {
   const slots: string[] = [];
-  for (let h = 7; h <= 20; h++) {
+  for (let h = startHour; h <= endHour; h++) {
     slots.push(`${String(h).padStart(2, "0")}:00`);
-    if (h < 20) slots.push(`${String(h).padStart(2, "0")}:30`);
+    if (h < endHour) slots.push(`${String(h).padStart(2, "0")}:30`);
   }
   return slots;
 }
@@ -99,7 +100,7 @@ function getSlotKey(startsAt: string): string {
 }
 
 // Painel de detalhe do agendamento
-function AppointmentDetail({ appt, onClose }: { appt: Appointment; onClose: () => void }) {
+function AppointmentDetail({ appt, onClose, onReschedule }: { appt: Appointment; onClose: () => void; onReschedule: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const rsvp = appt.rsvp_status ?? "pending";
   const rsvpCfg = RSVP_ICONS[rsvp] ?? RSVP_ICONS["pending"];
@@ -208,30 +209,36 @@ function AppointmentDetail({ appt, onClose }: { appt: Appointment; onClose: () =
         </div>
 
         {/* Footer */}
-        {appt.clients?.id && (
-          <div style={{ padding: "10px 18px 16px", borderTop: "1px solid var(--border)" }}>
+        <div style={{ padding: "10px 18px 16px", borderTop: "1px solid var(--border)", display: "flex", flexDirection: "column", gap: "8px" }}>
+          <button
+            onClick={onReschedule}
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+              padding: "8px 16px", borderRadius: "9px", width: "100%",
+              background: "rgba(184,150,12,0.08)", border: "1px solid rgba(184,150,12,0.25)",
+              color: "#B8960C", fontSize: "12px", fontWeight: 700,
+              cursor: "pointer", fontFamily: "inherit",
+            }}
+          >
+            <Calendar size={13} strokeWidth={2} />
+            Reagendar
+          </button>
+          {appt.clients?.id && (
             <Link
               href={`/clientes/${appt.clients.id}`}
               onClick={onClose}
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                padding: "8px 16px",
-                borderRadius: "9px",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+                padding: "8px 16px", borderRadius: "9px",
                 background: "linear-gradient(135deg, #D4B86A, #B8960C)",
-                color: "#161412",
-                fontSize: "12px",
-                fontWeight: 700,
-                textDecoration: "none",
+                color: "#161412", fontSize: "12px", fontWeight: 700, textDecoration: "none",
               }}
             >
               <Calendar size={13} strokeWidth={2} />
               Ver ficha da cliente
             </Link>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </>
   );
@@ -242,12 +249,16 @@ export default function AgendaPage() {
   const [view, setView] = useState<ViewMode>("day");
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [gridStartHour, setGridStartHour] = useState(7);
+  const [gridEndHour, setGridEndHour] = useState(20);
   const [loading, setLoading] = useState(true);
 
   // Modal de criação rápida
   const [createSlot, setCreateSlot] = useState<CreateSlot | null>(null);
   // Painel de detalhe
   const [detailAppt, setDetailAppt] = useState<Appointment | null>(null);
+  // Modal de reagendamento
+  const [rescheduleAppt, setRescheduleAppt] = useState<Appointment | null>(null);
   // Hover no slot vazio (key = `${slot}-${roomId}`)
   const [hoverSlot, setHoverSlot] = useState<string | null>(null);
 
@@ -273,7 +284,7 @@ export default function AgendaPage() {
       end.setHours(23, 59, 59, 999);
     }
 
-    const [apptRes, roomsRes] = await Promise.all([
+    const [apptRes, roomsRes, hoursRes] = await Promise.all([
       supabase
         .from("appointments")
         .select("id, starts_at, ends_at, rsvp_status, no_show, room_id, notes, clients(id, name), services(id, name), rooms(id, name)")
@@ -284,9 +295,31 @@ export default function AgendaPage() {
       supabase
         .from("rooms")
         .select("id, name")
-        .eq("is_active", true)
+        .eq("active", true)
         .order("name"),
+      supabase
+        .from("business_hours")
+        .select("is_open, open_time, close_time")
+        .eq("is_open", true)
     ]);
+
+    const fetchedHours = hoursRes.data || [];
+    if (fetchedHours.length > 0) {
+      let minH = 24;
+      let maxH = 0;
+      fetchedHours.forEach((h) => {
+        if (h.open_time) {
+          const hStart = parseInt(h.open_time.split(":")[0], 10);
+          if (!isNaN(hStart) && hStart < minH) minH = hStart;
+        }
+        if (h.close_time) {
+          const hEnd = parseInt(h.close_time.split(":")[0], 10);
+          if (!isNaN(hEnd) && hEnd > maxH) maxH = hEnd;
+        }
+      });
+      if (minH < 24) setGridStartHour(minH);
+      if (maxH > 0) setGridEndHour(maxH);
+    }
 
     setAppointments((apptRes.data ?? []) as unknown as Appointment[]);
     setRooms((roomsRes.data ?? []) as unknown as Room[]);
@@ -314,7 +347,7 @@ export default function AgendaPage() {
     setCreateSlot({ date, time, roomId, preSelected });
   }
 
-  const timeSlots = generateTimeSlots();
+  const timeSlots = generateTimeSlots(gridStartHour, gridEndHour);
 
   // Map: slot -> roomId -> Appointment (day view)
   const slotRoomMap: Record<string, Record<string, Appointment>> = {};
@@ -711,7 +744,6 @@ export default function AgendaPage() {
                   }}
                   style={{
                     padding: "12px 10px",
-                    borderLeft: idx > 0 ? "1px solid #EDE5D3" : "none",
                     background: isToday ? "rgba(184,150,12,0.08)" : "transparent",
                     textAlign: "center",
                     cursor: "pointer",
@@ -877,10 +909,21 @@ export default function AgendaPage() {
       )}
 
       {/* Painel de detalhe do agendamento */}
-      {detailAppt && (
+      {detailAppt && !rescheduleAppt && (
         <AppointmentDetail
           appt={detailAppt}
           onClose={() => setDetailAppt(null)}
+          onReschedule={() => { setRescheduleAppt(detailAppt); setDetailAppt(null); }}
+        />
+      )}
+
+      {/* Modal de reagendamento */}
+      {rescheduleAppt && (
+        <RescheduleModal
+          appointment={rescheduleAppt}
+          rooms={rooms}
+          onClose={() => setRescheduleAppt(null)}
+          onSuccess={() => { fetchData(selectedDate); setRescheduleAppt(null); }}
         />
       )}
     </div>

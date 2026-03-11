@@ -16,46 +16,33 @@ export async function criarCliente(formData: FormData) {
 
     const tenantId = profile!.tenant_id;
 
-    // 1. Inserir em clients
+    // Montar birth_date: dia + mês obrigatórios, ano opcional (usa 2000 se não informado)
+    const day   = (formData.get('birth_day')   as string)?.padStart(2, '0');
+    const month = (formData.get('birth_month') as string)?.padStart(2, '0');
+    const year  = (formData.get('birth_year')  as string)?.trim() || '2000';
+    const birthDate = day && month ? `${year}-${month}-${day}` : null;
+
     const { data: client, error } = await supabase
         .from('clients')
         .insert({
-            tenant_id: tenantId,
-            name: formData.get('name') as string,
-            birth_date: (formData.get('birth_date') as string) || null,
-            sex: (formData.get('sex') as string) || null,
-            phone: (formData.get('phone') as string) || null,
-            address: (formData.get('address') as string) || null,
-            rating: Number(formData.get('rating')) || null,
+            tenant_id:   tenantId,
+            name:        formData.get('name') as string,
+            birth_date:  birthDate,
+            sex:         (formData.get('sex')   as string) || null,
+            phone:       (formData.get('phone') as string) || null,
+            email:       (formData.get('email') as string) || null,
+            cep:         (formData.get('cep')   as string) || null,
+            logradouro:  (formData.get('logradouro')  as string) || null,
+            numero:      (formData.get('numero')      as string) || null,
+            complemento: (formData.get('complemento') as string) || null,
+            bairro:      (formData.get('bairro')      as string) || null,
+            cidade:      (formData.get('cidade')      as string) || null,
+            uf:          (formData.get('uf')           as string) || null,
         })
         .select('id')
         .single();
 
     if (error || !client) redirect('/clientes?error=1');
-
-    // 2. Inserir health_record
-    const boolField = (name: string) => formData.get(name) === 'on';
-
-    await supabase.from('health_records').insert({
-        client_id: client.id,
-        smoker: boolField('smoker'),
-        allergy: boolField('allergy'),
-        pregnancy: boolField('pregnancy'),
-        heart_disease: boolField('heart_disease'),
-        anemia: boolField('anemia'),
-        depression: boolField('depression'),
-        hypertension: boolField('hypertension'),
-        previous_aesthetic_treatment: boolField('previous_aesthetic_treatment'),
-        herpes: boolField('herpes'),
-        keloid: boolField('keloid'),
-        diabetes: boolField('diabetes'),
-        hepatitis: boolField('hepatitis'),
-        hiv: boolField('hiv'),
-        skin_disease: boolField('skin_disease'),
-        cancer: boolField('cancer'),
-        contraceptive: boolField('contraceptive'),
-        other_conditions: (formData.get('other_conditions') as string) || null,
-    });
 
     redirect(`/clientes/${client.id}`);
 }

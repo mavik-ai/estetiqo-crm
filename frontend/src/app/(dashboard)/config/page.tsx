@@ -43,16 +43,16 @@ const configCards: ConfigCard[] = [
   {
     icon: <MessageCircle size={22} strokeWidth={1.5} />,
     title: "WhatsApp",
-    description: "Conecte sua instância para envios automáticos",
+    description: "Integração automática via WhatsApp",
     href: "/config/whatsapp",
+    disabled: true,
+    badge: "Em breve",
   },
   {
     icon: <Users size={22} strokeWidth={1.5} />,
-    title: "Usuários",
-    description: "Gerencie operadores e permissões",
-    href: "/config/usuarios",
-    disabled: true,
-    badge: "Em breve",
+    title: "Equipe",
+    description: "Gerencie membros, papéis e acessos",
+    href: "/config/equipe",
   },
 ];
 

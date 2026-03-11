@@ -30,6 +30,7 @@ export function NovoProtocoloForm({ services, errorMsg }: Props) {
   const [clientId, setClientId] = useState("");
   const [serviceId, setServiceId] = useState("");
   const [totalSessions, setTotalSessions] = useState("10");
+  const [intervalDays, setIntervalDays] = useState("");
   const [endDate, setEndDate] = useState("");
   const [targetWeight, setTargetWeight] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
@@ -45,6 +46,7 @@ export function NovoProtocoloForm({ services, errorMsg }: Props) {
     fd.set("client_id", clientId);
     fd.set("service_id", serviceId);
     fd.set("total_sessions", totalSessions);
+    if (intervalDays) fd.set("interval_days", intervalDays);
     if (endDate)      fd.set("expected_end_date", endDate);
     if (targetWeight) fd.set("target_weight", targetWeight);
 
@@ -118,6 +120,24 @@ export function NovoProtocoloForm({ services, errorMsg }: Props) {
             required
             style={inputStyle}
           />
+        </div>
+
+        {/* Intervalo entre sessões */}
+        <div>
+          <label style={labelStyle} htmlFor="interval_days">Intervalo entre sessões (dias)</label>
+          <input
+            id="interval_days"
+            type="number"
+            min="1"
+            max="365"
+            placeholder="Ex: 7 (opcional)"
+            value={intervalDays}
+            onChange={e => setIntervalDays(e.target.value)}
+            style={inputStyle}
+          />
+          <p style={{ fontSize: "11px", color: "#A69060", marginTop: "5px" }}>
+            Intervalo recomendado entre sessões. Um aviso aparece na agenda se descumprido.
+          </p>
         </div>
 
         {/* Data Prevista de Término */}

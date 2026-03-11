@@ -14,6 +14,7 @@ interface Protocol {
   services: { id: string; name: string; duration_minutes: number | null } | null;
   total_sessions: number;
   completed_sessions: number;
+  interval_days: number | null;
 }
 interface SlotAppointment {
   id: string;
@@ -112,10 +113,13 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
   // Último passo (sempre) — Observações
   const [notes, setNotes] = useState("");
 
+  // Alerta de intervalo — última sessão do protocolo selecionado
+  const [lastSessionDate, setLastSessionDate] = useState<Date | null>(null);
+
   // Carregar serviços
   useEffect(() => {
     supabase.from("services").select("id, name, duration_minutes")
-      .eq("is_active", true).order("name")
+      .eq("active", true).order("name")
       .then(({ data }) => setServices((data ?? []) as Service[]));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -124,11 +128,29 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
   useEffect(() => {
     if (!selectedClient) { setProtocols([]); setSelectedProtocolId(""); return; }
     supabase.from("protocols")
-      .select("id, service_id, services(id, name, duration_minutes), total_sessions, completed_sessions")
+      .select("id, service_id, services(id, name, duration_minutes), total_sessions, completed_sessions, interval_days")
       .eq("client_id", selectedClient.id).eq("status", "active")
       .then(({ data }) => setProtocols((data ?? []) as unknown as Protocol[]));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedClient]);
+
+  // Carregar última sessão ao selecionar protocolo com interval_days
+  useEffect(() => {
+    setLastSessionDate(null);
+    const proto = protocols.find(p => p.id === selectedProtocolId);
+    if (!proto || !proto.interval_days) return;
+    supabase.from("appointments")
+      .select("starts_at")
+      .eq("protocol_id", proto.id)
+      .eq("no_show", false)
+      .neq("rsvp_status", "cancelled")
+      .order("starts_at", { ascending: false })
+      .limit(1)
+      .then(({ data }) => {
+        if (data && data.length > 0) setLastSessionDate(new Date(data[0].starts_at));
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProtocolId]);
 
   // Carregar agendamentos do dia ao entrar no step de horário
   useEffect(() => {
@@ -138,7 +160,7 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
       .select("id, starts_at, ends_at, room_id")
       .gte("starts_at", `${selectedDate}T00:00:00`)
       .lte("starts_at", `${selectedDate}T23:59:59`)
-      .eq("is_block", false).eq("no_show", false)
+      .eq("is_block", false).eq("no_show", false).neq("rsvp_status", "cancelled")
       .then(({ data }) => { setDayAppointments((data ?? []) as SlotAppointment[]); setLoadingSlots(false); });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, selectedDate, preSelected]);
@@ -612,8 +634,32 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
           )}
 
           {/* ──── ÚLTIMO PASSO — Confirmar + Observações ──── */}
-          {step === totalSteps && (
+          {step === totalSteps && (() => {
+            // Calcula aviso de intervalo
+            const proto = protocols.find(p => p.id === selectedProtocolId);
+            const intervalDays = proto?.interval_days ?? null;
+            let intervalWarning: string | null = null;
+            if (intervalDays && lastSessionDate) {
+              const agendDate = new Date((preSelected ? date : selectedDate) + "T12:00:00");
+              const diffDays = Math.round((agendDate.getTime() - lastSessionDate.getTime()) / 86400000);
+              if (diffDays < intervalDays) {
+                intervalWarning = `Intervalo recomendado: ${intervalDays} dias. Última sessão há ${diffDays} dia${diffDays !== 1 ? "s" : ""}.`;
+              }
+            }
+            return (
             <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              {/* Aviso de intervalo */}
+              {intervalWarning && (
+                <div style={{
+                  padding: "10px 12px", borderRadius: "8px",
+                  background: "rgba(224,123,0,0.07)", border: "1px solid rgba(224,123,0,0.25)",
+                  color: "#C47000", fontSize: "12px", fontWeight: 600,
+                  display: "flex", alignItems: "flex-start", gap: "6px",
+                }}>
+                  <span style={{ fontSize: "14px", flexShrink: 0 }}>⚠️</span>
+                  <span>{intervalWarning}</span>
+                </div>
+              )}
               {/* Resumo do agendamento */}
               <div style={{
                 padding: "14px 16px", borderRadius: "12px",
@@ -661,7 +707,8 @@ export function QuickCreateModal({ date, time, roomId, rooms, preSelected, onClo
                 />
               </div>
             </div>
-          )}
+            );
+          })()}
 
           {/* Erro */}
           {error && (

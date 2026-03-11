@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children, modal }: { children: React.ReactNode; modal: React.ReactNode }) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -13,7 +13,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
     const { data: profile } = await supabase
         .from('users')
-        .select('must_change_password, name, role, avatar_initials')
+        .select('must_change_password, name, role, avatar_initials, tenant_id, tenants(name, onboarding_completed_at)')
         .eq('id', user.id)
         .single();
 
@@ -25,26 +25,41 @@ export default async function DashboardLayout({ children }: { children: React.Re
     const nameInitials = (profile?.name ?? '').split(' ').slice(0, 2).map((p: string) => p[0]?.toUpperCase() ?? '').join('');
     const initials    = (profile?.avatar_initials) ?? (nameInitials || '??');
     const roleLabel   = profile?.role === 'superadmin' ? 'Superadmin' : profile?.role === 'admin' ? 'Admin' : 'Operadora';
+    // @ts-ignore - nested join type
+    const tenantRow   = profile?.tenants as { name?: string; onboarding_completed_at?: string | null } | null;
+    const tenantName  = tenantRow?.name ?? '';
+    const onboardingPending = !tenantRow?.onboarding_completed_at && profile?.role !== 'operator';
 
-    const { data: tenantRow } = await supabase
-        .from('users')
-        .select('tenant_id')
-        .eq('id', user.id)
-        .single();
+    const tenantId = profile?.tenant_id;
 
     // Busca agendamentos pendentes de RSVP com detalhes para o dropdown
-    const { data: pendingAppointments } = await supabase
+    const { data: pendingAppointmentsData } = tenantId ? await supabase
         .from('appointments')
         .select('id, starts_at, clients(name), services(name)')
-        .eq('tenant_id', tenantRow!.tenant_id)
+        .eq('tenant_id', tenantId)
         .eq('rsvp_status', 'pending')
         .gte('starts_at', new Date().toISOString())
         .order('starts_at')
-        .limit(5);
+        .limit(5) : { data: [] };
+
+    const pendingAppointments = (pendingAppointmentsData ?? []).map(appt => ({
+        id: appt.id,
+        starts_at: appt.starts_at,
+        clients: Array.isArray(appt.clients) ? appt.clients[0] : appt.clients,
+        services: Array.isArray(appt.services) ? appt.services[0] : appt.services
+    })) as { id: string; starts_at: string; clients: { name: string } | null; services: { name: string } | null }[];
 
     return (
         <div className="min-h-screen flex bg-background" style={{ fontFamily: "var(--font-urbanist), sans-serif" }}>
-            <Sidebar userName={profile?.name ?? firstName} userInitials={initials} userRole={roleLabel} userEmail={user.email ?? ''} />
+            <Sidebar
+                userName={profile?.name ?? firstName}
+                userInitials={initials}
+                userRole={roleLabel}
+                userEmail={user.email ?? ''}
+                tenantName={tenantName}
+                role={profile?.role as 'admin' | 'operator' | 'superadmin' | undefined}
+                onboardingPending={onboardingPending}
+            />
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
                 <Topbar
                     userName={firstName}
@@ -55,6 +70,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                     {children}
                 </div>
             </div>
+            {modal}
             <Toaster
                 position="bottom-right"
                 toastOptions={{

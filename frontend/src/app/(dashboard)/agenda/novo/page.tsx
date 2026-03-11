@@ -106,8 +106,8 @@ export default function NovoAgendamentoPage() {
   useEffect(() => {
     async function loadOptions() {
       const [servicesRes, roomsRes, profRes] = await Promise.all([
-        supabase.from("services").select("id, name, duration_minutes").eq("is_active", true).order("name"),
-        supabase.from("rooms").select("id, name").eq("is_active", true).order("name"),
+        supabase.from("services").select("id, name, duration_minutes").eq("active", true).order("name"),
+        supabase.from("rooms").select("id, name").eq("active", true).order("name"),
         supabase.from("users").select("id, name").in("role", ["admin", "operator"]).order("name"),
       ]);
       setServices((servicesRes.data ?? []) as Service[]);

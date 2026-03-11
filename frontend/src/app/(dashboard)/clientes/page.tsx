@@ -1,16 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { Search, UserCircle2 } from "lucide-react";
+import { UserCircle2 } from "lucide-react";
 import { ClientesTable } from "@/components/clientes/ClientesTable";
-
-interface Client {
-    id: string;
-    name: string;
-    phone: string | null;
-    birth_date: string | null;
-    sex: string | null;
-    rating: number | null;
-}
 
 export default async function ClientesPage({
     searchParams,
@@ -30,9 +21,13 @@ export default async function ClientesPage({
 
     const tenantId = profile!.tenant_id;
 
+    // Busca clientes com búsqueda de último e próximo agendamento em uma única query via RPC
     let query = supabase
         .from("clients")
-        .select("id, name, phone, birth_date, sex, rating")
+        .select(`
+            id, name, phone, birth_date, rating,
+            last_appointment:appointments!client_id(starts_at)
+        `)
         .eq("tenant_id", tenantId)
         .order("name");
 
@@ -40,8 +35,33 @@ export default async function ClientesPage({
         query = query.or(`name.ilike.%${q}%,phone.ilike.%${q}%`);
     }
 
-    const { data: clients } = await query;
-    const list: Client[] = clients ?? [];
+    // Busca principal de clientes
+    const { data: rawClients } = await query;
+
+    // Busca último e próximo agendamento por cliente via SQL direto
+    const { data: appointmentStats } = await supabase
+        .rpc("get_client_appointment_stats", { p_tenant_id: tenantId });
+
+    // Mapear as stats por client_id para lookup O(1)
+    const statsMap = new Map<string, { last_appointment: string | null; next_appointment: string | null }>();
+    if (appointmentStats) {
+        for (const row of appointmentStats) {
+            statsMap.set(row.client_id, {
+                last_appointment: row.last_appointment,
+                next_appointment: row.next_appointment,
+            });
+        }
+    }
+
+    const list = (rawClients ?? []).map((c: any) => ({
+        id: c.id,
+        name: c.name,
+        phone: c.phone,
+        birth_date: c.birth_date,
+        rating: c.rating,
+        last_appointment: statsMap.get(c.id)?.last_appointment ?? null,
+        next_appointment: statsMap.get(c.id)?.next_appointment ?? null,
+    }));
 
     const card = {
         background: "var(--card)",
@@ -55,7 +75,7 @@ export default async function ClientesPage({
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
                 <div>
                     <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 700, color: "var(--foreground)", margin: 0, lineHeight: 1.2 }}>
-                        Clientes
+                        Pacientes
                     </h1>
                     <p style={{ color: "var(--muted-foreground)", fontSize: "13px", margin: "4px 0 0" }}>
                         {list.length} paciente{list.length !== 1 ? "s" : ""} cadastrada{list.length !== 1 ? "s" : ""}
@@ -71,14 +91,16 @@ export default async function ClientesPage({
                         textDecoration: "none", letterSpacing: "0.01em",
                     }}
                 >
-                    + Nova Cliente
+                    + Nova Paciente
                 </Link>
             </div>
 
             {/* Search */}
             <form method="GET" style={{ marginBottom: "16px" }}>
                 <div style={{ position: "relative", maxWidth: "420px" }}>
-                    <Search size={15} strokeWidth={1.8} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#BBA870", pointerEvents: "none" }} />
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BBA870" strokeWidth="2" style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
+                        <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+                    </svg>
                     <input
                         type="text" name="q" defaultValue={q ?? ""}
                         placeholder="Buscar por nome ou telefone..."
@@ -98,7 +120,7 @@ export default async function ClientesPage({
                 {list.length === 0 ? (
                     <div style={{ padding: "48px 24px", textAlign: "center", color: "var(--muted-foreground)", fontSize: "14px" }}>
                         <UserCircle2 size={40} strokeWidth={1.2} style={{ color: "#EDE5D3", marginBottom: "10px" }} />
-                        <p style={{ margin: 0 }}>Nenhuma cliente encontrada.</p>
+                        <p style={{ margin: 0 }}>Nenhuma paciente encontrada.</p>
                     </div>
                 ) : (
                     <ClientesTable clients={list} />

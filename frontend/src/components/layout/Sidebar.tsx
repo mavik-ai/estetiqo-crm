@@ -1,28 +1,31 @@
 'use client'
 
-import { Home, Calendar, Users, FileText, Settings, BarChart3, LogOut, ChevronUp, User } from "lucide-react";
+import { Home, Calendar, Users, FileText, Settings, BarChart3, LogOut, ChevronUp, User, Zap } from "lucide-react";
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
 
-const navItems = [
-    { icon: <Home size={18} />, label: "Dashboard", href: "/" },
-    { icon: <Calendar size={18} />, label: "Agenda", href: "/agenda" },
-    { icon: <Users size={18} />, label: "Clientes", href: "/clientes" },
-    { icon: <FileText size={18} />, label: "Protocolos", href: "/protocolos" },
-    { icon: <BarChart3 size={18} />, label: "Relatórios", href: "/relatorios" },
+const ALL_NAV_ITEMS = [
+    { icon: <Home size={18} />, label: "Dashboard", href: "/", adminOnly: false },
+    { icon: <Calendar size={18} />, label: "Agenda", href: "/agenda", adminOnly: false },
+    { icon: <Users size={18} />, label: "Pacientes", href: "/clientes", adminOnly: false },
+    { icon: <FileText size={18} />, label: "Protocolos", href: "/protocolos", adminOnly: false },
+    { icon: <BarChart3 size={18} />, label: "Relatórios", href: "/relatorios", adminOnly: true },
 ];
 
 interface SidebarProps {
+    tenantName?: string;
     userName?: string;
     userInitials?: string;
     userRole?: string;
     userEmail?: string;
+    role?: 'admin' | 'operator' | 'superadmin';
+    onboardingPending?: boolean;
 }
 
-export function Sidebar({ userName = "Michele Oliveira", userInitials = "MO", userRole = "Admin", userEmail = "" }: SidebarProps) {
+export function Sidebar({ userName = "Michele Oliveira", userInitials = "MO", userRole = "Admin", userEmail = "", tenantName = "", role = "admin", onboardingPending = false }: SidebarProps) {
     const pathname = usePathname();
     const router = useRouter();
     const supabase = createClient();
@@ -34,6 +37,9 @@ export function Sidebar({ userName = "Michele Oliveira", userInitials = "MO", us
         await supabase.auth.signOut();
         router.push('/login');
     };
+
+    const isAdmin = role === 'admin' || role === 'superadmin';
+    const navItems = ALL_NAV_ITEMS.filter(item => !item.adminOnly || isAdmin);
 
     const isActive = (href: string) =>
         href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href + '/');
@@ -63,6 +69,11 @@ export function Sidebar({ userName = "Michele Oliveira", userInitials = "MO", us
                             className="h-8 w-auto"
                         />
                     </Link>
+                    {tenantName && (
+                        <div style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "0.15em", color: "#BBA870", textTransform: "uppercase", marginTop: "6px" }}>
+                            {tenantName}
+                        </div>
+                    )}
                 </div>
                 <div className="px-3">
                     <div style={{ color: "var(--sidebar-primary)", fontSize: "9px", fontWeight: 700, letterSpacing: "0.15em", padding: "0 10px", marginBottom: "6px" }}>MENU</div>
@@ -87,16 +98,36 @@ export function Sidebar({ userName = "Michele Oliveira", userInitials = "MO", us
 
             <div className="px-3 pb-4">
                 <div className="mb-2" style={{ borderTop: "1px solid var(--sidebar-border)" }} />
-                <Link href="/config"
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg mb-2 outline-none transition-all"
-                    style={{
-                        background: isActive('/config') ? "color-mix(in srgb, var(--sidebar-primary) 10%, transparent)" : "transparent",
-                        border: isActive('/config') ? "1px solid var(--sidebar-border)" : "1px solid transparent",
-                        color: isActive('/config') ? "var(--sidebar-primary)" : "var(--muted-foreground)",
-                    }}>
-                    <div style={{ opacity: isActive('/config') ? 1 : 0.6 }}><Settings size={18} /></div>
-                    <span style={{ fontSize: "13px", fontWeight: isActive('/config') ? 700 : 500 }}>Configurações</span>
-                </Link>
+                {/* Widget de onboarding — apenas admin, enquanto pendente */}
+                {isAdmin && onboardingPending && (
+                    <Link href="/setup"
+                        className="flex items-center gap-2 px-3 py-2.5 rounded-lg mb-2 outline-none"
+                        style={{
+                            background: "rgba(184,150,12,0.08)",
+                            border: "1px solid rgba(184,150,12,0.25)",
+                            textDecoration: "none",
+                        }}>
+                        <Zap size={14} strokeWidth={2.2} style={{ color: "#B8960C", flexShrink: 0 }} />
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                            <div style={{ fontSize: "11px", fontWeight: 700, color: "#B8960C", lineHeight: 1.2 }}>Configuração pendente</div>
+                            <div style={{ fontSize: "10px", color: "#A69060", marginTop: "1px" }}>Completar setup da clínica</div>
+                        </div>
+                    </Link>
+                )}
+
+                {/* Configurações — apenas admins */}
+                {isAdmin && (
+                    <Link href="/config"
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg mb-2 outline-none transition-all"
+                        style={{
+                            background: isActive('/config') ? "color-mix(in srgb, var(--sidebar-primary) 10%, transparent)" : "transparent",
+                            border: isActive('/config') ? "1px solid var(--sidebar-border)" : "1px solid transparent",
+                            color: isActive('/config') ? "var(--sidebar-primary)" : "var(--muted-foreground)",
+                        }}>
+                        <div style={{ opacity: isActive('/config') ? 1 : 0.6 }}><Settings size={18} /></div>
+                        <span style={{ fontSize: "13px", fontWeight: isActive('/config') ? 700 : 500 }}>Configurações</span>
+                    </Link>
+                )}
 
                 {/* User card */}
                 <div ref={menuRef} style={{ position: "relative" }}>

@@ -12,13 +12,11 @@ export async function criarAgendamento(formData: FormData): Promise<{ error: str
 
   const { data: profile } = await supabase
     .from('users')
-    .select('tenant_id, tenants(evolution_instance_name)')
+    .select('tenant_id')
     .eq('id', user.id)
     .single();
 
   const tenantId = profile!.tenant_id;
-  //@ts-ignore - nested join type
-  const instanceName = profile?.tenants?.evolution_instance_name || '';
 
   const clientId   = formData.get('client_id')      as string;
   const serviceId  = formData.get('service_id')     as string;
@@ -33,13 +31,14 @@ export async function criarAgendamento(formData: FormData): Promise<{ error: str
     return { error: 'Preencha todos os campos obrigatórios.' };
   }
 
-  // Validação de conflito: mesma sala, horários sobrepostos, mesmo tenant
+  // Validação de conflito: mesma sala, horários sobrepostos, mesmo tenant (ignora cancelados)
   const { data: conflicts } = await supabase
     .from('appointments')
     .select('id')
     .eq('room_id', roomId)
     .eq('tenant_id', tenantId)
     .eq('no_show', false)
+    .neq('rsvp_status', 'cancelled')
     .lt('starts_at', endsAt)
     .gt('ends_at', startsAt)
     .limit(1);
@@ -49,12 +48,6 @@ export async function criarAgendamento(formData: FormData): Promise<{ error: str
   }
 
   const rsvpToken = randomUUID().replace(/-/g, '').substring(0, 16);
-
-  const { data: client, error: clientErr } = await supabase
-    .from('clients')
-    .select('name, phone')
-    .eq('id', clientId)
-    .single();
 
   const { error: insertError } = await supabase.from('appointments').insert({
     tenant_id:       tenantId,
@@ -74,39 +67,6 @@ export async function criarAgendamento(formData: FormData): Promise<{ error: str
 
   if (insertError) {
     return { error: 'Erro ao criar agendamento. Tente novamente.' };
-  }
-
-  // Disparar RSVP via Backend FastAPI
-  if (client && client.phone) {
-    try {
-      // Obter URL base do .env ou usar localhost no dev
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-      
-      // Formatar as datas para visualização limpa na mensagem
-      const dateObj = new Date(startsAt);
-      const dateStr = dateObj.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-      const timeStr = dateObj.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' });
-      const rsvpLink = `${appUrl}/c/${rsvpToken}`;
-
-      await fetch(`${backendUrl}/api/v1/whatsapp/send-rsvp`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phone: client.phone,
-          client_name: client.name.split(' ')[0], // Apenas o primeiro nome
-          date_str: dateStr,
-          time_str: timeStr,
-          rsvp_link: rsvpLink,
-          instance_name: instanceName
-        }),
-      });
-    } catch (error) {
-      console.error('Falha ao acionar webhook de envio do RSVP:', error);
-      // O agendamento foi salvo mesmo assim.
-    }
   }
 
   redirect('/agenda');

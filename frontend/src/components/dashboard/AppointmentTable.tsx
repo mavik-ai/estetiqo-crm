@@ -44,7 +44,7 @@ export function AppointmentTable({ appointments }: { appointments: Appointment[]
     return (
         <div className="p-4" style={card}>
             <div className="flex justify-between items-center mb-3">
-                <div style={sTitle}>Próximos atendimentos</div>
+                <div style={sTitle}>Sessões de hoje</div>
                 <button style={sLink}>Ver agenda <ChevronRight size={13} /></button>
             </div>
 

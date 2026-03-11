@@ -19,14 +19,6 @@ class Settings(BaseSettings):
     SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
     SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
 
-    # EVOLUTION API
-    EVOLUTION_API_URL: str = os.getenv("EVOLUTION_API_URL", "")
-    EVOLUTION_API_TOKEN: str = os.getenv("EVOLUTION_API_TOKEN", "")
-    EVOLUTION_INSTANCE_NAME: str = os.getenv("EVOLUTION_INSTANCE_NAME", "")
-
-    # N8N (Agente Camila)
-    N8N_API_KEY: str = os.getenv("N8N_API_KEY", "")
-
     # JWT — nunca use valor padrão em produção
     # Gere com: openssl rand -hex 32
     SECRET_KEY: str = os.getenv("SECRET_KEY", "")

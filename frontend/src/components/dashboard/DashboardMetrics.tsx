@@ -7,11 +7,16 @@ export interface DashboardMetricsData {
     restantes_hoje: number;
     noshows_mes: number;
     faturamento_mes: number;
+    vagas_livres_hoje?: number;
+    total_slots_dia?: number;
 }
 
 export function DashboardMetrics({ data }: { data: DashboardMetricsData }) {
     const fmt = (v: number) =>
         new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(v);
+
+    const vagasLivres = data.vagas_livres_hoje ?? Math.max(0, 8 - data.atendimentos_hoje);
+    const slotsTotal = data.total_slots_dia ?? 8;
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
@@ -35,15 +40,15 @@ export function DashboardMetrics({ data }: { data: DashboardMetricsData }) {
                     <CalendarClock size={14} style={{ color: "#C4880A", opacity: 0.5 }} />
                 </div>
                 <div className="font-extrabold" style={{ color: "var(--foreground)", fontSize: "26px", lineHeight: "1" }}>
-                    {Math.max(0, 8 - data.atendimentos_hoje)}
+                    {vagasLivres}
                 </div>
-                <div className="mt-1" style={{ color: "#BBA870", fontSize: "11px", fontWeight: 500 }}>de 8 slots disponíveis</div>
+                <div className="mt-1" style={{ color: "#BBA870", fontSize: "11px", fontWeight: 500 }}>de {slotsTotal} slots totais no dia</div>
             </div>
 
             {/* 3. No-shows */}
             <div className="rounded-xl p-3.5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
                 <div className="flex items-center justify-between mb-1">
-                    <div className="uppercase" style={{ color: "var(--muted-foreground)", fontWeight: 700, letterSpacing: "0.1em", fontSize: "9px" }}>No-shows do mês</div>
+                    <div className="uppercase" style={{ color: "var(--muted-foreground)", fontWeight: 700, letterSpacing: "0.1em", fontSize: "9px" }}>Faltas do mês</div>
                     <CalendarOff size={14} style={{ color: "#D94444", opacity: 0.5 }} />
                 </div>
                 <div className="font-extrabold" style={{ color: "var(--foreground)", fontSize: "26px", lineHeight: "1" }}>{data.noshows_mes}</div>

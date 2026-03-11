@@ -151,6 +151,20 @@ Impacto: `/frontend/src/app/layout.tsx`.
 
 <!-- NOVOS UPDATES ABAIXO DESTA LINHA -->
 
+## [FIX] 11/MAR/26 08:58 — Agenda: Grade de horários dinâmica
+Quem: Antigravity / gemini
+O que: A página da Agenda (`/agenda`) possuía a grade de horários (time slots) travada entre 07:00 e 20:00 no código-fonte. O componente foi refatorado para consultar a tabela `business_hours` do respectivo tenant e calcular dinamicamente o menor horário de abertura e o maior horário de fechamento, renderizando apenas os slots necessários.
+Por que: A clínica configurou Atendimento 09-20h, mas a visão da agenda mostrava slots inúteis desde as 07h, sujando a tela e bagunçando a visualização da agenda do dia e semana.
+Impacto: Frontend (`src/app/(dashboard)/agenda/page.tsx`).
+
+## [FIX] 11/MAR/26 08:52 — Dashboard: Próximos Atendimentos & Mock Data
+Quem: Antigravity / gemini
+O que: (1) O painel de "Próximos atendimentos" estava travado para mostrar apenas a agenda restrita do dia (`hoje` até `amanhã`). Alterado a consulta no Supabase (`page.tsx`) para puxar todos os eventos dos próximos 7 dias. (2) O formato de hora na tabela agora esconde o dia se for hoje (`14:00`), mas revela se for futuro (`13/03 14:00`). (3) Criado script `create_mock_appointments.py` no backend que plantou 5 novos agendamentos simulados pro resto da semana.
+Por que: A clínica precisa ver a sua pipeline de clientes, a query antiga escondia tudo a partir do dia seguinte.
+Impacto: Frontend (`src/app/(dashboard)/page.tsx`), Backend script jogado no `/tmp` (executado e finalizado).
+
+---
+
 ## [IMPL] 11/MAR/26 07:15 — Onboarding de WhatsApp Multi-Tenant (QR Code)
 Quem: Antigravity / gemini
 O que: Criado o fluxo completo para as clínicas conectarem seu próprio WhatsApp lendo QR Code.
