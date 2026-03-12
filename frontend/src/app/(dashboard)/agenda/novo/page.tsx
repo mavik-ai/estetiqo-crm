@@ -22,6 +22,7 @@ interface Protocol {
   status: string;
   total_sessions: number;
   completed_sessions: number;
+  interval_days: number | null;
   services: { name: string } | null;
 }
 
@@ -101,6 +102,7 @@ export default function NovoAgendamentoPage() {
   const [notes, setNotes] = useState("");
 
   const [error, setError] = useState<string | null>(null);
+  const [intervalWarning, setIntervalWarning] = useState<string | null>(null);
 
   // Load services, rooms, professionals on mount
   useEffect(() => {
@@ -149,13 +151,46 @@ export default function NovoAgendamentoPage() {
     async function loadProtocols() {
       const { data } = await supabase
         .from("protocols")
-        .select("id, status, total_sessions, completed_sessions, services(name)")
+        .select("id, status, total_sessions, completed_sessions, interval_days, services(name)")
         .eq("client_id", selectedClient!.id)
         .eq("status", "active");
       setProtocols((data ?? []) as unknown as Protocol[]);
     }
     loadProtocols();
   }, [selectedClient]);
+
+  // Verificar intervalo recomendado quando protocolo é selecionado
+  useEffect(() => {
+    setIntervalWarning(null);
+    if (!selectedProtocolId) return;
+    const protocol = protocols.find(p => p.id === selectedProtocolId);
+    if (!protocol?.interval_days) return;
+
+    async function checkInterval() {
+      const { data: lastSession } = await supabase
+        .from("sessions")
+        .select("session_date")
+        .eq("protocol_id", selectedProtocolId)
+        .order("session_date", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (!lastSession?.session_date) return;
+
+      const lastDate = new Date(lastSession.session_date);
+      const agendDate = date ? new Date(date) : new Date();
+      const diasDesde = Math.floor((agendDate.getTime() - lastDate.getTime()) / 86400000);
+      const recomendado = protocol!.interval_days!;
+
+      if (diasDesde < recomendado) {
+        const lastFormatted = lastDate.toLocaleDateString("pt-BR");
+        setIntervalWarning(
+          `Intervalo recomendado: ${recomendado} dias. Última sessão: ${lastFormatted} (há ${diasDesde} ${diasDesde === 1 ? "dia" : "dias"}).`
+        );
+      }
+    }
+    checkInterval();
+  }, [selectedProtocolId, protocols, date, supabase]);
 
   // Auto-calculate end time when service or start time changes
   useEffect(() => {
@@ -371,6 +406,18 @@ export default function NovoAgendamentoPage() {
                   </option>
                 ))}
               </select>
+            </div>
+          )}
+
+          {/* Aviso de intervalo */}
+          {intervalWarning && (
+            <div style={{
+              padding: "10px 14px", borderRadius: "8px",
+              background: "rgba(251,161,116,0.08)", border: "1px solid rgba(251,161,116,0.3)",
+              color: "#C97B3A", fontSize: "13px", display: "flex", gap: "8px", alignItems: "flex-start",
+            }}>
+              <span style={{ fontSize: "15px", flexShrink: 0 }}>⚠️</span>
+              <span>{intervalWarning}</span>
             </div>
           )}
 

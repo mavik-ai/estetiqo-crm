@@ -8,7 +8,7 @@ import { ArrowLeft, Plus, Pencil, Trash2, X, Check } from "lucide-react";
 interface Room {
   id: string;
   name: string;
-  is_active: boolean;
+  active: boolean;
 }
 
 const inputStyle: React.CSSProperties = {
@@ -56,7 +56,7 @@ export default function SalasPage() {
     setLoading(true);
     const { data } = await supabase
       .from("rooms")
-      .select("id, name, is_active")
+      .select("id, name, active")
       .eq("tenant_id", tid)
       .order("name");
     setRooms((data ?? []) as Room[]);
@@ -91,7 +91,7 @@ export default function SalasPage() {
   function openEdit(room: Room) {
     setEditingRoom(room);
     setFormName(room.name);
-    setFormIsActive(room.is_active);
+    setFormIsActive(room.active);
     setFormError(null);
     setShowModal(true);
   }
@@ -114,7 +114,7 @@ export default function SalasPage() {
     if (editingRoom) {
       const { error } = await supabase
         .from("rooms")
-        .update({ name: formName.trim(), is_active: formIsActive })
+        .update({ name: formName.trim(), active: formIsActive })
         .eq("id", editingRoom.id)
         .eq("tenant_id", tenantId);
       if (error) {
@@ -125,7 +125,7 @@ export default function SalasPage() {
     } else {
       const { error } = await supabase
         .from("rooms")
-        .insert({ name: formName.trim(), is_active: formIsActive, tenant_id: tenantId });
+        .insert({ name: formName.trim(), active: formIsActive, tenant_id: tenantId });
       if (error) {
         setFormError("Erro ao criar sala.");
         setFormLoading(false);
@@ -140,7 +140,7 @@ export default function SalasPage() {
 
   async function handleToggle(room: Room) {
     if (!tenantId) return;
-    await supabase.from("rooms").update({ is_active: !room.is_active }).eq("id", room.id).eq("tenant_id", tenantId);
+    await supabase.from("rooms").update({ active: !room.active }).eq("id", room.id).eq("tenant_id", tenantId);
     await loadRooms(tenantId);
   }
 
@@ -323,7 +323,7 @@ export default function SalasPage() {
                     width: "8px",
                     height: "8px",
                     borderRadius: "50%",
-                    background: room.is_active ? "#2D8C4E" : "#D94444",
+                    background: room.active ? "#2D8C4E" : "#D94444",
                     flexShrink: 0,
                   }}
                 />
@@ -341,11 +341,11 @@ export default function SalasPage() {
                   <p
                     style={{
                       fontSize: "12px",
-                      color: room.is_active ? "#2D8C4E" : "#D94444",
+                      color: room.active ? "#2D8C4E" : "#D94444",
                       margin: 0,
                     }}
                   >
-                    {room.is_active ? "Ativa" : "Inativa"}
+                    {room.active ? "Ativa" : "Inativa"}
                   </p>
                 </div>
               </div>
@@ -355,7 +355,7 @@ export default function SalasPage() {
                 {/* Toggle ativo/inativo */}
                 <button
                   onClick={() => handleToggle(room)}
-                  title={room.is_active ? "Desativar" : "Ativar"}
+                  title={room.active ? "Desativar" : "Ativar"}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -366,11 +366,11 @@ export default function SalasPage() {
                     border: "1px solid var(--border)",
                     background: "transparent",
                     cursor: "pointer",
-                    color: room.is_active ? "#2D8C4E" : "#D94444",
+                    color: room.active ? "#2D8C4E" : "#D94444",
                     transition: "background 0.15s",
                   }}
                 >
-                  {room.is_active ? <Check size={15} strokeWidth={2} /> : <X size={15} strokeWidth={2} />}
+                  {room.active ? <Check size={15} strokeWidth={2} /> : <X size={15} strokeWidth={2} />}
                 </button>
 
                 {/* Editar */}

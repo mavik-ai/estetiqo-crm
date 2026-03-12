@@ -53,9 +53,9 @@ Impacto: /database/migrations/, models.py
 
 ## Status Atual do Projeto
 
-**Fase atual:** Fase 4 — Desenvolvimento (Bloco 1: Autenticação/Rotas)
-**Última atualização:** 08/03/2026
-**Próximo passo:** Setup do Utils SSR do Supabase para NextJS e config de layout base.
+**Fase atual:** Fase 4 — Desenvolvimento (Sprint 2 em andamento)
+**Última atualização:** 11/03/2026
+**Próximo passo:** Reagendar agendamento (BLOCO 4), Cadastro de equipe (BLOCO 6), Permissões por papel (BLOCO 7).
 
 ---
 
@@ -150,6 +150,102 @@ Impacto: `/frontend/src/app/layout.tsx`.
 ---
 
 <!-- NOVOS UPDATES ABAIXO DESTA LINHA -->
+
+## [IMPL] 11/MAR/26 — Sprint Assinaturas: Sistema de controle de acesso completo
+Quem: Claude Code / claude-sonnet-4-6
+O que: Implementado sistema completo de assinaturas com 5 status (trial/active/courtesy/grace/expired).
+- Migration `20260311000004_subscription_status.sql`: colunas subscription_status, grace_ends_at, courtesy_days (-1=infinito), courtesy_starts_at, courtesy_note, stripe_subscription_id na tabela tenants
+- Guard de acesso em `layout.tsx`: função `calcAccess()` bloqueia tenants não ativos com redirect para /planos (superadmin nunca bloqueado)
+- Banner de carência: faixa amarela abaixo do Topbar quando status='grace', mostra dias restantes
+- Painel `/admin/clinicas` (real): tabela com badge de status colorido, coluna dias restantes, ações por linha (Cortesia VIP com modal, Ativar, Carência 7d, Expirar)
+- `admin/clinicas/actions.ts`: server actions concederCortesia, converterParaCarencia, expirarTenant, ativarTenant (todas validam role=superadmin)
+- Página `/planos` pública: cards Mensal R$67/mês + Anual R$670/ano, mostra nome da clínica se logado
+Por que: Monetização — controle de acesso antes de integrar Stripe.
+Impacto: layout.tsx, admin/clinicas/*, app/(public)/planos/page.tsx, migration 20260311000004.
+
+---
+
+## [IMPL] 11/MAR/26 — Formulário de cliente redesenhado (3 seções + ViaCEP + máscara)
+Quem: Claude Code / claude-sonnet-4-6
+O que: Formulários de criar e editar cliente completamente reescritos.
+- 3 seções: Dados básicos / Informações para contato / Dados de endereço
+- Aniversário: campo DD/MM com auto-máscara + campo ano separado (em vez de dropdown mês)
+- Telefone: máscara automática (99) 99999-9999
+- Endereço expandido: logradouro, número, complemento, bairro, cidade, UF
+- ViaCEP: ao preencher CEP, preenche automaticamente logradouro/bairro/cidade/UF
+- Removida seção de saúde do cadastro (permanece na avaliação)
+- Rating renomeado para "Potencial da cliente", começa em 1
+- Novos arquivos: ClienteNovoForm.tsx, EditarClienteForm.tsx
+Por que: Experiência de cadastro mais fluida e alinhada com o fluxo real das clínicas.
+Impacto: clientes/novo/*, clientes/[id]/editar/*, migrations 20260311000002 (campos de endereço).
+
+---
+
+## [IMPL] 11/MAR/26 — Onboarding /setup: tela de configuração inicial
+Quem: Claude Code / claude-sonnet-4-6
+O que: Tela de configuração guiada para novos tenants.
+- 5 passos: Dados da Clínica, Serviços, Salas, Janela de Atendimento, Primeira Cliente
+- Barra de progresso com contagem real (dados do Supabase)
+- Cada passo verifica automaticamente se está concluído via queries paralelas
+- Botão "Concluir configuração" só aparece quando todos os 5 passos estão feitos
+- Ação `completarOnboarding()` marca tenants.onboarding_completed_at = now()
+- Sidebar: widget "Configuração pendente" com ícone Zap para admins com onboarding pendente
+- Migration `20260311000003_tenants_onboarding.sql`
+Por que: Guia novas clínicas pelo setup inicial, reduz churn por abandono.
+Impacto: setup/page.tsx, setup/SetupClient.tsx, setup/actions.ts, Sidebar.tsx, layout.tsx, migration 20260311000003.
+
+---
+
+## [IMPL] 11/MAR/26 — Dashboard redesign: grid 3fr+1fr com 3 widgets
+Quem: Claude Code / claude-sonnet-4-6
+O que: Dashboard principal reformulado com novo layout e widgets inline.
+- Grid 3/4 + 1/4: AppointmentTable à esquerda, 3 widgets à direita
+- Widget Salas Agora: badge EM ATENDIMENTO (dourado) / LIVRE, mostra cliente+serviço+horário
+- Widget Aniversariantes: próximos 7 dias, badge "Hoje 🎉" ou "Em Xd"
+- Widget Protocolos Atrasados: badge "+Xd" dias de atraso em vermelho
+- AppointmentTable: título "Sessões de hoje" (era "Próximos atendimentos")
+- DashboardMetrics: label "Faltas do mês" (era "No-shows do mês")
+- Queries adicionadas: salas ativas, appointments em andamento agora, clientes com birth_date, protocolos com expected_end_date < hoje
+- Removidos do layout: RecentActivity e PopularServices (componentes mantidos para uso futuro)
+Por que: Dashboard mais útil e acionável para o dia a dia da clínica.
+Impacto: page.tsx (dashboard), DashboardMetrics.tsx, AppointmentTable.tsx.
+
+---
+
+## [FIX] 11/MAR/26 — Salas: RLS bloqueando usuários autenticados
+Quem: Claude Code / claude-sonnet-4-6
+O que: Migration `20260311000005_rooms_rls_fix.sql` adicionou policy RLS para usuários autenticados na tabela rooms.
+Por que: Tabela rooms tinha apenas policy para `anon` (usada pela página pública de RSVP). Usuários logados não conseguiam ver salas na agenda.
+Impacto: rooms agora acessível via RLS para authenticated com isolamento por tenant_id.
+
+---
+
+## [IMPL] 11/MAR/26 — Onboarding /setup: animações e Client Component dinâmico
+Quem: Claude Code / claude-sonnet-4-6
+O que: Setup page convertida para arquitetura Server + Client Component com animações CSS.
+- SetupClient.tsx: Client Component com useState/useEffect para animações
+- Entrada animada: fade-in + slide-up (opacity + translateY com delay 60ms)
+- Steps com stagger: cada passo aparece com delay incremental (100ms + idx*60ms)
+- Hover nos steps: translateX(4px) + border dourada + sombra sutil
+- Ícone do step hover: scale(1.05), Circle muda de cor para #B8960C
+- Barra de progresso: transition cubic-bezier spring (34, 1.56, 0.64, 1)
+- Botão "Entrar no sistema": hover sobe 2px + box-shadow aumenta, loading state "Finalizando..."
+- Logo: hover escala+rotação com efeito interativo
+- useTransition + router.push('/') para navegação suave após completar
+Por que: Rafael pediu onboarding operacional com leves efeitos e dinâmico.
+Impacto: setup/page.tsx, setup/SetupClient.tsx (NOVO).
+
+---
+
+
+## [IMPL] 12/MAR/26 — BLOCOs 4, 6, 7: Reagendar, Equipe e Permissoes
+Quem: Claude Code / claude-sonnet-4-6
+O que: Verificados implementados em sessao anterior. Adicionado guard faltante.
+- BLOCO 4 (Reagendar): RescheduleModal.tsx + reagendarAgendamento() completos e funcionais
+- BLOCO 6 (Equipe): config/equipe/* com criarMembro/desativar/reativar/excluir
+- BLOCO 7 (Permissoes): config/layout.tsx criado (redireciona operators); relatorios ja tinha guard
+Por que: Completar sprint de seguranca e UX operacional.
+Impacto: config/layout.tsx (NOVO), verificados agenda/RescheduleModal.tsx e config/equipe/*.
 
 ## [FIX] 11/MAR/26 08:58 — Agenda: Grade de horários dinâmica
 Quem: Antigravity / gemini

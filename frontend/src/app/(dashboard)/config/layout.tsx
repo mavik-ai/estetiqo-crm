@@ -12,9 +12,7 @@ export default async function ConfigLayout({ children }: { children: React.React
         .eq('id', user.id)
         .single();
 
-    if (profile?.role === 'operator') {
-        redirect('/agenda');
-    }
+    if (profile?.role === 'operator') redirect('/agenda');
 
     return <>{children}</>;
 }
