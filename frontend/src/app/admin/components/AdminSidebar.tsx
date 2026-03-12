@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { LayoutDashboard, Users, CreditCard, LogOut } from 'lucide-react'
 
 const navItems = [
-    { href: '/admin', icon: LayoutDashboard, label: 'Resumo SaaS' },
+    { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/admin/clinicas', icon: Users, label: 'Clínicas (Tenants)' },
     { href: '/admin/planos', icon: CreditCard, label: 'Faturamento & Planos' },
 ]
