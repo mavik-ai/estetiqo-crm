@@ -1,8 +1,9 @@
 import { BarChart3, Users, Crown, TrendingUp, AlertCircle } from 'lucide-react'
-import { createClient } from '@/utils/supabase/server'
+import { createAdminClient } from '@/utils/supabase/admin'
 
 export default async function AdminDashboard() {
-    const supabase = await createClient()
+    // Admin client bypassa RLS e enxerga todos os tenants
+    const supabase = createAdminClient()
 
     // Buscar contagem real por status
     const { data: statusCounts } = await supabase

@@ -1,10 +1,19 @@
+import { createAdminClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 import { ClinicasClient } from './ClinicasClient';
 
 export default async function ClinicsPage() {
+    // Verificar autenticação e papel
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) redirect('/login');
+    const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single();
+    if (profile?.role !== 'superadmin') redirect('/');
 
-    const { data: tenants } = await supabase
+    // Usar admin client para bypassar RLS e enxergar todos os tenants
+    const admin = createAdminClient();
+    const { data: tenants } = await admin
         .from('tenants')
         .select('id, name, slug, subscription_status, trial_ends_at, grace_ends_at, courtesy_days, courtesy_starts_at, courtesy_note, created_at')
         .order('created_at', { ascending: false });
