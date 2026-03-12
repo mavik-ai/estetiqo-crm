@@ -194,7 +194,21 @@ export function EditarClienteForm({
           </div>
           <div>
             <label style={labelStyle}>WhatsApp</label>
-            <input name="phone" type="tel" defaultValue={client.phone ?? ''} placeholder="(99) 99999-9999" style={inputStyle} />
+            <input
+              name="phone" type="tel"
+              defaultValue={client.phone ?? ''}
+              placeholder="(99) 99999-9999"
+              maxLength={15}
+              onChange={e => {
+                let v = e.target.value.replace(/\D/g, '');
+                if (v.length > 11) v = v.slice(0, 11);
+                if (v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+                else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+                else if (v.length > 0) v = `(${v}`;
+                e.target.value = v;
+              }}
+              style={inputStyle}
+            />
           </div>
         </div>
       </div>
