@@ -53,9 +53,9 @@ Impacto: /database/migrations/, models.py
 
 ## Status Atual do Projeto
 
-**Fase atual:** Fase 4 — Desenvolvimento (Sprint 2 em andamento)
-**Última atualização:** 11/03/2026
-**Próximo passo:** Reagendar agendamento (BLOCO 4), Cadastro de equipe (BLOCO 6), Permissões por papel (BLOCO 7).
+**Fase atual:** Fase 4 — Desenvolvimento (Sprint de Deploy — pré v1.0)
+**Última atualização:** 12/03/2026
+**Próximo passo:** Deploy no Coolify + configurar variáveis no Vercel/servidor.
 
 ---
 
@@ -237,6 +237,66 @@ Impacto: setup/page.tsx, setup/SetupClient.tsx (NOVO).
 
 ---
 
+
+## [IMPL] 12/MAR/26 — Sprint Deploy: Superadmin CRUD completo + métricas reais + onboarding 100%
+Quem: Claude Code / claude-sonnet-4-6
+O que: Sprint focado em fechar todas as pendências críticas antes do deploy.
+**Superadmin CRUD (`admin/clinicas`):**
+- `criarTenant(formData)`: cria tenant (trial 7d) + usuário Supabase Auth + insere em `users` com role admin
+- `atualizarTenant(tenantId, name, slug)`: atualiza dados básicos do tenant
+- `deletarTenant(tenantId)`: deleta usuários Auth + hard-delete do tenant (cascade via FK)
+- Helpers `slugify()` e `generatePassword()` adicionados
+- ClinicasClient.tsx reescrito: busca por nome/slug em tempo real, modal "Nova Clínica", modal "Editar", modal "Excluir" com confirmação digitando nome da clínica
+**Admin painel — RLS fix crítico:**
+- `admin/clinicas/page.tsx` e `admin/page.tsx` trocados para `createAdminClient()` (service role)
+- Problema: `createClient()` usa JWT do superadmin que não tem `tenant_id`, RLS bloqueava tudo
+- Solução: service role bypassa RLS → todos os tenants visíveis no painel
+**Métricas reais (`admin/page.tsx`):**
+- Substituídas todas as métricas hardcoded por query real em `tenants.subscription_status`
+- Cards: Total de clínicas, Ativas (active+courtesy), Atenção Necessária (grace+expired), MRR "Em breve"
+- Distribuição por status com badges coloridos
+**Dados mockados removidos:**
+- `admin/planos/page.tsx`: removidos Estética Michele, Harmony Laser, Dra. Fernanda Body — substituído por placeholder "Integração Stripe — Próximo Sprint"
+**AdminSidebar labels:**
+- "Resumo SaaS" → "Dashboard"
+- "Clínicas (Tenants)" → "Clínicas"
+**Onboarding /setup 100% funcional:**
+- Links corrigidos: `/config/dados` → `/config/clinica`, `/config/servicos` → `/servicos`
+- Step 1 verifica `tenants.phone` (não `name`, que sempre existe) para marcação correta
+- Guard para operadores: redireciona para `/` se `role === 'operator'`
+**Alerta intervalo protocolo (`agenda/novo/page.tsx`):**
+- `interval_days` adicionado ao tipo Protocol e à query de protocolos
+- `useEffect` calcula dias desde última sessão quando protocolo é selecionado
+- Banner amarelo: "⚠️ Intervalo recomendado: X dias. Última sessão: DD/MM/YYYY (há Y dias)."
+**Segurança:**
+- `.env.example` atualizado com `SUPABASE_SERVICE_ROLE_KEY` e `RESEND_API_KEY` documentados
+Por que: Fechar sprint pré-deploy — superadmin sem CRUD era gap operacional crítico; RLS bloqueando admin era bug de produto; dados mockados não devem ir para produção.
+Impacto: admin/clinicas/actions.ts, admin/clinicas/ClinicasClient.tsx, admin/clinicas/page.tsx, admin/page.tsx, admin/planos/page.tsx, admin/components/AdminSidebar.tsx, setup/page.tsx, setup/SetupClient.tsx, agenda/novo/page.tsx, .env.example.
+
+---
+
+## [FIX] 12/MAR/26 — Migrations aplicadas no Supabase produção
+Quem: Claude Code / claude-sonnet-4-6
+O que: Aplicadas 5 migrations pendentes diretamente via Supabase MCP `execute_sql`:
+- `20260311000001`: campos de endereço em `clients` (logradouro, numero, bairro, cidade, uf, cep)
+- `20260311000002`: campos de contato em `clients` (email)
+- `20260311000003`: `onboarding_completed_at` em `tenants`
+- `20260311000004`: `subscription_status`, `grace_ends_at`, `courtesy_days`, `courtesy_starts_at`, `courtesy_note`, `stripe_subscription_id` em `tenants`
+- `20260311000005`: `interval_days` em `protocols` + RLS policy para rooms
+Por que: `subscription_status` não existia em produção — `criarTenant()` falhava com erro de coluna. Sem migrations, o sistema funciona local mas não em produção.
+Impacto: Schema de produção agora em sync com o schema local. Supabase project `dlglvxgzyafpkmrlqygl`.
+
+---
+
+## [FIX] 12/MAR/26 — Usuário de teste deletado do Supabase
+Quem: Claude Code / claude-sonnet-4-6
+O que: Deletado tenant "Michele Oliveira" e seu usuário Auth do Supabase produção via MCP.
+- `DELETE FROM tenants WHERE id = 'tenant-id-michele'` (cascade deleta clientes, agendamentos, etc.)
+- `DELETE FROM auth.users WHERE email = 'user@estetiqo.com'`
+Por que: Rafael pediu que apenas o superadmin (registro@mavikai.com.br) permaneça no banco. Dados de teste não devem ir para produção.
+Impacto: Banco limpo, apenas 1 usuário ativo: superadmin.
+
+---
 
 ## [IMPL] 12/MAR/26 — BLOCOs 4, 6, 7: Reagendar, Equipe e Permissoes
 Quem: Claude Code / claude-sonnet-4-6
