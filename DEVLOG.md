@@ -568,3 +568,8 @@ Por que: Rafael pediu simplificação — apenas 3 status de RSVP.
 Impacto: `/rsvp/page.tsx`, `/clientes/[id]/page.tsx`.
 
 ---
+## [FIX] 12/MAR/26 22:20 — Redefinição total dos dados para estado inicial (Reset)
+Quem: Antigravity / gemini-3-1-pro-preview
+O que: Truncadas todas as tabelas operacionais no Supabase (clientes, serviços, salas, protocolos, agendamentos, logs) mantendo apenas os usuários cadastrados e o tenant base.
+Por que: Solicitação do Rafael para zerar o sistema como se fosse uma conta nova para início de uso real.
+Impacto: Tabelas `clients`, `services`, `rooms`, `protocols`, `sessions`, `appointments`, `health_records`, `activity_log` e tabelas auxiliares zeradas via SQL TRUNCATE CASCADE.

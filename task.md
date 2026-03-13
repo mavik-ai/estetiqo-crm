@@ -44,3 +44,6 @@
 ## Módulo 3: Infraestrutura (Onda 12)
 - [x] Revisar variáveis de ambiente para produção (`.env`).
 - [x] Testar Build via Docker Compose (não suportado na máquina, análise visual concluída).
+
+## Módulo 4: Teste Local
+- [x] Rodar sistema localmente
